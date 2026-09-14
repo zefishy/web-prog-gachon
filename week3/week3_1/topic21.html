@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .flex-row {
+            display: flex;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .flex-row.center {
+            justify-content: center;
+        }
+
+        .flex-row.between {
+            justify-content: space-between;
+        }
+
+        .flex-row.align-c {
+            align-items: center;
+        }
+
+        .item {
+            background: #10B981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .item.tall {
+            height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .item.grow {
+            flex: 1;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="flex-row">
+        <div class="item">A</div>
+        <div class="item">B</div>
+        <div class="item">C</div>
+    </div>
+
+    <div class="flex-row between">
+        <div class="item">Left</div>
+        <div class="item">Right</div>
+    </div>
+
+    <div class="flex-row">
+        <div class="item tall">Tall</div>
+        <div class="item grow">flex:1 — fills remaining width</div>
+    </div>
+</body>
+
+</html>

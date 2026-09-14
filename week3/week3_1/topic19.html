@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .forced-block {
+            display: block;
+            background: #ecfdf5;
+            border: 2px solid #10B981;
+            padding: 12px;
+            margin: 6px 0;
+            width: 300px;
+        }
+
+        nav a {
+            display: block;
+            padding: 10px 16px;
+            background: #1e293b;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 2px;
+        }
+
+        nav a:hover {
+            background: #15803d;
+        }
+    </style>
+</head>
+
+<body>
+    <span class="forced-block">I am a span — normally inline, forced to block</span>
+    <span class="forced-block">Each span now starts on a new line</span>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Projects</a>
+    </nav>
+</body>
+
+</html>

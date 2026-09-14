@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .box {
+            background: #ecfdf5;
+            border: 2px solid #10B981;
+            padding: 12px;
+            width: 280px;
+        }
+
+        .m-none {
+            margin: 0;
+        }
+
+        .m-all {
+            margin: 20px;
+        }
+
+        .m-auto {
+            margin: 0 auto;
+        }
+
+        .m-sides {
+            margin-left: 40px;
+            margin-right: 40px;
+        }
+
+        .p1 {
+            margin-bottom: 20px;
+            background: #fef3c7;
+            padding: 8px;
+        }
+
+        .p2 {
+            margin-top: 30px;
+            background: #dbeafe;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box m-none">margin: 0</div>
+    <div class="box m-all">margin: 20px — all sides</div>
+    <div class="box m-auto">margin: 0 auto — centred!</div>
+    <hr>
+    <p class="p1">margin-bottom: 20px (yellow)</p>
+    <p class="p2">margin-top: 30px (blue) — gap = 30px, not 50px (collapsed)</p>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .content-box {
+            box-sizing: content-box;
+            width: 200px;
+            padding: 10px;
+            border: 5px solid #10B981;
+            background: #ecfdf5;
+            margin-bottom: 16px;
+        }
+
+        .border-box {
+            box-sizing: border-box;
+            width: 200px;
+            padding: 10px;
+            border: 5px solid #7c3aed;
+            background: #f5f3ff;
+        }
+
+        p {
+            font-size: 13px;
+            color: #475569;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content-box">content-box</div>
+    <p>→ Actual width = 200 + 10×2 + 5×2 = <strong>230px</strong></p>
+
+    <div class="border-box">border-box</div>
+    <p>→ Actual width = exactly <strong>200px</strong></p>
+</body>
+
+</html>

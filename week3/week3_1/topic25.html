@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Ryan Wong's web programming profile, featuring HTML5, CSS3, Flexbox, and the CSS box model.">
+    <meta name="author" content="Ryan Wong">
+    <title>Ryan Wong | Web Programming Student | Gachon University</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            line-height: 1.7;
+            background-color: #f0fdf4;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #bbf7d0;
+            border-radius: 16px;
+            padding: 40px;
+        }
+
+        .profile-header {
+            margin-bottom: 28px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #15803d;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            color: #15803d;
+        }
+
+        .role {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .skills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .skill-badge {
+            background-color: #dcfce7;
+            color: #15803d;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <article class="card">
+            <header class="profile-header">
+                <h1>Ryan Wong</h1>
+                <p class="role">Exchange Student - Gachon University</p>
+            </header>
+            <p>Hello! I am learning HTML and CSS in Week 3. Today I styled this
+                profile card using everything in the CSS Introduction guide.</p>
+            <section aria-labelledby="skills-heading">
+                <h2 id="skills-heading" class="visually-hidden">Skills</h2>
+                <ul class="skills">
+                    <li class="skill-badge">HTML</li>
+                    <li class="skill-badge">CSS</li>
+                    <li class="skill-badge">Flexbox</li>
+                    <li class="skill-badge">Box Model</li>
+                </ul>
+            </section>
+        </article>
+    </main>
+</body>
+
+</html>

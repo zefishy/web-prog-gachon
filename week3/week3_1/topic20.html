@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .box {
+            padding: 16px;
+            margin: 8px 0;
+            border: 2px solid #10B981;
+        }
+
+        .hidden-none {
+            display: none;
+        }
+
+        .hidden-visibility {
+            visibility: hidden;
+        }
+
+        .hidden-opacity {
+            opacity: 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="box">Box 1 — visible</div>
+    <div class="box hidden-none">Box 2 — display:none (you cannot see this)</div>
+    <div class="box">Box 3 — visible (no gap above from box 2!)</div>
+    <div class="box hidden-visibility">Box 4 — visibility:hidden (space kept)</div>
+    <div class="box">Box 5 — there IS a gap above from box 4</div>
+    <hr>
+    <button
+        onclick="document.getElementById('msg').style.display = document.getElementById('msg').style.display === 'none' ? 'block' : 'none'">
+        Toggle Message
+    </button>
+    <div id="msg" class="box" style="display:none">Hello! I was hidden.</div>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .box {
+            background: #ecfdf5;
+            border: 2px solid #10B981;
+            width: 300px;
+            font-family: sans-serif;
+        }
+
+        .p-none {
+            padding: 0;
+        }
+
+        .p-all {
+            padding: 20px;
+        }
+
+        .p-tb-lr {
+            padding: 10px 40px;
+        }
+
+        .p-sides {
+            padding-left: 32px;
+            padding-right: 32px;
+        }
+
+        .label {
+            font-size: 11px;
+            color: #059669;
+            margin-bottom: 6px;
+        }
+
+        div {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box p-none">
+        <span class="label">padding: 0 — content touches the border</span>
+        Content here
+    </div>
+    <div class="box p-all">
+        <span class="label">padding: 20px — all four sides</span>
+        Content here
+    </div>
+    <div class="box p-tb-lr">
+        <span class="label">padding: 10px 40px — top/bottom + left/right</span>
+        Content here
+    </div>
+</body>
+
+</html>
