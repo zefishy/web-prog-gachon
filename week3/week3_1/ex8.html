@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My CSS Portfolio</title>
+    <style>
+        /* 1. Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 2. Base styles (body, a, h1-h3, p) */
+        body {
+            background: #f5f7fb;
+            color: #172033;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        h1,
+        h2,
+        h3 {
+            line-height: 1.2;
+        }
+
+        p {
+            color: #5d687d;
+        }
+
+        /* 3. Navigation (.nav, .nav-logo, .nav-links, .nav-links a) */
+        .nav {
+            align-items: center;
+            background: #172033;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 8%;
+        }
+
+        .nav-logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: #dce4f2;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: #7de2d1;
+        }
+
+        /* 4. Hero section (.hero, .hero h1, .hero p, .btn) */
+        .hero {
+            background: #dff7f2;
+            padding: 110px 8%;
+        }
+
+        .hero h1 {
+            color: #172033;
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            max-width: 800px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin: 24px 0 32px;
+        }
+
+        .btn {
+            background: #e76f51;
+            border-radius: 6px;
+            color: #ffffff;
+            display: inline-block;
+            font-weight: bold;
+            padding: 13px 22px;
+        }
+
+        .btn:hover {
+            background: #c9573c;
+        }
+
+        /* 5. Skills grid (.skills-section, .skills-grid, .skill-card) */
+        .skills-section {
+            padding: 80px 8%;
+        }
+
+        .skills-section h2 {
+            font-size: 2rem;
+            margin-bottom: 28px;
+        }
+
+        .skills-grid {
+            display: flex;
+            gap: 24px;
+        }
+
+        .skill-card {
+            background: #ffffff;
+            border-top: 5px solid #7de2d1;
+            box-shadow: 0 8px 22px rgba(23, 32, 51, 0.08);
+            flex: 1;
+            padding: 28px;
+        }
+
+        .skill-card h3 {
+            color: #e76f51;
+            margin-bottom: 10px;
+        }
+
+        /* 6. Footer (.footer) */
+        .footer {
+            background: #172033;
+            color: #dce4f2;
+            padding: 28px 8%;
+            text-align: center;
+        }
+
+        .footer p {
+            color: #dce4f2;
+        }
+
+        @media (max-width: 700px) {
+            .nav {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .skills-grid {
+                flex-direction: column;
+            }
+
+            .hero {
+                padding: 80px 8%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav">
+        <span class="nav-logo">ryan.dev</span>
+        <div class="nav-links">
+            <a href="#skills">Skills</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Hello, I am Ryan.</h1>
+        <p>Exchange student @ Gachon University, building thoughtful web experiences.</p>
+        <a href="#skills" class="btn">See My Skills</a>
+    </section>
+
+    <section class="skills-section" id="skills">
+        <h2>What I Build With</h2>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <h3>HTML</h3>
+                <p>Clear structure and meaningful semantics.</p>
+            </div>
+            <div class="skill-card">
+                <h3>CSS</h3>
+                <p>Responsive styling and expressive layouts.</p>
+            </div>
+            <div class="skill-card">
+                <h3>JavaScript</h3>
+                <p>Interactive ideas brought to life in the browser.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p id="contact">Let&apos;s connect · ryan@gachon.ac.kr · &copy; 2026 Ryan</p>
+    </footer>
+</body>
+
+</html>

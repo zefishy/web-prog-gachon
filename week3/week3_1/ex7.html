@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 24px;
+            background: #f1f5f9;
+            color: #1e293b;
+            font-family: sans-serif;
+        }
+
+        .card {
+            width: min(100%, 360px);
+            padding: 32px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+            text-align: center;
+        }
+
+        .avatar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: #16a34a;
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .name {
+            margin: 0 0 8px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .role {
+            margin: 0;
+            color: #64748b;
+        }
+
+        hr {
+            margin: 24px 0;
+            border: 0;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .skills {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="avatar">R</div>
+        <h2 class="name">Ryan Wong</h2>
+        <p class="role">Exchange Student @ Gachon University</p>
+        <hr>
+        <div class="skills">
+            <span class="badge">HTML5</span>
+            <span class="badge">CSS3</span>
+            <span class="badge">Flexbox</span>
+        </div>
+    </div>
+</body>
+
+</html>
