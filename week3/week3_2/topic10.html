@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* BASE STYLES — mobile-first (< 768px) */
+    body { font-family: sans-serif; padding: 16px; background: #f0fdfa; }
+
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border: 2px solid #14b8a6;
+      border-radius: 10px;
+      padding: 20px;
+      font-size: 16px;
+      color: #0f766e;
+    }
+
+    .breakpoint-label {
+      font-size: 14px;
+      background: #0f766e;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    /* TABLET ≥ 640px — 2 column grid */
+    @media (min-width: 640px) {
+      .grid { flex-direction: row; flex-wrap: wrap; }
+      .card { flex: 1; min-width: 200px; }
+    }
+
+    /* DARK MODE */
+    @media (prefers-color-scheme: dark) {
+      body { background: #051a0a; }
+      .card { background: #0b2017; border-color: #14b8a6; color: #d4edda; }
+    }
+
+    /* PRINT — hide decorative elements */
+    @media print {
+      .breakpoint-label { display: none; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+  <div class="breakpoint-label">Resize the preview to see the grid change</div>
+  <div class="grid">
+    <div class="card">Card One</div>
+    <div class="card">Card Two</div>
+    <div class="card">Card Three</div>
+  </div>
+</body>
+</html>

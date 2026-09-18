@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+
+    /* Fixed nav — always visible, sits outside the flow */
+    .fixed-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #0f766e;
+      color: white;
+      padding: 14px 24px;
+      z-index: 100;   /* above everything else */
+    }
+
+    .content { padding-top: 60px; } /* offset for fixed nav height */
+
+    /* Sticky section title */
+    .sticky-header {
+      position: sticky;
+      top: 56px;              /* sticks 56px from top (below fixed nav) */
+      background: #ccfbf1;
+      border-left: 4px solid #14b8a6;
+      padding: 10px 16px;
+      font-weight: bold;
+      color: #0f766e;
+    }
+
+    .section-body {
+      padding: 20px;
+      height: 300px;    /* tall enough to scroll */
+      background: #f0fdfa;
+    }
+  </style>
+</head>
+<body>
+  <nav class="fixed-nav">Fixed Navigation — always visible while scrolling</nav>
+  <div class="content">
+    <div>
+      <div class="sticky-header">Section A — sticky header</div>
+      <div class="section-body">Scroll down to see the sticky header in action…</div>
+    </div>
+    <div>
+      <div class="sticky-header">Section B — another sticky header</div>
+      <div class="section-body">Each section has its own sticky label.</div>
+    </div>
+  </div>
+</body>
+</html>

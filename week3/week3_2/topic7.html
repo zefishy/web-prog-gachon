@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .card {
+      width: 240px;
+      padding: 24px;
+      background: #f0fdfa;
+      border: 2px solid #14b8a6;
+      border-radius: 12px;
+      color: #0f766e;
+      font-size: 16px;
+      margin: 20px;
+      /* transition on BASE state — animates BOTH forward and reverse */
+      transition: background  0.3s ease,
+                  transform   0.2s ease,
+                  box-shadow  0.3s ease;
+    }
+
+    .card:hover {
+      background: #0f766e;
+      color: white;
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+    }
+
+    /* Opacity transition — fade out */
+    .fade-btn {
+      opacity: 1;
+      transition: opacity 0.4s ease;
+      padding: 10px 20px;
+      background: #14b8a6;
+      color: white;
+      border: none; border-radius: 6px; cursor: pointer;
+    }
+    .fade-btn:hover { opacity: 0.5; }
+  </style>
+</head>
+<body>
+  <div class="card">Hover over this card</div>
+  <button class="fade-btn">Hover to fade</button>
+</body>
+</html>

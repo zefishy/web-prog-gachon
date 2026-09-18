@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /* flex-wrap: wrap — cards flow to new rows when narrow */
+    .card-grid {
+      display: flex;
+      flex-wrap: wrap;     /* items wrap to next row */
+      gap: 16px;
+      padding: 16px;
+      background: #f0fdfa;
+    }
+
+    .card {
+      flex: 1;             /* grow to fill available space */
+      min-width: 160px;    /* but never smaller than 160px */
+      background: #0f766e;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .card.featured {
+      order: -1;           /* move to front without changing HTML */
+      flex: 2;             /* twice as wide */
+      background: #14b8a6;
+    }
+
+    /* flex-direction: column layout */
+    .sidebar-layout {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .sidebar { width: 180px; flex-shrink: 0; background: #ccfbf1;
+               padding: 16px; border-radius: 10px; font-size: 14px; }
+    .main    { flex: 1; background: white; border: 2px solid #14b8a6;
+               padding: 16px; border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <div class="card-grid">
+    <div class="card">A</div>
+    <div class="card">B</div>
+    <div class="card featured">FEATURED — order:-1, flex:2</div>
+    <div class="card">C</div>
+    <div class="card">D</div>
+  </div>
+  <div class="sidebar-layout">
+    <aside class="sidebar">Sidebar (fixed 180px)</aside>
+    <main class="main">Main content (flex:1 — fills remaining space)</main>
+  </div>
+</body>
+</html>

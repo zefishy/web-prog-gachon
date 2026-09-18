@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /* ::before adds a decorative leaf icon */
+    h2::before {
+      content: '🌿 ';
+    }
+
+    /* ::after adds a required asterisk to labels */
+    .required::after {
+      content: ' *';
+      color: #f43f5e;
+      font-weight: bold;
+    }
+
+    /* ::before as a decorative underline bar */
+    .underline-title {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 8px;
+    }
+    .underline-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 3px;
+      background: #0f766e;
+      border-radius: 2px;
+    }
+
+    /* ::before as a quotation mark */
+    blockquote { position: relative; padding-left: 36px; font-style: italic; }
+    blockquote::before {
+      content: '"';
+      position: absolute;
+      left: 0; top: -8px;
+      font-size: 56px;
+      color: #14b8a6;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <h2>CSS Pseudo-elements</h2>
+  <p><label class="required">Email address</label></p>
+  <p class="underline-title">Decorative Underline</p>
+  <blockquote>CSS gives you superpowers — no JavaScript needed.</blockquote>
+</body>
+</html>

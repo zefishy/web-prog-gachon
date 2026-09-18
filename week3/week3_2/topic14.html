@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { color: #0f766e; font-family: 'Georgia', serif; font-size: 18px; }
+
+    /* inherit: force child to use parent's colour */
+    .parent {
+      color: #f43f5e;   /* red */
+      font-size: 20px;
+    }
+    .child-inherit { color: inherit; }  /* also red — takes from .parent */
+    .child-normal  { }                  /* also red — color IS inherited */
+    .child-initial { color: initial; }  /* browser default: black */
+
+    /* border does NOT inherit */
+    .with-border { border: 3px solid currentColor; padding: 8px; }
+
+    /* inherit border from parent */
+    .parent-bordered {
+      border: 3px solid #0f766e;
+      padding: 12px;
+    }
+    .inherit-border { border: inherit; }  /* takes parent's border */
+
+    p { margin: 8px 0; }
+  </style>
+</head>
+<body>
+  <div class="parent">
+    <p>Parent — color: red</p>
+    <p class="child-inherit">child color: inherit → red</p>
+    <p class="child-normal">child with no color set → also red (inherits)</p>
+    <p class="child-initial">child color: initial → black (browser default)</p>
+  </div>
+  <hr>
+  <div class="parent-bordered">
+    Parent has a border
+    <div class="inherit-border" style="margin-top:8px">border: inherit → same border</div>
+  </div>
+</body>
+</html>

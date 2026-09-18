@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /* Global design tokens */
+    :root {
+      --color-primary:   #0f766e;
+      --color-accent:    #14b8a6;
+      --color-bg:        #f0fdfa;
+      --color-text:      #1e293b;
+      --radius-card:     12px;
+      --shadow-card:     0 4px 20px rgba(0,0,0,0.1);
+      --spacing-md:      20px;
+    }
+
+    /* Automatic dark mode — just redefine the tokens */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg:   #051a0a;
+        --color-text: #d4edda;
+      }
+    }
+
+    body { background: var(--color-bg); color: var(--color-text); font-family: sans-serif; }
+
+    .btn {
+      background: var(--color-primary);
+      color: white;
+      padding: 10px 24px;
+      border: none;
+      border-radius: var(--radius-card);
+      cursor: pointer;
+    }
+    .btn:hover { background: var(--color-accent); }
+
+    .card {
+      background: var(--color-bg);
+      border: 2px solid var(--color-accent);
+      border-radius: var(--radius-card);
+      padding: var(--spacing-md);
+      box-shadow: var(--shadow-card);
+      margin-top: var(--spacing-md);
+      max-width: 300px;
+      color: var(--color-text);
+    }
+
+    /* Local override — this card uses red as primary */
+    .card.danger { --color-primary: #f43f5e; --color-accent: #fb7185; }
+  </style>
+</head>
+<body>
+  <button class="btn">Primary Button</button>
+  <div class="card">
+    <strong>Default Card</strong><br>Uses global --color-primary (teal)
+  </div>
+  <div class="card danger">
+    <strong>Danger Card</strong><br>Local override: --color-primary = red
+  </div>
+</body>
+</html>

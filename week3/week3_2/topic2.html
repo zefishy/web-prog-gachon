@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .card {
+      position: relative;        /* creates the anchor for absolute children */
+      width: 280px;
+      height: 160px;
+      background: #f0fdfa;
+      border: 2px solid #14b8a6;
+      border-radius: 10px;
+      margin: 40px;
+    }
+
+    /* Badge anchored to top-right corner of .card */
+    .badge {
+      position: absolute;
+      top: -12px; right: -12px;
+      background: #0f766e;
+      color: white;
+      font-size: 12px; font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .card-title {
+      padding: 20px;
+      font-size: 18px; font-weight: bold;
+      color: #0f766e;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">NEW</span>
+    <div class="card-title">CSS Advanced Guide</div>
+  </div>
+</body>
+</html>

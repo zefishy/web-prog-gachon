@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /* :hover — mouse over */
+    .btn {
+      background: #0f766e; color: white; border: none;
+      padding: 10px 20px; border-radius: 6px; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn:hover  { background: #14b8a6; transform: translateY(-2px); }
+    .btn:active { transform: scale(0.97); }
+
+    /* :focus-visible — keyboard focus only */
+    input {
+      border: 2px solid #94a3b8; border-radius: 6px;
+      padding: 8px 12px; font-size: 15px; outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus-visible { border-color: #0f766e; box-shadow: 0 0 0 3px #99f6e4; }
+
+    /* :nth-child — stripe table rows */
+    table { border-collapse: collapse; width: 260px; margin-top: 16px; font-size: 14px; }
+    td    { padding: 6px 12px; }
+    tr:nth-child(even) { background: #f0fdfa; }
+    tr:nth-child(odd)  { background: white; }
+    tr:first-child     { background: #0f766e; color: white; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <button class="btn">Hover & Click Me</button><br><br>
+  <input type="text" placeholder="Tab here to see :focus-visible"><br>
+  <table>
+    <tr><td>Name</td><td>Score</td></tr>
+    <tr><td>Alice</td><td>98</td></tr>
+    <tr><td>Bob</td><td>85</td></tr>
+    <tr><td>Carol</td><td>91</td></tr>
+    <tr><td>Dave</td><td>77</td></tr>
+  </table>
+</body>
+</html>

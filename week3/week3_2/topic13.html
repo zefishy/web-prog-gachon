@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { background: #f0fdfa; padding: 30px; font-family: sans-serif; }
+    .row { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+
+    /* border-radius variety */
+    .r-none  { border-radius: 0;    }
+    .r-sm    { border-radius: 6px;  }
+    .r-lg    { border-radius: 20px; }
+    .r-pill  { border-radius: 100px;}
+    .r-circle{ border-radius: 50%; width: 80px; height: 80px; line-height: 80px;
+               text-align: center; }
+
+    /* box-shadow variety */
+    .s-sm  { box-shadow: 0 2px 8px rgba(0,0,0,0.1);   }
+    .s-md  { box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    .s-lg  { box-shadow: 0 8px 32px rgba(0,0,0,0.2);  }
+    .s-col { box-shadow: 0 4px 20px rgba(15,118,110,0.4); }  /* coloured shadow */
+    .s-in  { box-shadow: inset 0 2px 8px rgba(0,0,0,0.2); background: #ccfbf1; }
+
+    .box {
+      background: #0f766e; color: white;
+      padding: 12px 20px; font-size: 14px; font-weight: bold;
+    }
+    .circle-box { background: #14b8a6; color: white; font-size: 14px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <div class="box r-none">radius: 0</div>
+    <div class="box r-sm">6px</div>
+    <div class="box r-lg">20px</div>
+    <div class="box r-pill">pill</div>
+    <div class="box r-circle circle-box">50%</div>
+  </div>
+  <div class="row">
+    <div class="box r-sm s-sm">shadow sm</div>
+    <div class="box r-sm s-md">shadow md</div>
+    <div class="box r-sm s-lg">shadow lg</div>
+    <div class="box r-sm s-col">colored shadow</div>
+    <div class="box r-sm s-in">inset shadow</div>
+  </div>
+</body>
+</html>

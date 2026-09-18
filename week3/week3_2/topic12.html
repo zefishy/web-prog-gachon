@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /* Named areas layout */
+    .page {
+      display: grid;
+      grid-template-areas:
+        "header  header  header"
+        "sidebar main    main"
+        "footer  footer  footer";
+      grid-template-columns: 200px 1fr 1fr;
+      grid-template-rows:    auto 1fr auto;
+      gap: 12px;
+      min-height: 340px;
+      padding: 12px;
+      background: #f0fdfa;
+    }
+
+    .page > * {
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    header  { grid-area: header;  background: #0f766e; color: white; }
+    .sidebar{ grid-area: sidebar; background: #ccfbf1; color: #0f766e; }
+    main    { grid-area: main;    background: white;   border: 2px solid #14b8a6; color: #0f766e; }
+    footer  { grid-area: footer;  background: #1e293b; color: #94a3b8; }
+
+    /* Simple 3-column card grid */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .cards div { background: #0f766e; color: white;
+                 padding: 12px; border-radius: 6px; text-align: center; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>Header (spans all 3 columns)</header>
+    <div class="sidebar">Sidebar<br>(200px fixed)</div>
+    <main>Main content (flex: fills remaining 2 columns)</main>
+    <footer>Footer (spans all 3 columns)</footer>
+  </div>
+  <div class="cards">
+    <div>Card 1</div><div>Card 2</div><div>Card 3</div>
+    <div>Card 4</div><div>Card 5</div><div>Card 6</div>
+  </div>
+</body>
+</html>

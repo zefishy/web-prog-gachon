@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .stack { position: relative; height: 200px; }
+
+    .layer { position: absolute; width: 180px; height: 100px;
+              padding: 10px; border-radius: 8px; font-size: 14px; }
+
+    .layer-1 { background:#0f766e; color:white; top:20px; left:20px; z-index:1; }
+    .layer-2 { background:#14b8a6; color:white; top:50px; left:80px; z-index:2; }
+    .layer-3 { background:#ccfbf1; color:#0f766e; top:80px;left:140px; z-index:3; }
+
+    /* overflow demo */
+    .overflow-demo {
+      width: 220px;
+      height: 90px;
+      overflow: hidden;   /* try: scroll | auto | visible */
+      border: 2px solid #14b8a6;
+      padding: 8px;
+      margin-top: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="stack">
+    <div class="layer layer-1">z-index: 1 (bottom)</div>
+    <div class="layer layer-2">z-index: 2 (middle)</div>
+    <div class="layer layer-3">z-index: 3 (top)</div>
+  </div>
+  <div class="overflow-demo">
+    overflow: hidden clips everything outside the box.
+    This text is too long to fit and will be cut off.
+    You will not see this last sentence at all.
+  </div>
+</body>
+</html>

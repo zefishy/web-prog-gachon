@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #0f766e;
+      --accent:  #14b8a6;
+      --bg:      #f0fdfa;
+      --card:    #ffffff;
+      --text:    #1e293b;
+      --radius:  12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: sans-serif; padding: 24px; color: var(--text); }
+
+    /* 1-column on mobile, 3-column on tablet+ */
+    .grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    @media (min-width: 640px) {
+      .grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .card {
+      background: var(--card);
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;           /* anchor for absolute badge */
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(15,118,110,0.18);
+      border-color: var(--accent);
+    }
+
+    /* Absolute badge */
+    .badge {
+      position: absolute; top: -10px; right: 16px;
+      background: var(--primary); color: white;
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+    }
+
+    /* ::before star */
+    .card-title::before { content: '⭐ '; }
+
+    .card-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+    .card-desc  { font-size: 14px; color: #64748b; line-height: 1.6; }
+    .card-price { font-size: 22px; font-weight: 700; color: var(--primary); margin-top: 14px; }
+
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #051a0a; --card: #0b2017; --text: #d4edda; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div class="card">
+      <span class="badge">NEW</span>
+      <h3 class="card-title">CSS Course</h3>
+      <p class="card-desc">Master CSS from selectors to Grid. Build real projects.</p>
+      <div class="card-price">₩49,000</div>
+    </div>
+    <div class="card">
+      <h3 class="card-title">JS Bootcamp</h3>
+      <p class="card-desc">JavaScript fundamentals through modern ES2025 features.</p>
+      <div class="card-price">₩69,000</div>
+    </div>
+    <div class="card">
+      <span class="badge">HOT</span>
+      <h3 class="card-title">Full Stack</h3>
+      <p class="card-desc">HTML, CSS, JavaScript, and Node.js — end to end.</p>
+      <div class="card-price">₩129,000</div>
+    </div>
+  </div>
+</body>
+</html>

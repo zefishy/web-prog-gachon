@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .box {
+      width: 120px; height: 60px;
+      background: #0f766e; color: white;
+      padding: 8px; margin: 6px; font-size: 14px;
+    }
+
+    /* static: default — offsets ignored */
+    .static { position: static; }
+
+    /* relative: offsets work — moves FROM its natural position */
+    .relative {
+      position: relative;
+      top:  20px;   /* moves DOWN 20px from natural spot */
+      left: 30px;   /* moves RIGHT 30px */
+      background: #14b8a6;
+    }
+  </style>
+</head>
+<body>
+  <div class="box static">static (default)</div>
+  <div class="box relative">relative — shifted ↓20px →30px</div>
+  <div class="box static">Next element — unaffected by relative shift above</div>
+</body>
+</html>
