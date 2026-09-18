@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+        }
+
+        .nav-logo {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            color: #14b8a6;
+        }
+
+        /* Content to scroll */
+        .content {
+            padding-top: 70px;
+        }
+
+        .section {
+            height: 300px;
+            padding: 40px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav">
+        <a href="#" class="nav-logo">WebPro</a>
+        <div class="nav-links">
+            <a href="#s1">Home</a>
+            <a href="#s2">Topics</a>
+            <a href="#s3">Quiz</a>
+        </div>
+    </nav>
+    <div class="content">
+        <div class="section" id="s1" style="background:#f0fdfa">Section 1 — scroll down…</div>
+        <div class="section" id="s2" style="background:#ccfbf1">Section 2 — nav stays fixed!</div>
+        <div class="section" id="s3" style="background:#99f6e4">Section 3</div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --accent: #14b8a6;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 40px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 24px;
+            color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 640px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            border: 2px solid var(--primary);
+            padding: 24px;
+            border-radius: var(--radius);
+            background: var(--bg);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 16px rgb(15 23 42 / 20%);
+        }
+
+        .card[data-icon]::before {
+            content: attr(data-icon) '  ';
+            display: block;
+            margin-bottom: 12px;
+            font-size: 2rem;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #60a5fa;
+                --accent: #2dd4bf;
+                --bg: #0f172a;
+                --text: #e2e8f0;
+            }
+
+            .card {
+                background: #1e293b;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>My Skills</h1>
+    <div class="grid">
+        <div class="card" data-icon="🌐">HTML5 — Structure</div>
+        <div class="card" data-icon="🎨">CSS3 — Styling</div>
+        <div class="card" data-icon="⚡">JavaScript — Behaviour</div>
+        <div class="card" data-icon="📐">Flexbox — 1D Layout</div>
+        <div class="card" data-icon="🗂">Grid — 2D Layout</div>
+        <div class="card" data-icon="📱">Responsive — Any Screen</div>
+    </div>
+</body>
+
+</html>
