@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<body style="font-family:system-ui;padding:24px;text-align:center">
+    <style>
+        .done {
+            background: #16a34a !important;
+        }
+    </style>
+
+    <button id="clicker" style="
+    padding:14px 32px;font-size:18px;border:none;
+    background:#1a56db;color:white;border-radius:10px;
+    cursor:pointer;transition:background .3s">
+        Click me!
+    </button>
+
+    <p id="count" style="font-size:32px;font-weight:bold;margin:16px 0">0</p>
+    <p id="message" style="font-size:16px;color:#666">Keep clicking...</p>
+
+    <script>
+        const btn = document.querySelector('#clicker');
+        const countEl = document.querySelector('#count');
+        const msg = document.querySelector('#message');
+        let count = 0;
+
+        btn.addEventListener('click', () => {
+            count++;
+            countEl.textContent = count;
+            if (count >= 5) {
+                btn.classList.add('done');
+                msg.textContent = '🎉 Congratulations! You clicked 5 times!';
+            }
+        });
+    </script>
+</body>
+
+</html>

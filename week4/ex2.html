@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<body style="font-family:system-ui;padding:24px;display:flex;justify-content:center">
+    <style>
+        .card {
+            padding: 24px;
+            border-radius: 16px;
+            width: 260px;
+            background: #f0f4ff;
+            border: 2px solid #c8d4f0;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            align-items: flex-start;
+            transition: background 0.3s;
+        }
+
+        body.dark {
+            background: #101827;
+        }
+
+        .card.dark {
+            background: #1a2340;
+            border-color: #3a4a70;
+            color: white;
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #1a56db;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        button {
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: none;
+            margin-top: 14px;
+            font-weight: bold;
+        }
+    </style>
+
+    <div id="card" class="card">
+        <div class="avatar">👨‍💻</div>
+        <h2>Ryan Wong</h2>
+        <p>Web Programming Student</p>
+        <button id="toggle-btn">🌙 Dark Mode</button>
+    </div>
+
+    <script>
+        const card = document.querySelector('#card');
+        const btn = document.querySelector('#toggle-btn');
+        const page = document.body;
+
+        btn.addEventListener('click', () => {
+            card.classList.toggle('dark');
+            page.classList.toggle('dark');
+            if (card.classList.contains('dark')) {
+                btn.textContent = '☀️ Light Mode';
+            } else {
+                btn.textContent = '🌙 Dark Mode';
+            }
+        });
+    </script>
+</body>
+
+</html>

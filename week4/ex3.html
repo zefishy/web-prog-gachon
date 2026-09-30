@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<body style="font-family:system-ui;padding:20px;max-width:400px;margin:auto">
+    <style>
+        h2 {
+            color: #1a56db;
+        }
+
+        .add-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #c8d4f0;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .add-btn {
+            background: #1a56db;
+            color: white;
+        }
+
+        #todo-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            margin-bottom: 6px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            border: 1px solid #c8d4f0;
+        }
+
+        .del-btn {
+            background: #dc2626;
+            color: white;
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        #empty-msg {
+            color: #9ca3af;
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+    </style>
+
+    <h2>My To-Do List</h2>
+    <div class="add-row">
+        <input id="todo-input" type="text" placeholder="Add a task...">
+        <button id="add-btn" class="add-btn" type="button">+ Add</button>
+    </div>
+    <ul id="todo-list"></ul>
+    <p id="empty-msg">No tasks yet! Add one above.</p>
+
+    <script>
+        const input = document.querySelector('#todo-input');
+        const addBtn = document.querySelector('#add-btn');
+        const list = document.querySelector('#todo-list');
+        const emptyMsg = document.querySelector('#empty-msg');
+        const storageKey = 'gachon-todo-tasks';
+        let tasks = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+        function updateEmpty() {
+            emptyMsg.style.display = list.children.length === 0 ? 'block' : 'none';
+        }
+
+        function saveTasks() {
+            localStorage.setItem(storageKey, JSON.stringify(tasks));
+        }
+
+        function renderTasks() {
+            list.replaceChildren();
+
+            tasks.forEach((text, index) => {
+            const li = document.createElement('li');
+            li.className = 'todo-item';
+            li.dataset.index = index;
+            const task = document.createElement('span');
+            task.textContent = text;
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'del-btn';
+            deleteButton.type = 'button';
+            deleteButton.textContent = '✕';
+            deleteButton.setAttribute('aria-label', `Delete ${text}`);
+            li.append(task, deleteButton);
+            list.appendChild(li);
+            });
+            updateEmpty();
+        }
+
+        function addTask() {
+            const text = input.value.trim();
+            if (!text) return;
+            tasks.push(text);
+            saveTasks();
+            input.value = '';
+            renderTasks();
+        }
+
+        addBtn.addEventListener('click', addTask);
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
+        list.addEventListener('click', (e) => {
+            if (e.target.classList.contains('del-btn')) {
+                const item = e.target.closest('li');
+                tasks.splice(Number(item.dataset.index), 1);
+                saveTasks();
+                renderTasks();
+            }
+        });
+        renderTasks();
+    </script>
+</body>
+
+</html>
