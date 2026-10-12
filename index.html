@@ -1,11 +1,552 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Coursework by Ryan Wong, an exchange student at Gachon University studying web programming and front-end web design. HTML, CSS, and JavaScript exercises organized by week.">
+  <title>Web Programming Library @ Gachon University</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <script>
+    /* Apply the saved theme before first paint so the page never flashes the wrong one */
+    (function () {
+      var root = document.documentElement;
+      root.classList.add("js");
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    /* ---------- Design tokens ----------
+       Palette: #8BBB92  #2A835F  #12544F  #092328
+       Dark is the default look. Neutrals are tints and shades of those greens. */
+    :root {
+      color-scheme: dark;
+
+      --paper: #092328;
+      --surface: #0F2F35;
+      --ink: #E6F0EA;
+      --muted: #A9C2B6;
+      --rule: #24474B;
+      --head: #8BBB92;          /* heading text */
+
+      /* One green per week, light to deep, like index tabs in a card catalog */
+      --wk2: #8BBB92;  --on-wk2: #092328;   /* HTML */
+      --wk3: #2A835F;  --on-wk3: #FFFFFF;   /* CSS */
+      --wk4: #12544F;  --on-wk4: #FFFFFF;   /* JavaScript */
+
+      --edge: color-mix(in srgb, var(--ink) 22%, transparent);
+
+      --footer-bg: #061619;
+      --footer-ink: #E6F0EA;
+
+      --sans: "Helvetica Neue", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+
+      --max: 72rem;
+      --gutter: clamp(1rem, 4vw, 2.5rem);
+      --header-h: 3.5rem;
+    }
+
+    /* Light theme: only when chosen with the switch */
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --paper: #F2F7F3;
+      --surface: #FFFFFF;
+      --ink: #092328;
+      --muted: #3F5B5C;
+      --rule: #CBDCCF;
+      --head: #12544F;
+      --footer-bg: #092328;
+    }
+
+    .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
+    .wk3 { --wk: var(--wk3); --on-wk: var(--on-wk3); }
+    .wk4 { --wk: var(--wk4); --on-wk: var(--on-wk4); }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+    }
+    h1, h2, h3 { line-height: 1.15; margin: 0; }
+    h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
+    p { margin: 0; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    a { color: inherit; }
+    code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .875em; }
+
+    :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+
+    .container { max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
+
+    .skip {
+      position: absolute; left: var(--gutter); top: -4rem;
+      background: var(--ink); color: var(--paper);
+      padding: .6rem 1rem; border-radius: 6px; z-index: 20;
+    }
+    .skip:focus { top: .75rem; }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+    }
+    .site-header .container {
+      min-height: var(--header-h);
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .owner { font-weight: 700; text-decoration: none; }
+    .owner small { font-weight: 400; color: var(--muted); margin-left: .5rem; }
+    .header-end { display: flex; align-items: center; gap: .5rem; }
+    .site-nav ul { display: flex; gap: .25rem; }
+    .site-nav a {
+      display: inline-block; padding: .5rem .75rem; border-radius: 6px; text-decoration: none;
+    }
+    .site-nav a:hover { background: color-mix(in srgb, var(--ink) 8%, var(--paper)); }
+
+    /* ---------- Light / dark icon button ---------- */
+    .theme-toggle {
+      display: none;                 /* shown only when JavaScript is running */
+      place-items: center;
+      width: 2.5rem; height: 2.5rem; padding: 0;
+      border: 1px solid var(--rule); border-radius: 50%;
+      background: none; color: var(--ink);
+      cursor: pointer;
+    }
+    .js .theme-toggle { display: inline-grid; }
+    .theme-toggle:hover { background: color-mix(in srgb, var(--ink) 10%, var(--paper)); }
+    .theme-toggle svg {
+      display: block; width: 1.25rem; height: 1.25rem;
+      fill: none; stroke: currentColor; stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    /* Show the icon for the mode a click will switch to: sun while dark, moon while light */
+    .theme-toggle .icon-moon { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+    /* ---------- Hero ---------- */
+    .hero { padding-block: clamp(2.5rem, 7vw, 5rem) clamp(2.5rem, 6vw, 4rem); }
+    .hero h1 {
+      font-size: clamp(2.25rem, 1.2rem + 4.6vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      text-wrap: balance;
+    }
+    @media (min-width: 40rem) { .h1-line { display: block; } }
+    .lead { margin-top: 1.5rem; max-width: 62ch; font-size: 1.1875rem; }
+
+    .browse { margin-top: clamp(2rem, 5vw, 3.5rem); }
+    .browse h2 { font-size: 1.5rem; }
+    .browse p { margin-top: .35rem; color: var(--muted); }
+
+    /* The shelf: each spine is as wide as the week has pages */
+    .shelf {
+      display: flex; align-items: stretch; gap: .6rem;
+      margin-top: 1.5rem;
+      border-bottom: .5rem solid var(--ink);
+    }
+    .shelf li { flex: var(--pages) 1 5.5rem; display: flex; }
+    .spine {
+      width: 100%; min-height: 11rem;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: .9rem 1rem 1rem;
+      background: var(--wk); color: var(--on-wk);
+      box-shadow: inset 0 0 0 1px var(--edge);
+      border-radius: 8px 8px 0 0;
+      text-decoration: none;
+      transition: transform .18s ease;
+    }
+    .spine:hover { transform: translateY(-.5rem); }
+    .spine-top, .spine-bottom { display: flex; flex-direction: column; }
+    .spine-week { font-size: .9375rem; }
+    .spine-num { font-weight: 700; font-size: 3.5rem; line-height: 1; }
+    .spine-topic { font-weight: 700; font-size: 1.25rem; line-height: 1.2; }
+    .spine-count { font-size: .9375rem; white-space: nowrap; }
+
+    /* ---------- Week sections ---------- */
+    .week { padding-block: clamp(2rem, 5vw, 3.5rem); }
+    .week-layout { display: grid; gap: 2rem; border-top: .375rem solid var(--wk); padding-top: 2rem; }
+
+    .week-head h2 { font-size: clamp(2rem, 1.4rem + 2vw, 2.75rem); color: var(--head); }
+    .week-topic { margin-top: .5rem; font-weight: 700; font-size: 1.25rem; }
+    .week-desc { margin-top: .75rem; color: var(--muted); max-width: 46ch; }
+    .week-count { margin-top: 1rem; font-weight: 700; }
+
+    .group + .group { margin-top: 3rem; }
+    .group h3 { font-size: 1.5rem; }
+    .path { margin-top: .25rem; color: var(--muted); font-size: .9375rem; }
+    .n { font-weight: 400; color: var(--muted); }
+
+    .links {
+      display: grid; gap: .5rem;
+      grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    }
+    .link {
+      display: flex; align-items: center; gap: .75rem;
+      min-height: 3rem; padding: .4rem .75rem .4rem .45rem;
+      background: var(--surface);
+      border: 1px solid var(--rule); border-radius: 8px;
+      text-decoration: none;
+    }
+    .link:hover {
+      border-color: var(--wk);
+      background: color-mix(in srgb, var(--wk) 9%, var(--surface));
+    }
+    .num {
+      flex: none; min-width: 2.25rem; height: 2.25rem; padding-inline: .3rem;
+      display: grid; place-items: center;
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--wk) 22%, var(--surface));
+      color: var(--ink);
+      font-weight: 700; font-variant-numeric: tabular-nums;
+    }
+    .label { line-height: 1.3; }
+    .note { display: block; font-size: .8125rem; line-height: 1.3; color: var(--muted); }
+
+    @media (min-width: 56rem) {
+      .week-layout { grid-template-columns: minmax(14rem, 17rem) 1fr; gap: 3rem 4rem; }
+      .week-head { position: sticky; top: calc(var(--header-h) + 1.5rem); align-self: start; }
+    }
+
+    /* ---------- About ---------- */
+    .about { padding-block: clamp(2.5rem, 6vw, 4rem); background: var(--surface); border-block: 1px solid var(--rule); }
+    .about-layout { display: grid; gap: 2rem; }
+    .about h2 { font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.25rem); }
+    .about-copy p { margin-top: 1rem; max-width: 52ch; }
+    .profile { display: grid; }
+    .profile div { display: grid; gap: .15rem 1.5rem; padding-block: .85rem; border-top: 1px solid var(--rule); }
+    .profile div:last-child { border-bottom: 1px solid var(--rule); }
+    .profile dt { font-weight: 700; }
+    .profile dd { margin: 0; }
+    @media (min-width: 48rem) {
+      .profile div { grid-template-columns: 8rem 1fr; }
+    }
+    @media (min-width: 64rem) {
+      .about-layout { grid-template-columns: 1fr 1.4fr; gap: 4rem; }
+    }
+
+    /* ---------- Footer ---------- */
+    .site-footer { background: var(--footer-bg); color: var(--footer-ink); padding-block: 2.5rem; }
+    .site-footer .container { display: grid; gap: 1.25rem; }
+    .foot-title { font-weight: 700; font-size: 1.25rem; }
+    .site-footer ul { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+    .site-footer a { text-underline-offset: .2em; }
+    .site-footer :focus-visible { outline-color: var(--footer-ink); }
+    .fine { font-size: .9375rem; opacity: .85; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .spine { transition: none; }
+      .spine:hover { transform: none; }
+    }
+
+    @media (max-width: 36rem) {
+      .owner { display: none; }
+      .header-end { width: 100%; }
+      .site-nav { flex: 1; }
+      .site-nav ul { justify-content: space-between; }
+
+      .site-nav a { white-space: nowrap; padding-inline: .35rem; font-size: .9375rem; }
+      .site-nav ul { gap: 0; }
+      .spine { padding: .75rem .8rem .9rem; }
+      .links { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 24rem) {
+      .site-nav a { padding-inline: .25rem; }
+    }
+  </style>
 </head>
-<body>
-    <h1>hello world!</h1>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="owner" href="#top">Ryan Wong<small>Gachon University</small></a>
+      <div class="header-end">
+        <nav class="site-nav" aria-label="Jump to a week">
+          <ul>
+          <li><a href="#week-2">Week 2</a></li>
+          <li><a href="#week-3">Week 3</a></li>
+          <li><a href="#week-4">Week 4</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </nav>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title"><span class="h1-line">Web Programming Library</span> <span class="h1-line">@&nbsp;Gachon University</span></h1>
+        <p class="lead">Hi, I'm Ryan Wong, an exchange student at Gachon University studying web programming and front-end web design. This library collects my coursework by week, so you can open any exercise or topic demo and see how HTML, CSS, and JavaScript fit together.</p>
+
+        <div class="browse">
+          <h2>Browse by week</h2>
+          <p>75 pages across three weeks. Each spine is as wide as the week has pages. Select one to jump to it.</p>
+          <nav aria-label="Weeks on the shelf">
+            <ul class="shelf">
+          <li style="--pages:16"><a class="spine wk2" href="#week-2" aria-label="Week 2: HTML, 16 pages">
+            <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">2</span></span>
+            <span class="spine-bottom"><span class="spine-topic">HTML</span><span class="spine-count">16 pages</span></span>
+          </a></li>
+          <li style="--pages:55"><a class="spine wk3" href="#week-3" aria-label="Week 3: CSS, 55 pages">
+            <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">3</span></span>
+            <span class="spine-bottom"><span class="spine-topic">CSS</span><span class="spine-count">55 pages</span></span>
+          </a></li>
+          <li style="--pages:4"><a class="spine wk4" href="#week-4" aria-label="Week 4: JavaScript, 4 pages">
+            <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">4</span></span>
+            <span class="spine-bottom"><span class="spine-topic">JS</span><span class="spine-count">4 pages</span></span>
+          </a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      TO ADD A NEW WEEK
+      1. Copy a whole <section class="week wk4" ...> block below and change the number, id, and links.
+         Use class wk2, wk3, or wk4 to pick a color, or add a new --wk5 token in :root.
+      2. Copy one <li> in the .shelf list above, update its link, text, and --pages value
+         (--pages is the number of pages, which sets the spine width).
+      3. Add a link to the header nav.
+    -->
+
+    <section class="week wk2" id="week-2" aria-labelledby="week-2-title">
+      <div class="container"><div class="week-layout">
+        <header class="week-head">
+          <h2 id="week-2-title">Week 2</h2>
+          <p class="week-topic">HTML</p>
+          <p class="week-desc">Semantic page structure: headings, navigation, images, figures, expandable FAQs, and article layouts.</p>
+          <p class="week-count">16 pages</p>
+        </header>
+        <div class="week-body">
+        <div class="group">
+          <h3>First pages</h3>
+          <p class="path">Folder: <code>week2/week2_1/</code></p>
+          <h4>Exercises <span class="n">(8)</span></h4>
+          <ul class="links">
+                <li><a class="link" href="week2/week2_1/ex1.html"><span class="num">1</span><span class="label">Hello Gachon!</span></a></li>
+                <li><a class="link" href="week2/week2_1/ex2.html"><span class="num">2</span><span class="label">My hobby: photography</span></a></li>
+                <li><a class="link" href="week2/week2_1/ex3.html"><span class="num">3</span><span class="label">Navigation links</span></a></li>
+                <li><a class="link" href="week2/week2_1/ex4.html"><span class="num">4</span><span class="label">Campus photo</span></a></li>
+                <li><a class="link" href="week2/week2_1/ex5.html"><span class="num">5</span><span class="label">Profile page</span></a></li>
+                <li><a class="link" href="week2/week2_1/ex6.html"><span class="num">6</span><span class="label">Fixed page</span></a></li>
+                <li><a class="link" href="week2/week2_1/ex7.html"><span class="num">7</span><span class="label">Doenjang-jjigae recipe <span lang="ko">된장찌개</span></span></a></li>
+                <li><a class="link" href="week2/week2_1/ex8.html"><span class="num">8</span><span class="label">My favourites</span></a></li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Blogs, articles &amp; portfolios</h3>
+          <p class="path">Folder: <code>week2/week2_2/</code></p>
+          <h4>Exercises <span class="n">(8)</span></h4>
+          <ul class="links">
+                <li><a class="link" href="week2/week2_2/ex1.html"><span class="num">1</span><span class="label">Gachon Blog</span></a></li>
+                <li><a class="link" href="week2/week2_2/ex2.html"><span class="num">2</span><span class="label">Blog post</span></a></li>
+                <li><a class="link" href="week2/week2_2/ex3.html"><span class="num">3</span><span class="label">Figures</span></a></li>
+                <li><a class="link" href="week2/week2_2/ex4.html"><span class="num">4</span><span class="label">Web programming FAQ</span></a></li>
+                <li><a class="link" href="week2/week2_2/ex5.html"><span class="num">5</span><span class="label">Portfolio</span></a></li>
+                <li><a class="link" href="week2/week2_2/ex6.html"><span class="num">6</span><span class="label">My Blog</span></a></li>
+                <li><a class="link" href="week2/week2_2/ex7.html"><span class="num">7</span><span class="label">Quotes on learning</span></a></li>
+                <li><a class="link" href="week2/week2_2/ex8.html"><span class="num">8</span><span class="label">Gachon Tech News</span></a></li>
+          </ul>
+        </div>
+        </div>
+      </div></div>
+    </section>
+
+    <section class="week wk3" id="week-3" aria-labelledby="week-3-title">
+      <div class="container"><div class="week-layout">
+        <header class="week-head">
+          <h2 id="week-3-title">Week 3</h2>
+          <p class="week-topic">CSS</p>
+          <p class="week-desc">Selectors, color, typography, and the box model, then positioning, transitions, animation, variables, Flexbox, and Grid for responsive layout.</p>
+          <p class="week-count">55 pages</p>
+        </header>
+        <div class="week-body">
+        <div class="group">
+          <h3>CSS fundamentals</h3>
+          <p class="path">Folder: <code>week3/week3_1/</code></p>
+          <h4>Topics <span class="n">(25)</span></h4>
+          <ul class="links">
+                <li><a class="link" href="week3/week3_1/topic1.html"><span class="num">1</span><span class="label">Hello, CSS</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic2.html"><span class="num">2</span><span class="label">Inline, internal &amp; external CSS</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic3.html"><span class="num">3</span><span class="label">Selector &amp; declaration syntax</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic4.html"><span class="num">4</span><span class="label">Global reset<span class="note">code only</span></span></a></li>
+                <li><a class="link" href="week3/week3_1/topic5.html"><span class="num">5</span><span class="label">ID selectors</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic6.html"><span class="num">6</span><span class="label">Class selectors</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic7.html"><span class="num">7</span><span class="label">Element selectors</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic8.html"><span class="num">8</span><span class="label">Color formats</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic9.html"><span class="num">9</span><span class="label">Background color &amp; contrast</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic10.html"><span class="num">10</span><span class="label">Hex color codes</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic11.html"><span class="num">11</span><span class="label">RGB color values</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic12.html"><span class="num">12</span><span class="label">Units: px vs rem</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic13.html"><span class="num">13</span><span class="label">Font weight</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic14.html"><span class="num">14</span><span class="label">Font style</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic15.html"><span class="num">15</span><span class="label">Text alignment</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic16.html"><span class="num">16</span><span class="label">Padding</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic17.html"><span class="num">17</span><span class="label">Margin</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic18.html"><span class="num">18</span><span class="label">Content-box vs border-box</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic19.html"><span class="num">19</span><span class="label">Display: block &amp; inline</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic20.html"><span class="num">20</span><span class="label">Display none vs visibility hidden</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic21.html"><span class="num">21</span><span class="label">Flexbox row</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic22.html"><span class="num">22</span><span class="label">Specificity &amp; !important<span class="note">code only</span></span></a></li>
+                <li><a class="link" href="week3/week3_1/topic23.html"><span class="num">23</span><span class="label">Specificity examples</span></a></li>
+                <li><a class="link" href="week3/week3_1/topic24.html"><span class="num">24</span><span class="label">Base typography &amp; flex nav<span class="note">code only</span></span></a></li>
+                <li><a class="link" href="week3/week3_1/topic25.html"><span class="num">25</span><span class="label">Profile page</span></a></li>
+          </ul>
+          <h4>Exercises <span class="n">(8)</span></h4>
+          <ul class="links">
+                <li><a class="link" href="week3/week3_1/ex1.html"><span class="num">1</span><span class="label">CSS is Beautiful</span></a></li>
+                <li><a class="link" href="week3/week3_1/ex2.html"><span class="num">2</span><span class="label">Inline &amp; internal CSS</span></a></li>
+                <li><a class="link" href="week3/week3_1/ex3.html"><span class="num">3</span><span class="label">Color palette</span></a></li>
+                <li><a class="link" href="week3/week3_1/ex4.html"><span class="num">4</span><span class="label">Box model</span></a></li>
+                <li><a class="link" href="week3/week3_1/ex5.html"><span class="num">5</span><span class="label">Fixed!</span></a></li>
+                <li><a class="link" href="week3/week3_1/ex6.html"><span class="num">6</span><span class="label">Navigation bar</span></a></li>
+                <li><a class="link" href="week3/week3_1/ex7.html"><span class="num">7</span><span class="label">Profile card</span></a></li>
+                <li><a class="link" href="week3/week3_1/ex8.html"><span class="num">8</span><span class="label">CSS portfolio</span></a></li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Positioning, motion &amp; layout</h3>
+          <p class="path">Folder: <code>week3/week3_2/</code></p>
+          <h4>Topics <span class="n">(15)</span></h4>
+          <ul class="links">
+                <li><a class="link" href="week3/week3_2/topic1.html"><span class="num">1</span><span class="label">Position: static &amp; relative</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic2.html"><span class="num">2</span><span class="label">Position: absolute</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic3.html"><span class="num">3</span><span class="label">Position: fixed</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic4.html"><span class="num">4</span><span class="label">Z-index &amp; overflow</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic5.html"><span class="num">5</span><span class="label">Hover, focus &amp; active states</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic6.html"><span class="num">6</span><span class="label">Pseudo-elements</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic7.html"><span class="num">7</span><span class="label">Transitions</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic8.html"><span class="num">8</span><span class="label">Keyframe animation</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic9.html"><span class="num">9</span><span class="label">CSS variables</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic10.html"><span class="num">10</span><span class="label">Mobile-first responsive layout</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic11.html"><span class="num">11</span><span class="label">Flex wrap</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic12.html"><span class="num">12</span><span class="label">Grid template areas</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic13.html"><span class="num">13</span><span class="label">Border radius</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic14.html"><span class="num">14</span><span class="label">Inheritance</span></a></li>
+                <li><a class="link" href="week3/week3_2/topic15.html"><span class="num">15</span><span class="label">Course card page</span></a></li>
+          </ul>
+          <h4>Exercises <span class="n">(7)</span></h4>
+          <ul class="links">
+                <li><a class="link" href="week3/week3_2/ex1.html"><span class="num">1</span><span class="label">Sale badge card</span></a></li>
+                <li><a class="link" href="week3/week3_2/ex2.html"><span class="num">2</span><span class="label">Hover effect</span></a></li>
+                <li><a class="link" href="week3/week3_2/ex3.html"><span class="num">3</span><span class="label">Loading spinner</span></a></li>
+                <li><a class="link" href="week3/week3_2/ex4.html"><span class="num">4</span><span class="label">Button &amp; themed card</span></a></li>
+                <li><a class="link" href="week3/week3_2/ex5.html"><span class="num">5</span><span class="label">Fixed navigation bar</span></a></li>
+                <li><a class="link" href="week3/week3_2/ex6.html"><span class="num">6</span><span class="label">My skills</span></a></li>
+                <li><a class="link" href="week3/week3_2/ex7.html"><span class="num">7</span><span class="label">Portfolio page</span></a></li>
+          </ul>
+        </div>
+        </div>
+      </div></div>
+    </section>
+
+    <section class="week wk4" id="week-4" aria-labelledby="week-4-title">
+      <div class="container"><div class="week-layout">
+        <header class="week-head">
+          <h2 id="week-4-title">Week 4</h2>
+          <p class="week-topic">JavaScript</p>
+          <p class="week-desc">Making pages interactive: reacting to clicks, switching themes, managing a to-do list, and filtering a list as you type.</p>
+          <p class="week-count">4 pages</p>
+        </header>
+        <div class="week-body">
+        <div class="group">
+          <h3>Interactive pages</h3>
+          <p class="path">Folder: <code>week4/</code></p>
+          <h4>Exercises <span class="n">(4)</span></h4>
+          <ul class="links">
+                <li><a class="link" href="week4/ex1.html"><span class="num">1</span><span class="label">Click counter</span></a></li>
+                <li><a class="link" href="week4/ex2.html"><span class="num">2</span><span class="label">Dark mode toggle</span></a></li>
+                <li><a class="link" href="week4/ex3.html"><span class="num">3</span><span class="label">To-do list</span></a></li>
+                <li><a class="link" href="week4/ex4.html"><span class="num">4</span><span class="label">Student search</span></a></li>
+          </ul>
+        </div>
+        </div>
+      </div></div>
+    </section>
+
+    <section class="about" id="about" aria-labelledby="about-title">
+      <div class="container about-layout">
+        <div class="about-copy">
+          <h2 id="about-title">About this library</h2>
+          <p>I'm learning practical web design and development through coursework and hands-on exercises. Every page here is one of those exercises or topic demos, grouped by the week it belongs to.</p>
+          <p>I care about clean interfaces, semantic HTML, and accessibility, so I try to build pages that are polished, responsive, and easy for everyone to use.</p>
+        </div>
+
+        <dl class="profile">
+          <div><dt>Role</dt><dd>Exchange student at Gachon University</dd></div>
+          <div><dt>Field</dt><dd>Web programming and front-end web design</dd></div>
+          <div><dt>Focus</dt><dd>HTML, CSS, JavaScript, responsive layout, visual styling, and user-friendly interface design</dd></div>
+          <div><dt>Interests</dt><dd>Clean UI design, semantic HTML, modern CSS, accessibility, and building functional web pages</dd></div>
+          <div><dt>Goal</dt><dd>Create polished, responsive, and accessible websites with strong visual design and a good user experience</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Coursework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and a little JavaScript.</p>
+      <ul>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script>
+    /* Light / dark button: dark by default, then remembers the visitor's choice */
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById("theme-toggle");
+
+      function isDark() {
+        return root.getAttribute("data-theme") !== "light";
+      }
+      function sync() {
+        var label = isDark() ? "Switch to light mode" : "Switch to dark mode";
+        btn.setAttribute("aria-label", label);
+        btn.setAttribute("title", label);
+      }
+
+      btn.addEventListener("click", function () {
+        var next = isDark() ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        sync();
+      });
+
+      sync();
+    })();
+  </script>
 </body>
 </html>
