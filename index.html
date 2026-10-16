@@ -22,9 +22,10 @@
       <div class="header-end">
         <nav class="site-nav" aria-label="Jump to a week">
           <ul>
-          <li><a href="#week-2">Week 2</a></li>
-          <li><a href="#week-3">Week 3</a></li>
-          <li><a href="#week-4">Week 4</a></li>
+          <li><a class="nav-week" href="#week-2" aria-label="Week 2"><span class="nav-word">Week </span>2</a></li>
+          <li><a class="nav-week" href="#week-3" aria-label="Week 3"><span class="nav-word">Week </span>3</a></li>
+          <li><a class="nav-week" href="#week-4" aria-label="Week 4"><span class="nav-word">Week </span>4</a></li>
+          <li><a class="nav-week" href="#week-6" aria-label="Week 6"><span class="nav-word">Week </span>6</a></li>
             <li><a href="#about">About</a></li>
           </ul>
         </nav>
@@ -49,7 +50,7 @@
 
         <div class="browse">
           <h2>Browse by week</h2>
-          <p>75 pages across three weeks. Each spine is as wide as the week has pages. Select one to jump to it.</p>
+          <p>76 pages across four weeks. Each spine is as wide as the week has pages. Select one to jump to it.</p>
           <nav aria-label="Weeks on the shelf">
             <ul class="shelf">
           <li class="pages-16"><a class="spine wk2" href="#week-2" aria-label="Week 2: HTML, 16 pages">
@@ -64,6 +65,10 @@
             <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">4</span></span>
             <span class="spine-bottom"><span class="spine-topic">JS</span><span class="spine-count">4 pages</span></span>
           </a></li>
+          <li class="pages-1"><a class="spine wk6" href="#week-6" aria-label="Week 6: APIs, 1 page">
+            <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">6</span></span>
+            <span class="spine-bottom"><span class="spine-topic">APIs</span><span class="spine-count">1 page</span></span>
+          </a></li>
             </ul>
           </nav>
         </div>
@@ -72,10 +77,11 @@
 
     <!--
       TO ADD A NEW WEEK
-      1. Copy a whole <section class="week wk4" ...> block below and change the number, id, and links.
-         Use class wk2, wk3, or wk4 to pick a color, or add a new --wk5 token in :root.
-      2. Copy one <li> in the .shelf list above, update its link, text, and --pages value
-         (--pages is the number of pages, which sets the spine width).
+      1. Copy a whole <section class="week wk6" ...> block below and change the number, id, and links.
+         Use class wk2, wk3, wk4, or wk6 to pick a color, or add a new --wkN token and .wkN class in css/styles.css.
+      2. Copy one <li> in the .shelf list above and update its link and text. Give it a class
+         like pages-1, where the number is how many pages the week has, and add a matching
+         .pages-N rule in css/styles.css. That number sets the spine width.
       3. Add a link to the header nav.
     -->
 
@@ -228,6 +234,27 @@
                 <li><a class="link" href="week4/ex2.html"><span class="num">2</span><span class="label">Dark mode toggle</span></a></li>
                 <li><a class="link" href="week4/ex3.html"><span class="num">3</span><span class="label">To-do list</span></a></li>
                 <li><a class="link" href="week4/ex4.html"><span class="num">4</span><span class="label">Student search</span></a></li>
+          </ul>
+        </div>
+        </div>
+      </div></div>
+    </section>
+
+    <section class="week wk6" id="week-6" aria-labelledby="week-6-title">
+      <div class="container"><div class="week-layout">
+        <header class="week-head">
+          <h2 id="week-6-title">Week 6</h2>
+          <p class="week-topic">JavaScript &amp; APIs</p>
+          <p class="week-desc">Fetching data from the web: calling an API with fetch, showing loading and error states, and saving favourites in the browser.</p>
+          <p class="week-count">1 page</p>
+        </header>
+        <div class="week-body">
+        <div class="group">
+          <h3>Fetching data</h3>
+          <p class="path">Folder: <code>week6/</code></p>
+          <h4>Exercises <span class="n">(1)</span></h4>
+          <ul class="links">
+                <li><a class="link" href="week6/ex1.html"><span class="num">1</span><span class="label">Random joke fetcher</span></a></li>
           </ul>
         </div>
         </div>

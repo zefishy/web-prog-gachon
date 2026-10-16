@@ -14,6 +14,7 @@
   --wk2: #8BBB92;  --on-wk2: #092328;
   --wk3: #2A835F;  --on-wk3: #FFFFFF;
   --wk4: #12544F;  --on-wk4: #FFFFFF;
+  --wk6: var(--ink);  --on-wk6: var(--paper);   /* flips with the theme: deep green-black in light, pale mint in dark */
 
   --edge: color-mix(in srgb, var(--ink) 22%, transparent);
 
@@ -42,6 +43,7 @@
 .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
 .wk3 { --wk: var(--wk3); --on-wk: var(--on-wk3); }
 .wk4 { --wk: var(--wk4); --on-wk: var(--on-wk4); }
+.wk6 { --wk: var(--wk6); --on-wk: var(--on-wk6); }
 
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
@@ -137,6 +139,7 @@ code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; 
 .pages-16 { --pages: 16; }
 .pages-55 { --pages: 55; }
 .pages-4 { --pages: 4; }
+.pages-1 { --pages: 1; }
 .spine {
   width: 100%; min-height: 11rem;
   display: flex; flex-direction: column; justify-content: space-between;
@@ -244,4 +247,18 @@ code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; 
 }
 @media (max-width: 24rem) {
   .site-nav a { padding-inline: .25rem; }
+}
+/* With four weeks, the header links and the shelf spines need to be more compact on narrow phones.
+   Links show just the number (the accessible name stays "Week N" via aria-label in the HTML),
+   and the spines are allowed to shrink so all four fit side by side. */
+@media (max-width: 25rem) {
+  .nav-week .nav-word { display: none; }
+  .nav-week { min-width: 2.5rem; text-align: center; }
+
+  .shelf { gap: .4rem; }
+  .shelf li { min-width: 0; }
+  .spine { min-width: 0; padding: .7rem .6rem .8rem; }
+  .spine-num { font-size: 3rem; }
+  .spine-topic { font-size: 1.0625rem; }
+  .spine-count { font-size: .875rem; white-space: normal; }
 }
