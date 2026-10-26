@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html><head>
+<style>
+  body { font-family: system-ui; padding: 24px; max-width: 400px; }
+  label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px; margin-top: 14px; }
+  input {
+    width: 100%; padding: 10px 14px; font-size: 14px;
+    border: 2px solid #c8d4f0; border-radius: 8px;
+    outline: none; transition: all 0.2s;
+  }
+  button { margin-top: 16px; background: #1a56db; color: white; border: none;
+    padding: 11px 24px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; }
+
+  /* ADD YOUR CSS VALIDATION STYLES BELOW */
+
+  input:focus {
+    border-color: #1a56db;
+    box-shadow: 0 0 0 3px rgba(26,86,219,.15);
+  }
+
+  input:valid:not(:placeholder-shown) {
+    border-color: #16a34a;
+    background: #f0fdf4;
+  }
+
+  input:invalid:not(:placeholder-shown) {
+    border-color: #dc2626;
+    background: #fef2f2;
+  }
+
+</style>
+</head><body>
+<h2>Validation Styles Demo</h2>
+<form>
+  <label for="v-email">Email (required)</label>
+  <input type="email" id="v-email" required placeholder="name@example.com">
+
+  <label for="v-pw">Password (min 8 chars)</label>
+  <input type="password" id="v-pw" required minlength="8" placeholder="At least 8 characters">
+
+  <label for="v-age">Age (18–65)</label>
+  <input type="number" id="v-age" required min="18" max="65" placeholder="Your age">
+
+  <button type="submit">Check Validation</button>
+</form>
+</body></html>

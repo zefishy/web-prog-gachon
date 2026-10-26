@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSS Validation Pseudo-classes</title>
+<style>
+  body { font-family: system-ui, sans-serif; padding: 24px; max-width: 420px; }
+  input { width: 100%; padding: 10px 14px; border: 2px solid #c8d4f0; border-radius: 8px; font-size: 14px; }
+
+  /* :focus — applied when the input has keyboard focus */
+  input:focus {
+    border-color: #1a56db;
+    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.2);
+    outline: none;
+  }
+
+  /* :valid — applied when the value passes all HTML5 validation */
+  input:valid {
+    border-color: #16a34a;    /* green */
+  }
+
+  /* :invalid — applied when the value fails validation */
+  input:invalid {
+    border-color: #dc2626;    /* red */
+  }
+
+  /* :placeholder-shown — only while placeholder is visible */
+  /* (i.e., the field is empty) — combine with :invalid to avoid */
+  /* showing red on an untouched empty required field */
+  input:invalid:not(:placeholder-shown) {
+    border-color: #dc2626;
+    background: #fee2e2;
+  }
+
+  input:valid:not(:placeholder-shown) {
+    border-color: #16a34a;
+    background: #dcfce7;
+  }
+</style>
+</head>
+<body>
+<h2>Validation Pseudo-classes</h2>
+<p>Type in the fields to see the CSS validation states.</p>
+<label>Email (required):<br><input type="email" required placeholder="Type an email address..."></label><br><br>
+<label>Password (minlength=8):<br><input type="password" required minlength="8" placeholder="Type at least 8 characters..."></label><br><br>
+<label>Student ID (9 digits):<br><input type="text" required pattern="\d{9}" placeholder="202112345" title="9-digit student ID"></label>
+</body>
+</html>

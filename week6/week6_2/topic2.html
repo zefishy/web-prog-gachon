@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The &lt;form&gt; Element</title>
+<style>
+  body { font-family: system-ui, sans-serif; padding: 24px; max-width: 560px; }
+</style>
+</head>
+<body>
+<form
+  action="/login"          <!-- Where to send data -->
+  method="post"          <!-- How to send: GET or POST -->
+  novalidate             <!-- Disable built-in validation (use JS) -->
+>
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" required>
+
+  <label for="pw">Password</label>
+  <input type="password" id="pw" name="password" required>
+
+  <button type="submit">Log In</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html><head>
+<style>
+  body { font-family: system-ui; padding: 24px; max-width: 420px; }
+  label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px; margin-top: 14px; }
+  input { width: 100%; padding: 9px 12px; border: 2px solid #c8d4f0;
+    border-radius: 8px; font-size: 14px; }
+  input:focus { border-color: #1a56db; outline: none; }
+  button { margin-top: 16px; background: #1a56db; color: white;
+    border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+</style>
+</head><body>
+<h2>Gachon Registration</h2>
+<form method="post" action="/register">
+
+  <label for="sid">Student ID</label>
+  <input type="text" id="sid" name="student_id"
+         placeholder="202112345"
+         pattern="\d{9}"
+         required
+         title="Enter your 9-digit student ID">
+
+  <label for="r-email">Email</label>
+  <input type="email" id="r-email" name="email"
+         placeholder="name@gachon.ac.kr"
+         required>
+
+  <label for="r-pw">Password</label>
+  <input type="password" id="r-pw" name="password"
+         placeholder="At least 8 characters"
+         minlength="8"
+         required>
+
+  <label for="r-age">Age</label>
+  <input type="number" id="r-age" name="age"
+         placeholder="Your age"
+         min="16"
+         max="100"
+         required>
+
+  <button type="submit">Register</button>
+</form>
+</body></html>

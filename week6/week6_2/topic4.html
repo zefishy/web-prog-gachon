@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML5 Validation Attributes</title>
+<style>
+  body { font-family: system-ui, sans-serif; padding: 24px; max-width: 560px; }
+</style>
+</head>
+<body>
+<!-- required: field must not be empty -->
+<input type="text" required>
+
+<!-- minlength / maxlength: text length constraints -->
+<input type="text" minlength="8" maxlength="20">
+
+<!-- min / max: numeric or date bounds -->
+<input type="number" min="1" max="100">
+
+<!-- step: acceptable intervals -->
+<input type="number" step="5" min="0">
+
+<!-- pattern: regular expression the value must match -->
+<input type="text"
+       pattern="\d{9}"
+       title="Enter your 9-digit student ID">
+</body>
+</html>

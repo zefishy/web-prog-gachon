@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Labels &amp; Accessibility</title>
+<style>
+  body { font-family: system-ui, sans-serif; padding: 24px; max-width: 560px; }
+</style>
+</head>
+<body>
+<!-- Method 1: for/id pairing (recommended) -->
+<label for="username">Username</label>
+<input type="text" id="username" name="username">
+
+<!-- Method 2: wrap the input inside the label -->
+<label>
+  Email
+  <input type="email" name="email">
+</label>
+
+<!-- WRONG: placeholder is NOT a label -->
+<input type="text" placeholder="Username"> <!-- ❌ not accessible -->
+</body>
+</html>

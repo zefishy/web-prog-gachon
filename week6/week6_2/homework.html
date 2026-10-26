@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="A student registration form by Ryan Wong: fieldsets, labelled inputs, built-in HTML validation, and CSS that reacts to valid and invalid input.">
+  <title>Student Registration Form</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E">
+
+  <script>
+    /* Apply the saved theme before first paint so the page never flashes the wrong one.
+       The key is shared with the library index, so the choice carries between pages. */
+    (function () {
+      var root = document.documentElement;
+      root.classList.add("js");
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    /* ---------- Design tokens ----------
+       Same palette as the library index: #8BBB92  #2A835F  #12544F  #092328
+       Dark is the default look. */
+    :root {
+      color-scheme: dark;
+
+      --paper: #092328;
+      --surface: #0F2F35;
+      --ink: #E6F0EA;
+      --muted: #A9C2B6;
+      --rule: #24474B;
+      --head: #8BBB92;
+
+      --wk: #2A835F;               /* this page's tab color */
+      --accent: #8BBB92;           /* valid state, buttons, slider */
+      --on-accent: #092328;
+      --danger: #F3A596;           /* invalid state, always paired with a message in words */
+
+      --field-border: color-mix(in srgb, var(--muted) 65%, var(--surface));
+      --track: color-mix(in srgb, var(--muted) 35%, var(--surface));
+
+      --footer-bg: #061619;
+      --footer-ink: #E6F0EA;
+
+      --sans: "Helvetica Neue", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+
+      --max: 72rem;
+      --gutter: clamp(1rem, 4vw, 2.5rem);
+      --header-h: 3.5rem;
+    }
+
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --paper: #F2F7F3;
+      --surface: #FFFFFF;
+      --ink: #092328;
+      --muted: #3F5B5C;
+      --rule: #CBDCCF;
+      --head: #12544F;
+      --accent: #12544F;
+      --on-accent: #FFFFFF;
+      --danger: #A12D1B;
+      --footer-bg: #092328;
+    }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+    }
+    h1, h2, h3 { line-height: 1.15; margin: 0; }
+    p { margin: 0; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    a { color: inherit; }
+    [hidden] { display: none !important; }
+
+    :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+
+    .container { max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
+
+    .skip {
+      position: absolute; left: var(--gutter); top: -4rem;
+      background: var(--ink); color: var(--paper);
+      padding: .6rem 1rem; border-radius: 6px; z-index: 20;
+    }
+    .skip:focus { top: .75rem; }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+    }
+    .site-header .container {
+      min-height: var(--header-h);
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .back { font-weight: 700; text-decoration: none; padding: .5rem .25rem; border-radius: 6px; }
+    .back:hover { text-decoration: underline; text-underline-offset: .2em; }
+    .back-short { display: none; }
+    .header-end { display: flex; align-items: center; gap: .75rem; }
+    .here { color: var(--muted); }
+
+    /* ---------- Light / dark icon button ---------- */
+    .theme-toggle {
+      display: none;                 /* shown only when JavaScript is running */
+      place-items: center;
+      width: 2.5rem; height: 2.5rem; padding: 0;
+      border: 1px solid var(--rule); border-radius: 50%;
+      background: none; color: var(--ink);
+      cursor: pointer;
+    }
+    .js .theme-toggle { display: inline-grid; }
+    .theme-toggle:hover { background: color-mix(in srgb, var(--ink) 10%, var(--paper)); }
+    .theme-toggle svg {
+      display: block; width: 1.25rem; height: 1.25rem;
+      fill: none; stroke: currentColor; stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .theme-toggle .icon-moon { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+    /* ---------- Hero ---------- */
+    .hero { padding-block: clamp(2.5rem, 7vw, 4.5rem) clamp(2rem, 5vw, 3rem); }
+    .hero h1 {
+      font-size: clamp(2.25rem, 1.2rem + 4.6vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      text-wrap: balance;
+    }
+    .lead { margin-top: 1.5rem; max-width: 62ch; font-size: 1.1875rem; }
+
+    /* ---------- Page layout ---------- */
+    .layout { display: grid; gap: 2.5rem; padding-bottom: clamp(3rem, 7vw, 5rem); }
+    @media (min-width: 64rem) {
+      .layout { grid-template-columns: minmax(0, 1fr) 17rem; gap: 4rem; align-items: start; }
+      .tips { position: sticky; top: calc(var(--header-h) + 1.5rem); }
+    }
+
+    .tips { border-top: .375rem solid var(--wk); padding-top: 1.25rem; }
+    .tips h2 { font-size: 1.5rem; }
+    .tips ul { margin-top: 1rem; display: grid; gap: .6rem; }
+    .tips li { padding-left: 1.1rem; position: relative; }
+    .tips li::before {
+      content: ""; position: absolute; left: 0; top: .65em;
+      width: .5rem; height: .5rem; border-radius: 50%; background: var(--wk);
+    }
+    .tips .fine-print { margin-top: 1.25rem; color: var(--muted); font-size: .9375rem; }
+
+    .required-note { color: var(--muted); margin-bottom: 1rem; }
+
+    /* ---------- Form ---------- */
+    form { display: grid; gap: 1.5rem; }
+
+    fieldset {
+      margin: 0; min-width: 0;
+      padding: clamp(1rem, 3vw, 1.75rem);
+      background: var(--surface);
+      border: 1px solid var(--rule); border-radius: 8px;
+    }
+    legend { padding-inline: .5rem; font-weight: 700; font-size: 1.375rem; color: var(--head); }
+
+    .fields { display: grid; gap: 1.5rem 1.5rem; }
+    @media (min-width: 40rem) {
+      .fields { grid-template-columns: 1fr 1fr; }
+      .field-wide { grid-column: 1 / -1; }
+    }
+
+    .field { display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+    label { font-weight: 700; }
+    .req { margin-left: .15rem; color: var(--muted); font-weight: 400; }
+
+    .control {
+      width: 100%; min-height: 2.875rem; padding: .6rem .8rem;
+      font: inherit; color: var(--ink);
+      background: var(--paper);
+      border: 2px solid var(--field-border); border-radius: 8px;
+    }
+    .control::placeholder { color: var(--muted); opacity: .85; }
+
+    .hint { font-size: .9375rem; color: var(--muted); }
+    .hint-ok, .hint-error { display: none; }
+
+    /* --- Valid / invalid states ---
+       "Filled" means: a text-like field that is NOT showing its placeholder (:not(:placeholder-shown)),
+       or a date/select that JavaScript has marked data-empty="false" (those have no placeholder).
+       Empty fields stay neutral, so the form doesn't shout before anyone has typed. */
+    .control:is([placeholder]:not(:placeholder-shown), [data-empty="false"]):valid {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 8%, var(--paper));
+    }
+    .control:is([placeholder]:not(:placeholder-shown), [data-empty="false"]):valid ~ .hint .hint-default { display: none; }
+    .control:is([placeholder]:not(:placeholder-shown), [data-empty="false"]):valid ~ .hint .hint-ok {
+      display: inline; color: var(--accent); font-weight: 700;
+    }
+
+    .control:is([placeholder]:not(:placeholder-shown), [data-empty="false"]):invalid,
+    .was-submitted .control:invalid {
+      border-color: var(--danger);
+      background: color-mix(in srgb, var(--danger) 9%, var(--paper));
+    }
+    .control:is([placeholder]:not(:placeholder-shown), [data-empty="false"]):invalid ~ .hint .hint-default,
+    .was-submitted .control:invalid ~ .hint .hint-default { display: none; }
+    .control:is([placeholder]:not(:placeholder-shown), [data-empty="false"]):invalid ~ .hint .hint-error,
+    .was-submitted .control:invalid ~ .hint .hint-error {
+      display: inline; color: var(--danger); font-weight: 700;
+    }
+
+    /* Terms checkbox */
+    .field-check { display: grid; grid-template-columns: auto 1fr; column-gap: .75rem; row-gap: .25rem; align-items: start; }
+    .check {
+      -webkit-appearance: none; appearance: none;
+      display: grid; place-content: center;
+      width: 1.5rem; height: 1.5rem; margin: .1rem 0 0;
+      background: var(--paper);
+      border: 2px solid var(--field-border); border-radius: 6px;
+      cursor: pointer;
+    }
+    .check::after {
+      content: ""; width: .8rem; height: .4rem; margin-top: -.15rem;
+      border-left: 3px solid var(--on-accent); border-bottom: 3px solid var(--on-accent);
+      transform: rotate(-45deg); opacity: 0;
+    }
+    .check:checked { background: var(--accent); border-color: var(--accent); }
+    .check:checked::after { opacity: 1; }
+    .field-check label { cursor: pointer; }
+    .field-check .hint { grid-column: 2; }
+    .check:checked ~ .hint .hint-default { display: none; }
+    .check:checked ~ .hint .hint-ok { display: inline; color: var(--accent); font-weight: 700; }
+    .was-submitted .check:invalid { outline: 3px solid var(--danger); outline-offset: 2px; }
+    .was-submitted .check:invalid ~ .hint .hint-default { display: none; }
+    .was-submitted .check:invalid ~ .hint .hint-error { display: inline; color: var(--danger); font-weight: 700; }
+
+    /* Range slider with live value */
+    .range-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+    .range-value { font-size: 1.25rem; font-weight: 700; color: var(--head); }
+    .range {
+      --ratio: 0;
+      --fill: calc(.75rem + (100% - 1.5rem) * var(--ratio));
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 2rem; margin: 0;
+      background: transparent; cursor: pointer;
+    }
+    .range::-webkit-slider-runnable-track {
+      height: .5rem; border-radius: 999px;
+      background: linear-gradient(to right, var(--accent) var(--fill), var(--track) var(--fill));
+    }
+    .range::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 1.5rem; height: 1.5rem; margin-top: -.5rem;
+      border-radius: 50%; background: var(--accent);
+      border: 3px solid var(--surface); box-shadow: 0 0 0 2px var(--accent);
+    }
+    .range::-moz-range-track { height: .5rem; border-radius: 999px; background: var(--track); }
+    .range::-moz-range-progress { height: .5rem; border-radius: 999px; background: var(--accent); }
+    .range::-moz-range-thumb {
+      width: 1.5rem; height: 1.5rem; box-sizing: border-box;
+      border-radius: 50%; background: var(--accent);
+      border: 3px solid var(--surface); box-shadow: 0 0 0 2px var(--accent);
+    }
+    .range-scale { display: flex; justify-content: space-between; font-size: .9375rem; color: var(--muted); }
+
+    /* Buttons */
+    .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+    .btn {
+      min-height: 2.875rem; padding: .6rem 1.5rem;
+      border-radius: 8px; border: 2px solid var(--accent);
+      font: inherit; font-weight: 700; cursor: pointer;
+    }
+    .btn-primary { background: var(--accent); color: var(--on-accent); }
+    .btn-primary:hover { background: color-mix(in srgb, var(--accent) 86%, var(--ink)); }
+    .btn-secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
+    .btn-secondary:hover { background: color-mix(in srgb, var(--ink) 10%, var(--surface)); }
+
+    /* Demo confirmation */
+    .success {
+      margin-bottom: 1.5rem; padding: clamp(1rem, 3vw, 1.75rem);
+      background: var(--surface);
+      border: 1px solid var(--accent); border-left-width: .5rem; border-radius: 8px;
+    }
+    .success h2 { font-size: 1.5rem; }
+    .success h2:focus { outline: none; }
+    .success p { margin-top: .5rem; }
+    .summary { display: grid; margin-top: 1rem; }
+    .summary div { display: grid; gap: .1rem 1.5rem; padding-block: .6rem; border-top: 1px solid var(--rule); }
+    .summary dt { font-weight: 700; }
+    .summary dd { margin: 0; overflow-wrap: anywhere; }
+    @media (min-width: 40rem) { .summary div { grid-template-columns: 11rem 1fr; } }
+    .success .actions { margin-top: 1.25rem; }
+    .success .demo-note { color: var(--muted); font-size: .9375rem; }
+
+    /* ---------- Footer ---------- */
+    .site-footer { background: var(--footer-bg); color: var(--footer-ink); padding-block: 2.5rem; }
+    .site-footer .container { display: grid; gap: 1.25rem; }
+    .foot-title { font-weight: 700; font-size: 1.25rem; }
+    .site-footer ul { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+    .site-footer a { text-underline-offset: .2em; }
+    .site-footer :focus-visible { outline-color: var(--footer-ink); }
+    .fine { font-size: .9375rem; opacity: .85; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+
+    @media (max-width: 36rem) {
+      .back-full { display: none; }
+      .back-short { display: inline; }
+      .btn { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Forms exercise</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Student Registration</h1>
+        <p class="lead">A forms exercise by Ryan Wong. This registration form uses fieldsets, labelled inputs, and HTML's built-in validation, with CSS that turns fields green when they're valid and red when they need fixing.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <div class="form-column">
+        <!-- Shown after a valid submit. This demo page doesn't send data anywhere (see DEMO_MODE in the script). -->
+        <section class="success" id="success" aria-labelledby="success-title" hidden>
+          <h2 id="success-title" tabindex="-1">Registration complete</h2>
+          <p>Thanks, <strong id="success-name"></strong>. Every field passed validation. Here is what you entered:</p>
+          <dl class="summary" id="summary"></dl>
+          <p class="demo-note">This is a demo. Nothing was sent anywhere, and your password is never shown.</p>
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" id="edit-btn">Edit my answers</button>
+          </div>
+        </section>
+
+        <p class="required-note">Fields marked * are required.</p>
+
+        <form id="register" method="post" action="/register" aria-labelledby="page-title">
+
+          <fieldset>
+            <legend>Personal Info</legend>
+            <div class="fields">
+
+              <div class="field">
+                <label for="fullname">Full Name <span class="req" aria-hidden="true">*</span></label>
+                <input class="control" type="text" id="fullname" name="fullname" required
+                       autocomplete="name" placeholder="e.g. Ryan Wong"
+                       aria-describedby="fullname-hint">
+                <p class="hint" id="fullname-hint">
+                  <span class="hint-default">As it appears on your student card.</span>
+                  <span class="hint-ok">Looks good.</span>
+                  <span class="hint-error">Please enter your full name.</span>
+                </p>
+              </div>
+
+              <div class="field">
+                <label for="studentid">Student ID <span class="req" aria-hidden="true">*</span></label>
+                <input class="control" type="text" id="studentid" name="studentid" required
+                       pattern="\d{9}" title="Exactly 9 digits, numbers only"
+                       inputmode="numeric" autocomplete="off" placeholder="9 digits"
+                       aria-describedby="studentid-hint">
+                <p class="hint" id="studentid-hint">
+                  <span class="hint-default">9 digits, no spaces or dashes.</span>
+                  <span class="hint-ok">Looks good.</span>
+                  <span class="hint-error">Student ID must be exactly 9 digits (numbers only).</span>
+                </p>
+              </div>
+
+              <div class="field">
+                <label for="dob">Date of Birth</label>
+                <input class="control" type="date" id="dob" name="dob"
+                       min="1900-01-01" autocomplete="bday" data-watch
+                       aria-describedby="dob-hint">
+                <p class="hint" id="dob-hint">
+                  <span class="hint-default">Optional.</span>
+                  <span class="hint-ok">Looks good.</span>
+                  <span class="hint-error">Please choose a real date that isn't in the future.</span>
+                </p>
+              </div>
+
+              <div class="field">
+                <label for="major">Major</label>
+                <select class="control" id="major" name="major" data-watch aria-describedby="major-hint">
+                  <option value="" selected>Select your major</option>
+                  <option value="computer-science">Computer Science</option>
+                  <option value="software-engineering">Software Engineering</option>
+                  <option value="artificial-intelligence">Artificial Intelligence</option>
+                  <option value="information-systems">Information Systems</option>
+                  <option value="visual-design">Visual Design</option>
+                  <option value="business-administration">Business Administration</option>
+                  <option value="other">Other</option>
+                </select>
+                <p class="hint" id="major-hint">
+                  <span class="hint-default">Optional. Choose the closest match.</span>
+                  <span class="hint-ok">Looks good.</span>
+                </p>
+              </div>
+
+              <div class="field field-wide">
+                <div class="range-head">
+                  <label for="experience">Years of coding experience</label>
+                  <output id="experience-output" for="experience" class="range-value">0 years</output>
+                </div>
+                <input class="range" type="range" id="experience" name="experience"
+                       min="0" max="10" step="1" value="0"
+                       aria-describedby="experience-scale">
+                <div class="range-scale" id="experience-scale" aria-hidden="true"><span>0</span><span>10</span></div>
+              </div>
+
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Account Info</legend>
+            <div class="fields">
+
+              <div class="field">
+                <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+                <input class="control" type="email" id="email" name="email" required
+                       pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="An email address like name@example.com"
+                       autocomplete="email" placeholder="name@example.com"
+                       aria-describedby="email-hint">
+                <p class="hint" id="email-hint">
+                  <span class="hint-default">We'll use this to sign you in.</span>
+                  <span class="hint-ok">Looks good.</span>
+                  <span class="hint-error">Enter a valid email address, like name@example.com.</span>
+                </p>
+              </div>
+
+              <div class="field">
+                <label for="phone">Phone</label>
+                <input class="control" type="text" id="phone" name="phone"
+                       pattern="\d{3}-\d{4}-\d{4}" title="Format: 010-1234-5678"
+                       inputmode="tel" autocomplete="tel" placeholder="010-1234-5678"
+                       aria-describedby="phone-hint">
+                <p class="hint" id="phone-hint">
+                  <span class="hint-default">Optional. Format: 010-1234-5678.</span>
+                  <span class="hint-ok">Looks good.</span>
+                  <span class="hint-error">Use the format 010-1234-5678.</span>
+                </p>
+              </div>
+
+              <div class="field field-wide">
+                <label for="password">Password <span class="req" aria-hidden="true">*</span></label>
+                <input class="control" type="password" id="password" name="password" required
+                       minlength="8" autocomplete="new-password" placeholder="Create a password"
+                       aria-describedby="password-hint">
+                <p class="hint" id="password-hint">
+                  <span class="hint-default">At least 8 characters.</span>
+                  <span class="hint-ok">Looks good.</span>
+                  <span class="hint-error">Password must be at least 8 characters.</span>
+                </p>
+              </div>
+
+            </div>
+          </fieldset>
+
+          <div class="field-check">
+            <input class="check" type="checkbox" id="terms" name="terms" required aria-describedby="terms-hint">
+            <label for="terms">I agree to the terms <span class="req" aria-hidden="true">*</span></label>
+            <p class="hint" id="terms-hint">
+              <span class="hint-default">Required to create your account.</span>
+              <span class="hint-ok">Thank you.</span>
+              <span class="hint-error">You need to agree to the terms to continue.</span>
+            </p>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn btn-primary">Create account</button>
+            <button type="reset" class="btn btn-secondary">Reset form</button>
+          </div>
+        </form>
+      </div>
+
+      <aside class="tips" aria-labelledby="tips-title">
+        <h2 id="tips-title">Before you start</h2>
+        <ul>
+          <li>Fields marked * are required.</li>
+          <li>Student ID is exactly 9 digits.</li>
+          <li>Password needs at least 8 characters.</li>
+          <li>Phone is optional, in the format 010-1234-5678.</li>
+        </ul>
+        <p class="fine-print">Fields turn green when they're valid and red when something needs fixing, and a message underneath says what to do.</p>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Forms exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript.</p>
+      <ul>
+        <li><a href="../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ---------- Light / dark button ---------- */
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById("theme-toggle");
+
+      function isDark() { return root.getAttribute("data-theme") !== "light"; }
+      function sync() {
+        var label = isDark() ? "Switch to light mode" : "Switch to dark mode";
+        btn.setAttribute("aria-label", label);
+        btn.setAttribute("title", label);
+      }
+
+      btn.addEventListener("click", function () {
+        var next = isDark() ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        sync();
+      });
+      sync();
+    })();
+
+    /* ---------- Registration form ---------- */
+    (function () {
+      /* true: show a confirmation on this page instead of sending the form.
+         false: let the browser POST the form to the action URL (needs a server listening there). */
+      var DEMO_MODE = true;
+
+      var form = document.getElementById("register");
+      var success = document.getElementById("success");
+      var range = document.getElementById("experience");
+      var rangeOut = document.getElementById("experience-output");
+      var dob = document.getElementById("dob");
+
+      /* Date and select fields have no placeholder, so :placeholder-shown can't tell
+         whether they are empty. Mirror that state in a data attribute the CSS can read. */
+      var watched = form.querySelectorAll("[data-watch]");
+      function markEmpty(el) { el.setAttribute("data-empty", el.value === "" ? "true" : "false"); }
+      watched.forEach(function (el) {
+        markEmpty(el);
+        el.addEventListener("input", function () { markEmpty(el); });
+        el.addEventListener("change", function () { markEmpty(el); });
+      });
+
+      /* Nobody can be born tomorrow */
+      function pad(n) { return String(n).padStart(2, "0"); }
+      var now = new Date();
+      dob.max = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+
+      /* Range slider: live number and filled track */
+      function updateRange() {
+        var value = Number(range.value);
+        var ratio = (value - Number(range.min)) / (Number(range.max) - Number(range.min));
+        var text = value + (value === 1 ? " year" : " years");
+        rangeOut.textContent = text;
+        range.setAttribute("aria-valuetext", text);
+        range.style.setProperty("--ratio", ratio);
+      }
+      range.addEventListener("input", updateRange);
+      updateRange();
+
+      /* After the first failed submit, show every invalid field, including empty required ones.
+         The "invalid" event doesn't bubble, so listen in the capture phase. */
+      form.addEventListener("invalid", function () { form.classList.add("was-submitted"); }, true);
+
+      form.addEventListener("reset", function () {
+        /* wait one tick: the browser restores the default values after this event */
+        setTimeout(function () {
+          watched.forEach(markEmpty);
+          updateRange();
+          form.classList.remove("was-submitted");
+          success.hidden = true;
+        }, 0);
+      });
+
+      /* ----- demo confirmation ----- */
+      function valueOf(id) { return document.getElementById(id).value.trim(); }
+
+      function formatDate(iso) {
+        if (!iso) return "";
+        var d = new Date(iso + "T00:00:00");
+        return isNaN(d) ? iso : d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+      }
+
+      function showSuccess() {
+        var major = document.getElementById("major");
+        var rows = [
+          ["Full Name", valueOf("fullname")],
+          ["Student ID", valueOf("studentid")],
+          ["Date of Birth", formatDate(valueOf("dob"))],
+          ["Major", major.value ? major.options[major.selectedIndex].text : ""],
+          ["Years of coding experience", rangeOut.textContent],
+          ["Email", valueOf("email")],
+          ["Phone", valueOf("phone")],
+          ["Password", "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022 (hidden)"]
+        ];
+
+        var list = document.getElementById("summary");
+        list.replaceChildren();
+        rows.forEach(function (row) {
+          var wrap = document.createElement("div");
+          var dt = document.createElement("dt");
+          var dd = document.createElement("dd");
+          dt.textContent = row[0];
+          dd.textContent = row[1] || "Not provided";      /* textContent keeps typed text from running as HTML */
+          wrap.append(dt, dd);
+          list.append(wrap);
+        });
+
+        document.getElementById("success-name").textContent = valueOf("fullname");
+        success.hidden = false;
+        var heading = document.getElementById("success-title");
+        heading.focus();
+        success.scrollIntoView({ block: "start" });
+      }
+
+      /* "submit" only fires when every field is valid, so no extra checking is needed here */
+      form.addEventListener("submit", function (event) {
+        if (!DEMO_MODE) return;
+        event.preventDefault();
+        showSuccess();
+      });
+
+      document.getElementById("edit-btn").addEventListener("click", function () {
+        success.hidden = true;
+        document.getElementById("fullname").focus();
+      });
+    })();
+  </script>
+</body>
+</html>
