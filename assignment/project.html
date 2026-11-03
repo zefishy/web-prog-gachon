@@ -160,7 +160,8 @@
     .card h3 { font-size: 1.25rem; margin-top: 2rem; }
     .card p { max-width: 70ch; }
     .card p + p, .card p + ul, .card ul + p { margin-top: 1rem; }
-    .card h3 + ul { margin-top: .75rem; }
+    /* Gap between a section title and the body that follows it (+50% from .75rem) */
+    .card h2 + p, .card h2 + ul, .card h3 + p, .card h3 + ul { margin-top: 1.125rem; }
 
     .card ul { display: grid; gap: .6rem; }
     .card li { position: relative; padding-left: 1.1rem; }
