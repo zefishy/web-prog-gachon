@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Team 16's web programming club project: a proposal for a better Gachon Wind baseball club website — the problems, the solution, key features, team roles, and the four-phase plan, with the proposal slides and presentation video.">
+  <title>Team 16 — Gachon Wind Website Proposal</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%BE%3C/text%3E%3C/svg%3E">
+
+  <script>
+    /* Apply the saved theme before first paint so the page never flashes the wrong one. */
+    (function () {
+      var root = document.documentElement;
+      root.classList.add("js");
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    /* ---------- Design tokens ----------
+       Same palette as the library: #8BBB92  #2A835F  #12544F  #092328.
+       Dark is the default look. Week 7 borrows the deep teal from the shelf. */
+    :root {
+      color-scheme: dark;
+
+      --paper: #092328;
+      --surface: #0F2F35;
+      --ink: #E6F0EA;
+      --muted: #A9C2B6;
+      --rule: #24474B;
+      --head: #8BBB92;
+
+      --wk: #12544F;
+      --accent: #8BBB92;
+      --on-accent: #092328;
+
+      --edge: color-mix(in srgb, var(--ink) 22%, transparent);
+
+      --footer-bg: #061619;
+      --footer-ink: #E6F0EA;
+
+      --sans: "Helvetica Neue", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+
+      --max: 72rem;
+      --gutter: clamp(1rem, 4vw, 2.5rem);
+      --header-h: 3.5rem;
+    }
+
+    /* Light theme: only when chosen with the switch */
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --paper: #F2F7F3;
+      --surface: #FFFFFF;
+      --ink: #092328;
+      --muted: #3F5B5C;
+      --rule: #CBDCCF;
+      --head: #12544F;
+      --accent: #12544F;
+      --on-accent: #FFFFFF;
+      --footer-bg: #092328;
+    }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+    }
+    h1, h2, h3 { line-height: 1.15; margin: 0; }
+    p { margin: 0; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    a { color: inherit; }
+
+    :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+
+    .container { max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
+
+    .skip {
+      position: absolute; left: var(--gutter); top: -4rem;
+      background: var(--ink); color: var(--paper);
+      padding: .6rem 1rem; border-radius: 6px; z-index: 20;
+    }
+    .skip:focus { top: .75rem; }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+    }
+    .site-header .container {
+      min-height: var(--header-h);
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .back { font-weight: 700; text-decoration: none; padding: .5rem .25rem; border-radius: 6px; }
+    .back:hover { text-decoration: underline; text-underline-offset: .2em; }
+    .back-short { display: none; }
+    .header-end { display: flex; align-items: center; gap: .75rem; }
+    .here { color: var(--muted); }
+
+    /* ---------- Light / dark icon button ---------- */
+    .theme-toggle {
+      display: none;
+      place-items: center;
+      width: 2.5rem; height: 2.5rem; padding: 0;
+      border: 1px solid var(--rule); border-radius: 50%;
+      background: none; color: var(--ink);
+      cursor: pointer;
+    }
+    .js .theme-toggle { display: inline-grid; }
+    .theme-toggle:hover { background: color-mix(in srgb, var(--ink) 10%, var(--paper)); }
+    .theme-toggle svg {
+      display: block; width: 1.25rem; height: 1.25rem;
+      fill: none; stroke: currentColor; stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .theme-toggle .icon-moon { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+    /* ---------- Hero ---------- */
+    .hero { padding-block: clamp(2.5rem, 7vw, 4.5rem) clamp(2rem, 5vw, 3rem); }
+    .hero h1 {
+      font-size: clamp(2.25rem, 1.2rem + 4.6vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      text-wrap: balance;
+    }
+    @media (min-width: 40rem) { .h1-line { display: block; } }
+    .hero-sub { margin-top: 1.25rem; font-size: 1.125rem; }
+    .hero-sub + .hero-sub { margin-top: .15rem; color: var(--muted); }
+    .lead { margin-top: 1.25rem; max-width: 62ch; font-size: 1.1875rem; }
+
+    /* ---------- Cards ---------- */
+    .layout {
+      display: grid;
+      gap: clamp(1.25rem, 3vw, 2rem);
+      padding-bottom: clamp(3rem, 7vw, 5rem);
+    }
+    .card {
+      padding: clamp(1.25rem, 4vw, 2rem);
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-top: .375rem solid var(--wk);
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 1px var(--edge);
+    }
+    .card h2 { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); color: var(--head); }
+    .card h3 { font-size: 1.25rem; margin-top: 2rem; }
+    .card p { max-width: 70ch; }
+    .card p + p, .card p + ul, .card ul + p { margin-top: 1rem; }
+    .card h3 + ul { margin-top: .75rem; }
+
+    .card ul { display: grid; gap: .6rem; }
+    .card li { position: relative; padding-left: 1.1rem; }
+    .card li::before {
+      content: "";
+      position: absolute; left: 0; top: .55em;
+      width: .45rem; height: .45rem;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Team members */
+    .team-member { padding: .9rem 0; border-bottom: 1px solid var(--rule); }
+    .team-member:first-of-type { padding-top: 1.25rem; }
+    .team-member:last-of-type { border-bottom: none; padding-bottom: .25rem; }
+    .role { color: var(--muted); }
+
+    /* Buttons */
+    .actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 2.875rem; padding: .6rem 1.5rem;
+      border: 2px solid var(--accent); border-radius: 8px;
+      font: inherit; font-weight: 700;
+      text-decoration: none; cursor: pointer;
+    }
+    .btn-primary { background: var(--accent); color: var(--on-accent); }
+    .btn-primary:hover { background: color-mix(in srgb, var(--accent) 86%, var(--ink)); }
+    .btn-secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
+    .btn-secondary:hover { background: color-mix(in srgb, var(--ink) 10%, var(--surface)); }
+
+    /* Embedded proposal PDF and presentation video */
+    .embed {
+      display: block; width: 100%;
+      margin-top: 1.25rem;
+      border: 1px solid var(--rule); border-radius: 8px;
+    }
+    .pdf-frame { height: 500px; background: var(--paper); }
+    .video-frame { aspect-ratio: 16 / 9; background: #000; }
+    .open { margin-top: 1rem; }
+    .open a { color: var(--accent); font-weight: 700; text-underline-offset: .2em; }
+    .size { color: var(--muted); font-size: .9375rem; }
+
+    /* ---------- Footer ---------- */
+    .site-footer { background: var(--footer-bg); color: var(--footer-ink); padding-block: 2.5rem; }
+    .site-footer .container { display: grid; gap: 1.25rem; }
+    .foot-title { font-weight: 700; font-size: 1.25rem; }
+    .site-footer ul { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+    .site-footer a { text-underline-offset: .2em; }
+    .site-footer :focus-visible { outline-color: var(--footer-ink); }
+    .fine { font-size: .9375rem; opacity: .85; }
+
+    @media (max-width: 36rem) {
+      .back-full { display: none; }
+      .back-short { display: inline; }
+      .here { display: none; }
+      .btn { flex: 1 1 100%; }
+      .pdf-frame { height: 350px; }
+    }
+  </style>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Team 16 project</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title"><span class="h1-line">A Better Website for</span> <span class="h1-line">Gachon Wind Baseball Club</span></h1>
+        <p class="hero-sub"><strong>Team 16</strong> — Web Programming Club Project</p>
+        <p class="hero-sub">Gachon University</p>
+        <p class="lead">The club's information is scattered across a CCA listing with a broken homepage link and an Instagram account that rarely updates. This page collects our proposal for one reliable home for Gachon Wind: the problems, the website we'll build, the team behind it, and how we'll deliver it.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+
+      <section class="card" aria-labelledby="about-title">
+        <h2 id="about-title">About the project</h2>
+        <p>Finding Gachon Wind online today ends in four dead ends: unclear joining instructions, missing photos, videos, and practice timetables, a broken homepage link on the university's CCA page, and no proper contacts. The team's Instagram, @GCU_WIND, has real photos but limited updates, and nowhere can students find a schedule, a sign-up form, or clear contact details. International students feel it most.</p>
+        <p>Our solution is one website for the club that always works. Club information, photos, and videos live in one place; a schedule lists every future baseball game; an online sign-up form and clear contacts replace the dead ends; and every page is available in English, Korean, Vietnamese, and Japanese.</p>
+        <p>Unlike the static CCA page, the site stays current; unlike Instagram, joining takes a few clicks; and a mobile-first, four-language layout makes it truly accessible for every Gachon student.</p>
+        <h3>Key features</h3>
+        <ul>
+          <li>Club profile, activities, and upcoming events in one place</li>
+          <li>A schedule of every future baseball game</li>
+          <li>Sign-up form, joining steps, and contact details</li>
+          <li>Mobile-friendly, interactive photo and video gallery with a language switch</li>
+        </ul>
+        <p>We'll deliver it in four phases: plan and design, develop, test and feedback on phones, browsers, and with Wind members and students, then launch and hand the site to the club to keep updated.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#">View GitHub repository</a>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="team-title">
+        <h2 id="team-title">Our team</h2>
+        <div class="team-member">
+          <p><strong>Ooi Yong Wee</strong> — 202699472</p>
+          <p class="role">Role: Schedule and events</p>
+        </div>
+        <div class="team-member">
+          <p><strong>Jasper Teo Kheng Cher</strong> — 202699473</p>
+          <p class="role">Role: Sign-up application form</p>
+        </div>
+        <div class="team-member">
+          <p><strong>Wong Deng Foong</strong> — 202699475</p>
+          <p class="role">Role: Multilingual support</p>
+        </div>
+        <div class="team-member">
+          <p><strong>Wong Guan Qi Ryan</strong> — 202699476</p>
+          <p class="role">Role: Homepage and club info</p>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="slides-title">
+        <h2 id="slides-title">Project proposal</h2>
+        <p>Our proposal slides walk through the four dead ends, our solutions, the key features of the new site, and the four-phase plan for building it.</p>
+        <iframe class="embed pdf-frame" src="Team%2016%20%E2%80%93%20Gachon%20WIND%20CCA%20Website%20Proposal.pdf" title="Team 16 — Gachon Wind CCA website proposal slides"></iframe>
+        <p class="open"><a href="Team%2016%20%E2%80%93%20Gachon%20WIND%20CCA%20Website%20Proposal.pdf">Proposal PDF</a> <span class="size">(PDF, 8 MB)</span></p>
+      </section>
+
+      <section class="card" aria-labelledby="video-title">
+        <h2 id="video-title">Proposal presentation video</h2>
+        <p>Watch Team 16 present the proposal: what's wrong with the club's current online presence, the website we'll build for Gachon Wind, and how we'll deliver it.</p>
+        <video class="embed video-frame" controls preload="metadata" src="assignment-video.mp4">
+          Your browser can't play this video. <a href="assignment-video.mp4">Open it directly</a> instead.
+        </video>
+        <p class="open"><a href="assignment-video.mp4">Open the video</a> <span class="size">(MP4, 74 MB)</span></p>
+      </section>
+
+      <section class="card" aria-labelledby="tech-title">
+        <h2 id="tech-title">Planned technologies</h2>
+        <ul>
+          <li><strong>HTML</strong> — the structure of the site: club profile, schedule, gallery, and join pages</li>
+          <li><strong>CSS</strong> — mobile-first, responsive styling that works on every phone and screen</li>
+          <li><strong>JavaScript</strong> — the game schedule, the interactive gallery, the sign-up form, and the switch between English, Korean, Vietnamese, and Japanese</li>
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Team 16 · Gachon University · Web Programming</p>
+      <p class="fine">A better website for the Gachon Wind baseball club — a proposal by Ooi Yong Wee, Jasper Teo Kheng Cher, Wong Deng Foong, and Wong Guan Qi Ryan.</p>
+      <ul>
+        <li><a href="../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Team 16</p>
+    </div>
+  </footer>
+
+  <script>
+    /* Light / dark switch, saved to localStorage and shared with the library. */
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById("theme-toggle");
+
+      function isDark() {
+        return root.getAttribute("data-theme") !== "light";
+      }
+      function sync() {
+        var label = isDark() ? "Switch to light mode" : "Switch to dark mode";
+        btn.setAttribute("aria-label", label);
+        btn.setAttribute("title", label);
+      }
+
+      btn.addEventListener("click", function () {
+        var next = isDark() ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        sync();
+      });
+
+      sync();
+    })();
+  </script>
+</body>
+</html>
