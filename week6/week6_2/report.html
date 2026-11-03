@@ -1,0 +1,1331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="author" content="Ryan Wong" />
+    <meta
+      name="description"
+      content="Lighthouse accessibility audit findings for the Web Programming Library by Ryan Wong: initial scores, the failing audits, five fixes, and the re-run that took every audited page to 100."
+    />
+    <title>Lighthouse Accessibility Report</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E"
+    />
+
+    <script>
+      /* Apply the saved theme before first paint so the page never flashes the wrong one */
+      (function () {
+        var root = document.documentElement;
+        root.classList.add("js");
+        try {
+          var saved = localStorage.getItem("theme");
+          if (saved === "light" || saved === "dark")
+            root.setAttribute("data-theme", saved);
+        } catch (e) {}
+      })();
+    </script>
+
+    <style>
+      /* ---------- Design tokens (shared with index.html and homework.html) ---------- */
+      :root {
+        color-scheme: dark;
+
+        --paper: #092328;
+        --surface: #0f2f35;
+        --ink: #e6f0ea;
+        --muted: #a9c2b6;
+        --rule: #24474b;
+        --head: #8bbb92;
+
+        --wk: #2a835f;
+        --on-wk: #ffffff;
+
+        --accent: #8bbb92;
+        --on-accent: #092328;
+        --danger: #f3a596;
+        --on-danger: #092328;
+
+        --field-border: color-mix(in srgb, var(--muted) 65%, var(--surface));
+
+        --footer-bg: #061619;
+        --footer-ink: #e6f0ea;
+
+        --sans:
+          "Helvetica Neue", Helvetica, Arial, "Apple SD Gothic Neo",
+          "Malgun Gothic", "Noto Sans KR", sans-serif;
+        --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+        --max: 72rem;
+        --gutter: clamp(1rem, 4vw, 2.5rem);
+        --header-h: 3.5rem;
+      }
+
+      :root[data-theme="light"] {
+        color-scheme: light;
+        --paper: #f2f7f3;
+        --surface: #ffffff;
+        --ink: #092328;
+        --muted: #3f5b5c;
+        --rule: #cbdccf;
+        --head: #12544f;
+        --accent: #12544f;
+        --on-accent: #ffffff;
+        --danger: #a12d1b;
+        --on-danger: #ffffff;
+        --footer-bg: #092328;
+      }
+
+      /* ---------- Base ---------- */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: calc(var(--header-h) + 1rem);
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 1.0625rem;
+        line-height: 1.6;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      h1,
+      h2,
+      h3 {
+        line-height: 1.15;
+        margin: 0;
+      }
+
+      h3 {
+        font-size: 1.125rem;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      code {
+        font-family: var(--mono);
+        font-size: 0.875em;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      .vh {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      :focus-visible {
+        outline: 3px solid var(--ink);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+
+      .container {
+        max-width: var(--max);
+        margin-inline: auto;
+        padding-inline: var(--gutter);
+      }
+
+      .skip {
+        position: absolute;
+        left: var(--gutter);
+        top: -4rem;
+        background: var(--ink);
+        color: var(--paper);
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        z-index: 20;
+      }
+
+      .skip:focus {
+        top: 0.75rem;
+      }
+
+      /* ---------- Header ---------- */
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--paper);
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .site-header .container {
+        min-height: var(--header-h);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .back {
+        font-weight: 700;
+        text-decoration: none;
+        padding: 0.5rem 0.25rem;
+        border-radius: 6px;
+      }
+
+      .back:hover {
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+      }
+
+      .back-short {
+        display: none;
+      }
+
+      .header-end {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .here {
+        color: var(--muted);
+      }
+
+      .theme-toggle {
+        display: none;
+        place-items: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+        border: 1px solid var(--rule);
+        border-radius: 50%;
+        background: none;
+        color: var(--ink);
+        cursor: pointer;
+      }
+
+      .js .theme-toggle {
+        display: inline-grid;
+      }
+
+      .theme-toggle:hover {
+        background: color-mix(in srgb, var(--ink) 10%, var(--paper));
+      }
+
+      .theme-toggle svg {
+        display: block;
+        width: 1.25rem;
+        height: 1.25rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .theme-toggle .icon-moon {
+        display: none;
+      }
+
+      :root[data-theme="light"] .theme-toggle .icon-sun {
+        display: none;
+      }
+
+      :root[data-theme="light"] .theme-toggle .icon-moon {
+        display: block;
+      }
+
+      /* ---------- Hero ---------- */
+      .hero {
+        padding-block: clamp(2.5rem, 7vw, 4.5rem) clamp(2rem, 5vw, 3rem);
+      }
+
+      .hero h1 {
+        font-size: clamp(2.25rem, 1.2rem + 4.6vw, 4.5rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        text-wrap: balance;
+      }
+
+      .lead {
+        margin-top: 1.5rem;
+        max-width: 62ch;
+        font-size: 1.1875rem;
+      }
+
+      /* ---------- Score stat strip ---------- */
+      .stats {
+        display: grid;
+        gap: 1rem;
+        margin-top: clamp(2rem, 5vw, 3rem);
+      }
+
+      .stat {
+        background: var(--surface);
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        display: grid;
+        gap: 0.3rem;
+        transition: border-color 0.18s ease;
+      }
+
+      .stat:hover {
+        border-color: var(--wk);
+      }
+
+      .stat .page {
+        color: var(--muted);
+        font-size: 0.875rem;
+      }
+
+      .stat .name {
+        font-weight: 700;
+      }
+
+      .stat .scores {
+        margin-top: 0.4rem;
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        font-size: 1.75rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        line-height: 1.1;
+      }
+
+      .stat .was {
+        color: var(--danger);
+      }
+
+      .stat .arrow {
+        color: var(--muted);
+        font-weight: 400;
+        font-size: 1.25rem;
+      }
+
+      .stat .now {
+        color: var(--head);
+      }
+
+      /* ---------- Two-column layout ---------- */
+      .layout {
+        display: grid;
+        gap: 2.5rem;
+        padding-bottom: clamp(3rem, 7vw, 5rem);
+      }
+
+      @media (min-width: 64rem) {
+        .layout {
+          grid-template-columns: minmax(0, 1fr) 17rem;
+          gap: 4rem;
+          align-items: start;
+        }
+
+        .facts {
+          position: sticky;
+          top: calc(var(--header-h) + 1.5rem);
+        }
+      }
+
+      /* ---------- Report sections ---------- */
+      .section + .section {
+        margin-top: 3rem;
+      }
+
+      .section h2 {
+        font-size: 1.5rem;
+        border-top: 0.375rem solid var(--wk);
+        padding-top: 1.25rem;
+      }
+
+      .section > p {
+        margin-top: 1rem;
+        max-width: 62ch;
+      }
+
+      .section p + p {
+        margin-top: 0.9rem;
+      }
+
+      /* ---------- Score table ---------- */
+      .table-scroll {
+        margin-top: 1.5rem;
+        overflow-x: auto;
+      }
+
+      .score-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .score-table th,
+      .score-table td {
+        text-align: left;
+        padding: 0.65rem 1rem 0.65rem 0;
+        border-top: 1px solid var(--rule);
+        vertical-align: top;
+      }
+
+      .score-table thead th {
+        border-top: none;
+        color: var(--muted);
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .score-table .path {
+        display: block;
+        font-family: var(--mono);
+        font-size: 0.875em;
+      }
+
+      .score-table .what {
+        color: var(--muted);
+        font-size: 0.9375rem;
+      }
+
+      .badge {
+        display: inline-block;
+        min-width: 2.4rem;
+        text-align: center;
+        padding: 0.1rem 0.55rem;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+
+      .badge-fail {
+        background: var(--danger);
+        color: var(--on-danger);
+      }
+
+      .badge-pass {
+        background: var(--wk);
+        color: var(--on-wk);
+      }
+
+      .score-table ul {
+        display: grid;
+        gap: 0.15rem;
+      }
+
+      .score-table li {
+        font-size: 0.9375rem;
+      }
+
+      /* ---------- Screenshots ---------- */
+      figure.shot {
+        margin: 1.5rem 0 0;
+        background: var(--surface);
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        padding: 0.6rem;
+      }
+
+      figure.shot img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+      }
+
+      figure.shot figcaption {
+        padding: 0.6rem 0.4rem 0.2rem;
+        color: var(--muted);
+        font-size: 0.9375rem;
+      }
+
+      .shot-grid {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      @media (min-width: 48rem) {
+        .shot-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .shot-grid figure.shot {
+          margin: 0;
+        }
+
+        .shot-grid.single figure.shot {
+          grid-column: 1 / -1;
+          justify-self: center;
+          width: min(100%, 42rem);
+        }
+      }
+
+      /* ---------- Failing audits ---------- */
+      .audits {
+        margin-top: 1.5rem;
+      }
+
+      .audit {
+        border-top: 1px solid var(--rule);
+        padding-block: 1.1rem;
+        display: grid;
+        gap: 0.35rem;
+      }
+
+      .audit h3 {
+        font-size: 1.125rem;
+      }
+
+      .audit .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1.25rem;
+        color: var(--muted);
+        font-size: 0.875rem;
+      }
+
+      .audit .meta code {
+        background: color-mix(in srgb, var(--muted) 14%, transparent);
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+      }
+
+      .audit p {
+        max-width: 62ch;
+        font-size: 0.9375rem;
+      }
+
+      /* ---------- Fixes ---------- */
+      .fixes {
+        margin-top: 1.5rem;
+        display: grid;
+        gap: 2rem;
+      }
+
+      .fix {
+        border-top: 0.375rem solid var(--wk);
+        padding-top: 1.1rem;
+      }
+
+      .fix-head {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .fix-num {
+        flex: none;
+        width: 2.25rem;
+        height: 2.25rem;
+        display: grid;
+        place-items: center;
+        border-radius: 6px;
+        background: color-mix(in srgb, var(--wk) 22%, var(--surface));
+        color: var(--ink);
+        font-weight: 700;
+        font-size: 1.125rem;
+      }
+
+      .fix h3 {
+        font-size: 1.25rem;
+      }
+
+      .fix p {
+        margin-top: 0.75rem;
+        max-width: 62ch;
+      }
+
+      .fix-meta {
+        margin-top: 0.75rem;
+        color: var(--muted);
+        font-size: 0.875rem;
+      }
+
+      .fix-meta code {
+        background: color-mix(in srgb, var(--muted) 14%, transparent);
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+      }
+
+      .before-after {
+        font-family: var(--mono);
+        font-size: 0.875em;
+      }
+
+      /* ---------- Notes ---------- */
+      .notes ul {
+        margin-top: 1.25rem;
+        display: grid;
+        gap: 0.6rem;
+      }
+
+      .notes li {
+        padding-left: 1.1rem;
+        position: relative;
+        max-width: 62ch;
+      }
+
+      .notes li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.65em;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        background: var(--wk);
+      }
+
+      /* ---------- Facts sidebar ---------- */
+      .facts {
+        border-top: 0.375rem solid var(--wk);
+        padding-top: 1.25rem;
+      }
+
+      .facts h2 {
+        font-size: 1.5rem;
+      }
+
+      .facts dl {
+        display: grid;
+        margin-top: 1rem;
+      }
+
+      .facts dl > div {
+        display: grid;
+        gap: 0.15rem;
+        padding-block: 0.85rem;
+        border-top: 1px solid var(--rule);
+      }
+
+      .facts dt {
+        font-weight: 700;
+      }
+
+      .facts dd {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .facts .see-also {
+        margin-top: 1.25rem;
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .facts .see-also a {
+        text-underline-offset: 0.2em;
+      }
+
+      .facts .fine-print {
+        margin-top: 1.25rem;
+        color: var(--muted);
+        font-size: 0.9375rem;
+      }
+
+      /* ---------- Footer ---------- */
+      .site-footer {
+        background: var(--footer-bg);
+        color: var(--footer-ink);
+        padding-block: 2.5rem;
+      }
+
+      .site-footer .container {
+        display: grid;
+        gap: 1.25rem;
+      }
+
+      .foot-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+      }
+
+      .site-footer ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.5rem;
+      }
+
+      .site-footer a {
+        text-underline-offset: 0.2em;
+      }
+
+      .site-footer :focus-visible {
+        outline-color: var(--footer-ink);
+      }
+
+      .fine {
+        font-size: 0.9375rem;
+        opacity: 0.85;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        .stat {
+          transition: none;
+        }
+      }
+
+      @media (min-width: 40rem) {
+        .stats {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @media (max-width: 36rem) {
+        .back-full {
+          display: none;
+        }
+
+        .back-short {
+          display: inline;
+        }
+
+        .here {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Accessibility report</span>
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Switch to light mode"
+            title="Switch to light mode"
+          >
+            <svg
+              class="icon-sun"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+              />
+            </svg>
+            <svg
+              class="icon-moon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Lighthouse Accessibility Report</h1>
+          <p class="lead">
+            For this week's homework I ran Lighthouse's accessibility audit
+            across my project site. The homepage already scored 100, so I
+            audited the exercise pages it links to as well &mdash; and that is
+            where the real failures were hiding: three pages scored between 61
+            and 73. I fixed every failing audit I found, re-ran Lighthouse, and
+            every audited page now scores 100.
+          </p>
+
+          <div class="stats" role="list" aria-label="Scores before and after the fixes">
+            <div class="stat" role="listitem">
+              <span class="page">week4/ex3.html</span>
+              <span class="name">To-Do List</span>
+              <p class="scores">
+                <span class="was"><span class="vh">before,</span>66</span>
+                <span class="arrow" aria-hidden="true">&rarr;</span>
+                <span class="now"><span class="vh">after,</span>100</span>
+              </p>
+            </div>
+            <div class="stat" role="listitem">
+              <span class="page">week4/ex1.html</span>
+              <span class="name">Click Counter</span>
+              <p class="scores">
+                <span class="was"><span class="vh">before,</span>61</span>
+                <span class="arrow" aria-hidden="true">&rarr;</span>
+                <span class="now"><span class="vh">after,</span>100</span>
+              </p>
+            </div>
+            <div class="stat" role="listitem">
+              <span class="page">week6/week6_2/ex1.html</span>
+              <span class="name">Sign-in form</span>
+              <p class="scores">
+                <span class="was"><span class="vh">before,</span>73</span>
+                <span class="arrow" aria-hidden="true">&rarr;</span>
+                <span class="now"><span class="vh">after,</span>100</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="container layout">
+        <div class="report-column">
+          <section class="section" aria-labelledby="how-title">
+            <h2 id="how-title">How the audit was run</h2>
+            <p>
+              I ran Lighthouse 13.6.0 with only the
+              <strong>Accessibility</strong> category enabled. The first pass
+              audited the deployed site on GitHub Pages, including the
+              homepage and the exercise pages it links to. That pass produced
+              the initial scores and the list of failing audits. After applying
+              the fixes, I re-ran the exact same audit against the fixed copy
+              of the site and screenshotted both reports.
+            </p>
+            <p>
+              Auditing the whole site &mdash; not just the homepage &mdash;
+              mattered: <code>index.html</code> scored 100 on its own, but the
+              three exercise pages below failed a total of ten audit checks.
+            </p>
+          </section>
+
+          <section class="section" aria-labelledby="initial-title">
+            <h2 id="initial-title">Initial scores and failing audits</h2>
+            <p>
+              The table shows every audited page, its initial accessibility
+              score, and the audits it failed. The to-do list page failed the
+              most, so it is the page I tracked through the whole before/after
+              cycle.
+            </p>
+
+            <div class="table-scroll">
+              <table class="score-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Page</th>
+                    <th scope="col">Initial score</th>
+                    <th scope="col">Failing audits</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">
+                      <span class="path">index.html</span>
+                      <span class="what">Homepage</span>
+                    </th>
+                    <td><span class="badge badge-pass">100</span></td>
+                    <td>
+                      <ul>
+                        <li>
+                          <code>label-content-name-mismatch</code> &mdash; one
+                          hidden audit (weight 0), so the score stayed 100
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <span class="path">week4/ex1.html</span>
+                      <span class="what">Click Counter</span>
+                    </th>
+                    <td><span class="badge badge-fail">61</span></td>
+                    <td>
+                      <ul>
+                        <li><code>document-title</code></li>
+                        <li><code>html-has-lang</code></li>
+                        <li><code>landmark-one-main</code></li>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <span class="path">week4/ex3.html</span>
+                      <span class="what">To-Do List</span>
+                    </th>
+                    <td><span class="badge badge-fail">66</span></td>
+                    <td>
+                      <ul>
+                        <li><code>color-contrast</code></li>
+                        <li><code>document-title</code></li>
+                        <li><code>html-has-lang</code></li>
+                        <li><code>landmark-one-main</code></li>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <span class="path">week6/week6_2/ex1.html</span>
+                      <span class="what">Sign-in form</span>
+                    </th>
+                    <td><span class="badge badge-fail">73</span></td>
+                    <td>
+                      <ul>
+                        <li><code>document-title</code></li>
+                        <li><code>html-has-lang</code></li>
+                        <li><code>landmark-one-main</code></li>
+                      </ul>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <figure class="shot">
+              <img
+                src="../../static/lighthouse-initial-week4-todo.png"
+                width="1280"
+                height="1200"
+                alt="Lighthouse accessibility report for the Week 4 to-do list page: the gauge shows a score of 66, and four failing audits are listed below it, including the missing title, missing language attribute, missing main landmark, and insufficient color contrast."
+              />
+              <figcaption>
+                The initial audit of <code>week4/ex3.html</code> (the Week 4
+                to-do list): 66, with four failing audits listed &mdash; this
+                is the page the rest of this report follows.
+              </figcaption>
+            </figure>
+
+            <div class="shot-grid">
+              <figure class="shot">
+                <img
+                  src="../../static/lighthouse-initial-week4-counter.png"
+                  width="1280"
+                  height="1200"
+                  alt="Lighthouse accessibility report for the Week 4 click counter page: the gauge shows a score of 61, with three failing audits listed below it."
+                />
+                <figcaption>
+                  <code>week4/ex1.html</code> (click counter): 61 on the
+                  initial run.
+                </figcaption>
+              </figure>
+              <figure class="shot">
+                <img
+                  src="../../static/lighthouse-initial-week6-signin.png"
+                  width="1280"
+                  height="1200"
+                  alt="Lighthouse accessibility report for the Week 6 sign-in form page: the gauge shows a score of 73, with three failing audits listed below it."
+                />
+                <figcaption>
+                  <code>week6/week6_2/ex1.html</code> (sign-in form): 73 on the
+                  initial run.
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="shot-grid single">
+              <figure class="shot">
+                <img
+                  src="../../static/lighthouse-homepage.png"
+                  width="1280"
+                  height="1200"
+                  alt="Lighthouse accessibility report for the homepage: the gauge shows a score of 100, with no failing audits visible."
+                />
+                <figcaption>
+                  <code>index.html</code> (homepage): already 100 &mdash; its
+                  one failing audit was hidden with weight 0, so it never
+                  showed in the report or affected the score.
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="audits-title">
+            <h2 id="audits-title">What the failing audits mean</h2>
+            <div class="audits">
+              <div class="audit">
+                <h3>&lt;html&gt; element does not have a [lang] attribute</h3>
+                <p class="meta">
+                  <span><code>html-has-lang</code></span>
+                  <span>weight 7</span>
+                  <span>click counter, to-do list, sign-in form</span>
+                </p>
+                <p>
+                  Without <code>lang="en"</code>, screen readers cannot pick
+                  the right pronunciation rules, so every word is guessed at.
+                </p>
+              </div>
+              <div class="audit">
+                <h3>Document doesn't have a &lt;title&gt; element</h3>
+                <p class="meta">
+                  <span><code>document-title</code></span>
+                  <span>weight 7</span>
+                  <span>click counter, to-do list, sign-in form</span>
+                </p>
+                <p>
+                  The page has no name, so browser tabs, bookmarks, history,
+                  and screen readers all announce it as an empty document.
+                </p>
+              </div>
+              <div class="audit">
+                <h3>Document does not have a main landmark</h3>
+                <p class="meta">
+                  <span><code>landmark-one-main</code></span>
+                  <span>weight 3</span>
+                  <span>click counter, to-do list, sign-in form</span>
+                </p>
+                <p>
+                  Screen-reader users jump between landmarks, and with no
+                  <code>&lt;main&gt;</code> there is no way to skip straight to
+                  the content of the page.
+                </p>
+              </div>
+              <div class="audit">
+                <h3>Background and foreground colors do not have a sufficient contrast ratio</h3>
+                <p class="meta">
+                  <span><code>color-contrast</code></span>
+                  <span>weight 7</span>
+                  <span>to-do list</span>
+                </p>
+                <p>
+                  The "No tasks yet!" message used <code>#9ca3af</code> gray on
+                  white &mdash; a contrast ratio of just 2.54:1, far below the
+                  4.5:1 minimum, making it hard to read for users with low
+                  vision.
+                </p>
+              </div>
+              <div class="audit">
+                <h3>Elements with visible text labels do not have matching accessible names</h3>
+                <p class="meta">
+                  <span><code>label-content-name-mismatch</code></span>
+                  <span>weight 0, hidden</span>
+                  <span>homepage</span>
+                </p>
+                <p>
+                  The four bookshelf links on the homepage carried
+                  <code>aria-label</code>s whose wording ("Week 2: HTML, 16
+                  pages") did not include their visible text, so
+                  speech-input users saying the visible label could not
+                  activate the link.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="fixes-title">
+            <h2 id="fixes-title">The fixes</h2>
+            <p>
+              The homework asks for at least three failing audits to be fixed;
+              I fixed all five, so the re-run is clean everywhere.
+            </p>
+
+            <div class="fixes">
+              <div class="fix">
+                <div class="fix-head">
+                  <span class="fix-num" aria-hidden="true">1</span>
+                  <h3>Declare the page language</h3>
+                </div>
+                <p>
+                  Added <code>lang="en"</code> (and a
+                  <code>&lt;meta charset&gt;</code>) to all three exercise
+                  pages, so assistive technology announces them in English.
+                </p>
+                <p class="fix-meta">
+                  Fixes <code>html-has-lang</code> &middot; in
+                  <code>week4/ex1.html</code>,
+                  <code>week4/ex3.html</code>,
+                  <code>week6/week6_2/ex1.html</code>
+                </p>
+              </div>
+
+              <div class="fix">
+                <div class="fix-head">
+                  <span class="fix-num" aria-hidden="true">2</span>
+                  <h3>Give every page a title</h3>
+                </div>
+                <p>
+                  Added descriptive <code>&lt;title&gt;</code> elements:
+                  "Click Counter", "My To-Do List", and "Sign In". Tabs,
+                  bookmarks, and screen readers can now name each page.
+                </p>
+                <p class="fix-meta">
+                  Fixes <code>document-title</code> &middot; in
+                  <code>week4/ex1.html</code>,
+                  <code>week4/ex3.html</code>,
+                  <code>week6/week6_2/ex1.html</code>
+                </p>
+              </div>
+
+              <div class="fix">
+                <div class="fix-head">
+                  <span class="fix-num" aria-hidden="true">3</span>
+                  <h3>Mark the main landmark</h3>
+                </div>
+                <p>
+                  Wrapped each page's content in a single
+                  <code>&lt;main&gt;</code> element, giving keyboard and
+                  screen-reader users a landmark to jump to.
+                </p>
+                <p class="fix-meta">
+                  Fixes <code>landmark-one-main</code> &middot; in
+                  <code>week4/ex1.html</code>,
+                  <code>week4/ex3.html</code>,
+                  <code>week6/week6_2/ex1.html</code>
+                </p>
+              </div>
+
+              <div class="fix">
+                <div class="fix-head">
+                  <span class="fix-num" aria-hidden="true">4</span>
+                  <h3>Darken the low-contrast text</h3>
+                </div>
+                <p>
+                  Changed the empty-list message from
+                  <span class="before-after">#9ca3af</span> to
+                  <span class="before-after">#6b7280</span>, lifting its
+                  contrast on white from 2.54:1 to 4.83:1 &mdash; past the
+                  4.5:1 AA minimum.
+                </p>
+                <p class="fix-meta">
+                  Fixes <code>color-contrast</code> &middot; in
+                  <code>week4/ex3.html</code>
+                </p>
+              </div>
+
+              <div class="fix">
+                <div class="fix-head">
+                  <span class="fix-num" aria-hidden="true">5</span>
+                  <h3>Let visible text name the links</h3>
+                </div>
+                <p>
+                  Removed the four redundant <code>aria-label</code>s on the
+                  homepage bookshelf links, so the accessible name comes from
+                  the visible text inside each spine.
+                </p>
+                <p class="fix-meta">
+                  Fixes <code>label-content-name-mismatch</code> &middot; in
+                  <code>index.html</code>
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="after-title">
+            <h2 id="after-title">Re-run: everything at 100</h2>
+            <p>
+              After the fixes, the same audit was run again. Every audited
+              page now scores 100, and the to-do list page &mdash; the worst
+              offender at 66 &mdash; passes all checks with a fully clean
+              report.
+            </p>
+
+            <figure class="shot">
+              <img
+                src="../../static/lighthouse-improved-week4-todo.png"
+                width="1280"
+                height="1200"
+                alt="Lighthouse accessibility report for the fixed to-do list page: the gauge shows a score of 100, with no failing audits."
+              />
+              <figcaption>
+                The re-run on <code>week4/ex3.html</code>: 100, no failing
+                audits. You can open the
+                <a href="../../week4/ex3.html">fixed to-do list</a> and try it.
+              </figcaption>
+            </figure>
+
+            <div class="shot-grid">
+              <figure class="shot">
+                <img
+                  src="../../static/lighthouse-improved-week4-counter.png"
+                  width="1280"
+                  height="1200"
+                  alt="Lighthouse accessibility report for the fixed click counter page: the gauge shows a score of 100, with no failing audits."
+                />
+                <figcaption>
+                  <a href="../../week4/ex1.html">Click counter</a> after the
+                  fixes: 100.
+                </figcaption>
+              </figure>
+              <figure class="shot">
+                <img
+                  src="../../static/lighthouse-improved-week6-signin.png"
+                  width="1280"
+                  height="1200"
+                  alt="Lighthouse accessibility report for the fixed sign-in form page: the gauge shows a score of 100, with no failing audits."
+                />
+                <figcaption>
+                  <a href="ex1.html">Sign-in form</a> after the fixes: 100.
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="section notes" aria-labelledby="notes-title">
+            <h2 id="notes-title">What's left</h2>
+            <p>
+              The homework is complete, but the audit surfaced a few things
+              worth fixing in future passes:
+            </p>
+            <ul>
+              <li>
+                Most Week 2 and Week 3 topic pages still fail
+                <code>landmark-one-main</code> because their content is not
+                wrapped in a <code>&lt;main&gt;</code> element.
+              </li>
+              <li>
+                <code>week2/week2_2/ex5.html</code> fails
+                <code>target-size</code>: its link tap targets are smaller
+                than the 24&times;24 CSS pixel minimum.
+              </li>
+              <li>
+                <code>week3/week3_2/ex3.html</code> (a loading-spinner demo)
+                trips a Lighthouse quirk and reports NO_FCP instead of a
+                score; it needs a manual check.
+              </li>
+              <li>
+                This report page was audited with the same Lighthouse run:
+                it scores 100 too.
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <aside class="facts" aria-labelledby="facts-title">
+          <h2 id="facts-title">Audit at a glance</h2>
+          <dl>
+            <div>
+              <dt>Tool</dt>
+              <dd>Lighthouse 13.6.0</dd>
+            </div>
+            <div>
+              <dt>Category</dt>
+              <dd>Accessibility only</dd>
+            </div>
+            <div>
+              <dt>Date</dt>
+              <dd>2 November 2026</dd>
+            </div>
+            <div>
+              <dt>First pass</dt>
+              <dd>Deployed site on GitHub Pages</dd>
+            </div>
+            <div>
+              <dt>Second pass</dt>
+              <dd>Fixed local copy</dd>
+            </div>
+            <div>
+              <dt>Pages audited</dt>
+              <dd>4</dd>
+            </div>
+            <div>
+              <dt>Failing audits found</dt>
+              <dd>5 distinct, 10 total</dd>
+            </div>
+            <div>
+              <dt>Fixes applied</dt>
+              <dd>5</dd>
+            </div>
+            <div>
+              <dt>Final scores</dt>
+              <dd>100 on every audited page</dd>
+            </div>
+          </dl>
+
+          <div class="see-also">
+            <h3>See also</h3>
+            <ul>
+              <li>
+                <a href="homework.html">The Week 6 homework page</a>
+              </li>
+              <li><a href="../../index.html">Back to the library</a></li>
+              <li>
+                <a href="https://github.com/zefishy/web-prog-gachon"
+                  >Source on GitHub</a
+                >
+              </li>
+            </ul>
+          </div>  
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Web Programming Library @ Gachon University</p>
+        <p class="fine">
+          2026 Ryan Wong. Built with semantic HTML, modern CSS, and JavaScript.
+        </p>
+        <ul>
+          <li><a href="../../index.html">Back to the library</a></li>
+          <li>
+            <a href="https://github.com/zefishy/web-prog-gachon"
+              >Source on GitHub</a
+            >
+          </li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        function initThemeToggle() {
+          var root = document.documentElement;
+          var btn = document.getElementById("theme-toggle");
+          if (!btn) return;
+
+          function isDark() {
+            return root.getAttribute("data-theme") !== "light";
+          }
+
+          function sync() {
+            var label = isDark()
+              ? "Switch to light mode"
+              : "Switch to dark mode";
+            btn.setAttribute("aria-label", label);
+            btn.setAttribute("title", label);
+          }
+
+          btn.addEventListener("click", function () {
+            var next = isDark() ? "light" : "dark";
+            root.setAttribute("data-theme", next);
+            try {
+              localStorage.setItem("theme", next);
+            } catch (e) {}
+            sync();
+          });
+
+          sync();
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", initThemeToggle);
+        } else {
+          initThemeToggle();
+        }
+      })();
+    </script>
+  </body>
+</html>
