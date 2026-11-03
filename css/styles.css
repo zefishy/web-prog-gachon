@@ -135,7 +135,9 @@ code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; 
   margin-top: 1.5rem;
   border-bottom: .5rem solid var(--ink);
 }
-.shelf li { flex: var(--pages) 1 5.5rem; display: flex; }
+/* Every spine stretches to the full height of the shelf row, so all weekly
+   buttons are exactly the same height no matter how much text they hold. */
+.shelf li { flex: var(--pages) 1 5.5rem; display: flex; align-items: stretch; }
 .pages-16 { --pages: 16; }
 .pages-55 { --pages: 55; }
 .pages-4 { --pages: 4; }
@@ -175,8 +177,13 @@ code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; 
   display: grid; gap: .5rem;
   grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
 }
+/* Each li is a flex row so its .link button stretches to the full height of its
+   grid cell — a wrapped label can no longer make one button taller than the
+   others beside it. */
+.links li { display: flex; }
 .link {
   display: flex; align-items: center; gap: .75rem;
+  flex: 1; min-width: 0;
   min-height: 3rem; padding: .4rem .75rem .4rem .45rem;
   background: var(--surface);
   border: 1px solid var(--rule); border-radius: 8px;
