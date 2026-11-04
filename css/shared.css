@@ -110,6 +110,44 @@
   }
 }
 
+/* ---------- Page transitions ----------
+   Cross-document View Transitions crossfade the outgoing page into the
+   incoming one: both pages render together for a moment, so the text
+   dissolves from one page to the next instead of cutting through a blank.
+   Chromium 126+ runs them on same-origin navigations (including back and
+   forward); browsers without the feature ignore this rule and fall back to
+   the page-in fade below. Reduced-motion users get the swap with no
+   animation. The rule must be present in both pages of a navigation, which
+   every page here gets by loading shared.css. */
+@view-transition {
+  navigation: auto;
+}
+
+/* The browser's default crossfade is a brisk .25s; stretch it a little to
+   match the page-in rise, so both halves of the transition share one rhythm.
+   Inert everywhere the transition doesn't run. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: .35s;
+}
+
+/* Fallback and arrival fade: where no View Transition runs (Firefox, Safari,
+   reloads, jumps to the bare exercise pages) the swap is instant, and the
+   new page's content fades in over the paper instead of popping. Under a
+   running View Transition the two simply compose — the old page crossfades
+   out while the new page's content settles in beneath it. */
+@media (prefers-reduced-motion: no-preference) {
+  body { animation: page-in .4s var(--ease-out) both; }
+}
+
+@keyframes page-in {
+  from { opacity: 0; }
+}
+
+@media print {
+  body { animation: none; }
+}
+
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
