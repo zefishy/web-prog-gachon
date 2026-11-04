@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 6 API demo by Ryan Wong: a country table from the REST Countries API — flags, capitals, regions, and populations — with built-in sample data if the live API is down.">
+  <title>Week 6: REST Countries Table</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%8D%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../../static/shared.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 6</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">REST Countries</h1>
+        <p class="lead">Flags, capitals, and populations in a sortable table — fetched live, with built-in sample data so the page still demonstrates when the API is down. <span class="endpoint">restcountries.com/v3.1/name/korea</span></p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <form id="form" class="controls" role="search">
+        <input id="query" class="field" type="text" value="korea" placeholder="Search a country (e.g. korea, japan, united)" aria-label="Country name" autocomplete="off">
+        <button type="submit" id="search" class="btn btn-primary">Search</button>
+      </form>
+
+      <div id="panel" class="panel" aria-live="polite"></div>
+
+      <noscript>
+        <p class="status">This page needs JavaScript turned on to load countries from the REST Countries API.</p>
+      </noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 6 API demo by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript. Data comes from the REST Countries API, with a built-in sample fallback.</p>
+      <ul>
+        <li><a href="../../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="../../js/week6.js"></script>
+  <script>
+    const panel = document.querySelector('#panel');
+    const form = document.querySelector('#form');
+    const queryInput = document.querySelector('#query');
+    const searchBtn = document.querySelector('#search');
+
+    // Offline sample (approximate figures), used only if the live API is unavailable.
+    // REST Countries retired its v3.1 endpoint, so this keeps the page demonstrable.
+    const SAMPLE = [
+        { name: { common: 'South Korea' }, capital: ['Seoul'], population: 51700000, region: 'Asia', code: 'kr' },
+        { name: { common: 'North Korea' }, capital: ['Pyongyang'], population: 26000000, region: 'Asia', code: 'kp' },
+        { name: { common: 'Japan' }, capital: ['Tokyo'], population: 123000000, region: 'Asia', code: 'jp' },
+        { name: { common: 'China' }, capital: ['Beijing'], population: 1410000000, region: 'Asia', code: 'cn' },
+        { name: { common: 'United States' }, capital: ['Washington, D.C.'], population: 335000000, region: 'Americas', code: 'us' },
+        { name: { common: 'United Kingdom' }, capital: ['London'], population: 67000000, region: 'Europe', code: 'gb' },
+        { name: { common: 'France' }, capital: ['Paris'], population: 68000000, region: 'Europe', code: 'fr' },
+        { name: { common: 'Brazil' }, capital: ['Brasília'], population: 215000000, region: 'Americas', code: 'br' }
+    ];
+
+    async function fetchCountries(query) {
+        const url = 'https://restcountries.com/v3.1/name/' + encodeURIComponent(query) +
+            '?fields=name,capital,population,region,flags';
+        const response = await fetch(url);
+        if (response.status === 404) throw new Error('notfound');
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const data = await response.json();
+        // A retired API version answers 200 with an error object instead of an array
+        if (!Array.isArray(data)) throw new Error('deprecated');
+        return { countries: data, live: true };
+    }
+
+    async function loadCountries(query) {
+        showLoading(panel);
+        searchBtn.disabled = true;
+        try {
+            let result;
+            try {
+                result = await fetchCountries(query);
+            } catch (err) {
+                if (err.message === 'notfound') throw err;
+                console.warn('Live API unavailable, using sample data:', err);
+                const q = query.toLowerCase();
+                const matches = SAMPLE.filter((c) => c.name.common.toLowerCase().includes(q));
+                if (!matches.length) throw new Error('notfound');
+                result = { countries: matches, live: false };
+            }
+            const countries = result.countries;
+            countries.sort((a, b) => b.population - a.population);
+
+            const table = el('table');
+            const head = el('thead');
+            const headRow = el('tr');
+            ['Flag', 'Country', 'Capital', 'Region', 'Population'].forEach((h) => headRow.append(el('th', '', h)));
+            head.append(headRow);
+
+            const body = el('tbody');
+            countries.forEach((c, i) => {
+                const row = el('tr');
+                row.style.animationDelay = i * 0.05 + 's';
+                const flagCell = el('td');
+                if (c.flags) {
+                    const flag = el('img');
+                    flag.src = c.flags.png;
+                    flag.alt = c.flags.alt || 'Flag of ' + c.name.common;
+                    flagCell.append(flag);
+                } else {
+                    const flag = el('img');
+                    flag.src = 'https://flagcdn.com/w80/' + c.code + '.png';
+                    flag.alt = 'Flag of ' + c.name.common;
+                    flagCell.append(flag);
+                }
+                row.append(
+                    flagCell,
+                    el('td', '', c.name.common),
+                    el('td', '', (c.capital && c.capital.join(', ')) || '—'),
+                    el('td', '', c.region),
+                    el('td', '', c.population.toLocaleString())
+                );
+                body.append(row);
+            });
+
+            table.append(head, body);
+            panel.replaceChildren(table);
+            if (!result.live) {
+                panel.append(el('p', 'note', 'ℹ️ The live REST Countries API (v3.1) is no longer available, so this shows built-in sample data.'));
+            }
+        } catch (err) {
+            console.error(err);
+            showError(panel, err.message === 'notfound'
+                ? 'No countries match "' + query + '". Try another name.'
+                : 'Could not load countries. Please try again.');
+        } finally {
+            searchBtn.disabled = false;
+        }
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (queryInput.value.trim()) loadCountries(queryInput.value.trim());
+    });
+    loadCountries('korea');
+  </script>
+</body>
+
+</html>

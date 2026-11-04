@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 7 lab by Ryan Wong: a book search app querying the Open Library API with JavaScript fetch — skeleton loading cards, a request timeout, retries, and a local cache fallback.">
+  <title>Week 7: Book Search App</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="week7.css">
+  <script src="../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 7</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Book Search App</h1>
+        <p class="lead">Search the Open Library — millions of books, free. Type a title and press <strong>Search</strong>: results load as cards with covers, while skeletons, a timeout, retries, and a saved cache keep the page working when the API is slow or offline.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <form id="search-form" class="search-form" role="search">
+        <input id="query" class="search-input" type="search" placeholder="Search by book title, e.g. harry potter" aria-label="Book title" autocomplete="off" required>
+        <button id="search-btn" class="btn btn-primary" type="submit">Search</button>
+      </form>
+
+      <p id="status" class="status" aria-live="polite"></p>
+      <section id="results" class="results" aria-label="Search results"></section>
+
+      <noscript>
+        <p class="status">This page needs JavaScript turned on to search the Open Library.</p>
+      </noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 7 lab by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript. Book data comes from the Open Library API.</p>
+      <ul>
+        <li><a href="../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script>
+    const API_URL = 'https://openlibrary.org/search.json';
+    const COVER_URL = 'https://covers.openlibrary.org/b/id/';
+    const LIMIT = 12;
+    const TIMEOUT_MS = 10000;
+    const CACHE_KEY = 'bookSearchCache';
+
+    const form = document.getElementById('search-form');
+    const input = document.getElementById('query');
+    const button = document.getElementById('search-btn');
+    const statusEl = document.getElementById('status');
+    const resultsEl = document.getElementById('results');
+
+    // Step 3: wire the form
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const query = input.value.trim();
+        if (query) searchBooks(query);
+    });
+
+    function setStatus(message, isError = false) {
+        statusEl.textContent = message;
+        statusEl.classList.toggle('error', isError);
+    }
+
+    // Step 6: skeleton cards while loading
+    function showSkeletons() {
+        resultsEl.replaceChildren();
+        for (let i = 0; i < LIMIT; i++) {
+            const card = document.createElement('div');
+            card.className = 'book-card skeleton';
+            card.innerHTML = '<div class="cover-skel"></div>' +
+                '<div class="book-info"><div class="line"></div><div class="line short"></div></div>';
+            resultsEl.appendChild(card);
+        }
+    }
+
+    // Step 4: fetch -> check res.ok -> parse JSON (with a timeout so the page never hangs)
+    async function fetchBooks(query) {
+        const url = API_URL + '?q=' + encodeURIComponent(query) + '&limit=' + LIMIT +
+            '&fields=key,title,author_name,first_publish_year,cover_i,cover_edition_key';
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+        try {
+            const res = await fetch(url, { signal: controller.signal });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return await res.json();
+        } finally {
+            clearTimeout(timer);
+        }
+    }
+
+    // Remember successful searches so a slow or offline API can still show something
+    function readCache() {
+        try { return JSON.parse(localStorage.getItem(CACHE_KEY)) || {}; } catch (e) { return {}; }
+    }
+
+    function saveCache(query, data) {
+        try {
+            const cache = readCache();
+            cache[query.toLowerCase()] = { docs: data.docs, numFound: data.numFound };
+            localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+        } catch (e) { /* storage full or blocked: ignore */ }
+    }
+
+    async function searchBooks(query) {
+        button.disabled = true;
+        setStatus('Searching...');
+        showSkeletons();
+
+        try {
+            let data;
+            for (let attempt = 1; attempt <= 2; attempt++) {
+                try {
+                    data = await fetchBooks(query);
+                    break;
+                } catch (err) {
+                    console.error('Attempt ' + attempt + ' failed:', err);
+                    if (attempt === 2) throw err;
+                    setStatus('Open Library is responding slowly... trying again.');
+                }
+            }
+            saveCache(query, data);
+            renderBooks(data.docs, query, data.numFound);
+        } catch (err) {
+            const cached = readCache()[query.toLowerCase()];
+            if (cached) {
+                renderBooks(cached.docs, query, cached.numFound);
+                setStatus('⚠️ Open Library is not responding, showing your saved results for "' + query + '".');
+            } else {
+                showError(query);
+            }
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    function showError(query) {
+        resultsEl.replaceChildren();
+        setStatus('Open Library is not responding right now (the service may be down or slow). Please try again in a moment.', true);
+        const retry = document.createElement('button');
+        retry.type = 'button';
+        retry.className = 'btn btn-primary';
+        retry.textContent = '↻ Try again';
+        retry.addEventListener('click', () => searchBooks(query));
+        resultsEl.appendChild(retry);
+    }
+
+    function buildPlaceholder() {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'no-cover';
+        placeholder.textContent = '📚';
+        return placeholder;
+    }
+
+    // cover_i is often missing, so try other IDs the API gives us, then fall back to a placeholder.
+    // "?default=false" makes Open Library answer 404 (instead of a blank image) when it has no cover.
+    function coverCandidates(book) {
+        const urls = [];
+        if (book.cover_i) urls.push(COVER_URL + book.cover_i + '-M.jpg?default=false');
+        if (book.cover_edition_key) urls.push('https://covers.openlibrary.org/b/olid/' + book.cover_edition_key + '-M.jpg?default=false');
+        return urls;
+    }
+
+    function buildCover(book) {
+        const urls = coverCandidates(book);
+        const img = document.createElement('img');
+        img.className = 'cover';
+        img.alt = 'Cover of ' + book.title;
+        img.loading = 'lazy';
+
+        let next = 0;
+        let triedEditions = false;
+        img.addEventListener('error', async () => {
+            next += 1;
+            if (next < urls.length) { img.src = urls[next]; return; }   // try the next source
+
+            // Last resort: look through every edition of this work for any cover
+            if (!triedEditions) {
+                triedEditions = true;
+                const id = await findEditionCover(book.key);
+                if (id) { img.src = COVER_URL + id + '-M.jpg?default=false'; return; }
+            }
+            img.replaceWith(buildPlaceholder());                         // nothing worked
+        });
+        // Books with no known cover ID at all go straight to the edition search
+        if (urls.length) img.src = urls[0];
+        else img.dispatchEvent(new Event('error'));
+        return img;
+    }
+
+    async function findEditionCover(workKey) {
+        try {
+            const res = await fetch('https://openlibrary.org' + workKey + '/editions.json?limit=50');
+            if (!res.ok) return null;
+            const data = await res.json();
+            const edition = data.entries.find((e) => e.covers && e.covers.some((id) => id > 0));
+            return edition ? edition.covers.find((id) => id > 0) : null;
+        } catch (err) {
+            return null;
+        }
+    }
+
+    // Step 5: createElement -> set content -> appendChild
+    function renderBooks(books, query, total) {
+        resultsEl.replaceChildren();
+
+        // Empty state
+        if (!books.length) {
+            setStatus('😕 No books found for "' + query + '". Try a different title.');
+            return;
+        }
+        setStatus('Showing ' + books.length + ' of ' + total.toLocaleString() + ' results for "' + query + '"');
+
+        books.forEach((book, i) => {
+            const card = document.createElement('a');
+            card.className = 'book-card';
+            card.href = 'https://openlibrary.org' + book.key;
+            card.target = '_blank';
+            card.rel = 'noopener';
+            card.style.animationDelay = i * 0.05 + 's';
+
+            card.appendChild(buildCover(book));
+
+            const info = document.createElement('div');
+            info.className = 'book-info';
+
+            const title = document.createElement('h2');
+            title.className = 'book-title';
+            title.textContent = book.title;
+
+            const author = book.author_name ? book.author_name[0] : 'Unknown author';
+            const year = book.first_publish_year || 'Year unknown';
+            const meta = document.createElement('p');
+            meta.className = 'book-meta';
+            meta.textContent = author + ' · ' + year;
+
+            info.append(title, meta);
+            card.appendChild(info);
+            resultsEl.appendChild(card);
+        });
+    }
+
+    // Start with a sample search so the page isn't empty
+    input.value = 'harry potter';
+    searchBooks('harry potter');
+  </script>
+</body>
+
+</html>

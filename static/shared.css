@@ -1,0 +1,175 @@
+/* ---------- static/shared.css (Week 6: API demos) ----------
+   The shared layer for the Week 6 fetch demos in week6/week6_1/
+   (api_jsonplaceholder_posts, api_open_meteo_weather,
+   api_pokeapi_pokedex, api_random_user_profile,
+   api_rest_countries_table). Loaded after css/shared.css, which
+   supplies the design tokens, the theme cross-fade, the header frame,
+   the buttons (.btn), and the footer — the same two-layer pattern as
+   week7.css or week6_2/homework.css.
+
+   One token override: Week 6's shelf colour is the neutral ink pair,
+   so the demo accents (focus rings, tags, hovers) follow the theme
+   instead of a fixed green. */
+
+:root {
+  --wk: var(--ink);
+}
+
+/* ---------- Content layout ---------- */
+.layout {
+  display: grid;
+  gap: 2rem;
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+}
+
+/* ---------- Endpoint chip & controls ---------- */
+.endpoint {
+  display: inline-block;
+  padding: .1rem .65rem;
+  font-family: var(--mono);
+  font-size: .875rem;
+  word-break: break-all;
+  color: var(--head);
+  background: color-mix(in srgb, var(--wk) 9%, var(--surface));
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+}
+
+.controls { display: flex; flex-wrap: wrap; gap: .75rem; }
+.controls .btn { flex: none; }
+
+.field {
+  flex: 1 1 14rem; min-width: 0;
+  min-height: 2.875rem;
+  padding: .6rem .8rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 2px solid var(--rule);
+  border-radius: 8px;
+}
+.field::placeholder { color: var(--muted); opacity: .85; }
+/* The shared :focus-visible outline stays; the border picks up the ink accent */
+.field:focus { border-color: var(--wk); }
+
+.btn:disabled { opacity: .55; cursor: default; pointer-events: none; }
+
+/* ---------- Panel, status line & spinner ---------- */
+.panel { min-height: 8rem; }
+.panel > * + * { margin-top: 1.25rem; }
+
+.status {
+  display: grid; justify-items: center; gap: .5rem;
+  padding: 2.5rem 1rem;
+  color: var(--muted); text-align: center;
+}
+.status.error { color: var(--danger); font-weight: 600; }
+
+.note { color: var(--muted); font-size: .9375rem; }
+
+.spinner {
+  width: 2.25rem; height: 2.25rem;
+  border: 4px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(1turn); } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(1rem); } }
+
+/* ---------- Cards, grid & tags ---------- */
+.card {
+  padding: 1rem 1.15rem;
+  background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 8px;
+  animation: fade-up .45s var(--ease-out) both;
+}
+.card h3 { margin: 0 0 .35rem; font-size: 1.05rem; text-transform: capitalize; }
+.card p { margin: 0; color: var(--muted); line-height: 1.55; }
+
+.grid {
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+
+.tag {
+  display: inline-block;
+  padding: .15rem .65rem; margin: .3rem .3rem 0 0;
+  font-size: .8rem; border-radius: 999px;
+  background: color-mix(in srgb, var(--wk) 12%, var(--surface));
+  border: 1px solid var(--rule);
+}
+
+/* ---------- Data table (REST Countries) ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+th, td {
+  text-align: left;
+  padding: .65rem 1rem .65rem 0;
+  border-top: 1px solid var(--rule);
+  vertical-align: middle;
+}
+thead th {
+  border-top: none;
+  color: var(--muted);
+  font-size: .875rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+tbody tr { animation: fade-up .4s var(--ease-out) both; }
+tbody tr:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+td img { display: block; width: 2.75rem; height: auto; border-radius: 4px; }
+
+/* ---------- Weather page ---------- */
+.now { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+.now .icon { font-size: 4rem; line-height: 1; }
+.now .temp { font-size: 3rem; font-weight: 700; line-height: 1.15; }
+.forecast {
+  display: grid; gap: .75rem;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+}
+.day { text-align: center; }
+.day .icon { font-size: 1.8rem; line-height: 1; margin-block: .2rem; }
+
+/* ---------- Pokédex page ---------- */
+.poke { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; }
+.poke img { width: 11.25rem; height: 11.25rem; image-rendering: pixelated; }
+.stats { flex: 1 1 16rem; }
+.stat {
+  display: grid; grid-template-columns: 7rem 1fr 2.5rem;
+  gap: .5rem; align-items: center;
+  margin: .375rem 0;
+  font-size: .9rem; text-transform: capitalize;
+}
+.bar {
+  height: .625rem; border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  overflow: hidden;
+}
+.bar span {
+  display: block; height: 100%; width: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width .8s var(--ease-out);
+}
+
+/* ---------- Random user page ---------- */
+.profile { display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap; }
+.profile img {
+  width: 8rem; height: 8rem;
+  border-radius: 50%;
+  border: 3px solid var(--rule);
+  object-fit: cover;
+}
+.profile h2 { margin: 0 0 .5rem; }
+.profile p { margin: .25rem 0; }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .card, tbody tr { animation: none; }
+  tbody tr:hover { background: none; }
+  .bar span { transition: none; }
+}

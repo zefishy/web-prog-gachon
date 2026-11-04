@@ -6,18 +6,22 @@
 
 /* ---------- Week tokens ----------
    Each week of the shelf gets its own colour from the palette. Week 6 flips
-   with the theme: deep green-black in light, pale mint in dark. */
+   with the theme: deep green-black in light, pale mint in dark. Week 7 gets
+   a fresh mid-green of its own, sitting between Weeks 2 and 3 on the same
+   green ramp, with the dark ink on top for contrast. */
 :root {
   --wk2: #8BBB92;  --on-wk2: #092328;
   --wk3: #2A835F;  --on-wk3: #FFFFFF;
   --wk4: #12544F;  --on-wk4: #FFFFFF;
   --wk6: var(--ink);  --on-wk6: var(--paper);
+  --wk7: #57A773;  --on-wk7: #092328;
 }
 
 .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
 .wk3 { --wk: var(--wk3); --on-wk: var(--on-wk3); }
 .wk4 { --wk: var(--wk4); --on-wk: var(--on-wk4); }
 .wk6 { --wk: var(--wk6); --on-wk: var(--on-wk6); }
+.wk7 { --wk: var(--wk7); --on-wk: var(--on-wk7); }
 
 /* ---------- Header content ----------
    The sticky frame comes from shared.css. The homepage packs its nav a
@@ -52,6 +56,8 @@
 .pages-55 { --pages: 55; }
 .pages-4 { --pages: 4; }
 .pages-12 { --pages: 12; }
+.pages-13 { --pages: 13; }
+.pages-18 { --pages: 18; }
 .pages-1 { --pages: 1; }
 .spine {
   width: 100%; min-height: 11rem;
@@ -153,23 +159,26 @@ h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
 
   .site-nav a { white-space: nowrap; padding-inline: .35rem; font-size: .9375rem; }
   .site-nav ul { gap: 0; }
+
+  .shelf { gap: .5rem; }
+  .shelf li { min-width: 0; }
   .spine { padding: .75rem .8rem .9rem; }
+  .spine-count { white-space: normal; }
   .links { grid-template-columns: 1fr; }
 }
 @media (max-width: 24rem) {
   .site-nav a { padding-inline: .25rem; }
 }
-/* With five weeks, the header links and the shelf spines need to be more compact on narrow phones.
-   Links show just the number (the accessible name stays "Week N" via aria-label in the HTML),
-   and the spines are allowed to shrink so all five fit side by side. */
-@media (max-width: 25rem) {
+/* With six sections, the header links and the shelf spines need to be more compact on narrow phones.
+   Week links show just the number (the accessible name stays "Week N" via aria-label in the HTML),
+   and the spines are allowed to shrink so all six fit side by side. */
+@media (max-width: 30rem) {
   .nav-week .nav-word { display: none; }
   .nav-week { min-width: 2.5rem; text-align: center; }
 
   .shelf { gap: .4rem; }
-  .shelf li { min-width: 0; }
-  .spine { min-width: 0; padding: .7rem .6rem .8rem; }
+  .spine { padding: .7rem .6rem .8rem; }
   .spine-num { font-size: 3rem; }
   .spine-topic { font-size: 1.0625rem; }
-  .spine-count { font-size: .875rem; white-space: normal; }
+  .spine-count { font-size: .875rem; }
 }

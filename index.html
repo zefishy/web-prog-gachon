@@ -21,13 +21,14 @@
       <div class="container">
         <a class="owner" href="#top">Ryan Wong<small>Gachon University</small></a>
         <div class="header-end">
-          <nav class="site-nav" aria-label="Jump to a week">
+          <nav class="site-nav" aria-label="Jump to a section">
             <ul>
               <li><a class="nav-week" href="#week-2" aria-label="Week 2"><span class="nav-word">Week </span>2</a></li>
               <li><a class="nav-week" href="#week-3" aria-label="Week 3"><span class="nav-word">Week </span>3</a></li>
               <li><a class="nav-week" href="#week-4" aria-label="Week 4"><span class="nav-word">Week </span>4</a></li>
               <li><a class="nav-week" href="#week-6" aria-label="Week 6"><span class="nav-word">Week </span>6</a></li>
               <li><a class="nav-week" href="#week-7" aria-label="Week 7"><span class="nav-word">Week </span>7</a></li>
+              <li><a href="#project">Project</a></li>
               <li><a href="#about">About</a></li>
             </ul>
           </nav>
@@ -52,8 +53,8 @@
 
           <div class="browse">
             <h2>Browse by week</h2>
-            <p>88 pages across five weeks. Each spine is as wide as the week has pages. Select one to jump to it.</p>
-            <nav aria-label="Weeks on the shelf">
+            <p>95 pages across five weeks and a project. Each spine is as wide as its section has pages. Select one to jump to it.</p>
+            <nav aria-label="Sections on the shelf">
               <ul class="shelf">
                 <li class="pages-16"><a class="spine wk2" href="#week-2" aria-label="Week 2: HTML, 16 pages">
                     <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">2</span></span>
@@ -67,12 +68,16 @@
                     <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">4</span></span>
                     <span class="spine-bottom"><span class="spine-topic">JS</span><span class="spine-count">4 pages</span></span>
                 </a></li>
-                <li class="pages-12"><a class="spine wk6" href="#week-6" aria-label="Week 6: APIs and forms, 12 pages">
+                <li class="pages-18"><a class="spine wk6" href="#week-6" aria-label="Week 6: APIs and forms, 18 pages">
                     <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">6</span></span>
-                    <span class="spine-bottom"><span class="spine-topic">APIs &amp; forms</span><span class="spine-count">12 pages</span></span>
+                    <span class="spine-bottom"><span class="spine-topic">APIs &amp; forms</span><span class="spine-count">18 pages</span></span>
                 </a></li>
-                <li class="pages-1"><a class="spine wk4" href="#week-7" aria-label="Week 7: Project, 1 page">
+                <li class="pages-1"><a class="spine wk7" href="#week-7" aria-label="Week 7: API lab, 1 page">
                     <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">7</span></span>
+                    <span class="spine-bottom"><span class="spine-topic">API lab</span><span class="spine-count">1 page</span></span>
+                </a></li>
+                <li class="pages-1"><a class="spine wk4" href="#project" aria-label="Project: Team 16, 1 page">
+                    <span class="spine-top"><span class="spine-week">Team</span><span class="spine-num">16</span></span>
                     <span class="spine-bottom"><span class="spine-topic">Project</span><span class="spine-count">1 page</span></span>
                 </a></li>
               </ul>
@@ -83,8 +88,8 @@
 
       <!--
       TO ADD A NEW WEEK
-      1. Copy a whole <section class="week wk6" ...> block below and change the number, id, and links.
-      Use class wk2, wk3, wk4, or wk6 to pick a color, or add a new --wkN token and .wkN class in css/styles.css.
+      1. Copy a whole <section class="week wk7" ...> block below and change the number, id, and links.
+      Use class wk2, wk3, wk4, wk6, or wk7 to pick a color, or add a new --wkN token and .wkN class in css/styles.css.
       2. Copy one <li> in the .shelf list above and update its link and text. Give it a class
       like pages-1, where the number is how many pages the week has, and add a matching
       .pages-N rule in css/styles.css. That number sets the spine width.
@@ -252,7 +257,7 @@
               <h2 id="week-6-title">Week 6</h2>
               <p class="week-topic">APIs &amp; forms</p>
               <p class="week-desc">Fetching data from the web with fetch, then HTML forms: input types, labels, fieldsets, built-in validation, and CSS for valid and invalid fields.</p>
-              <p class="week-count">12 pages</p>
+              <p class="week-count">18 pages</p>
             </header>
             <div class="week-body">
               <div class="group">
@@ -261,6 +266,14 @@
                 <h4>Exercises <span class="n">(1)</span></h4>
                 <ul class="links">
                   <li><a class="link" href="week6/week6_1/ex1.html"><span class="num">1</span><span class="label">Random joke fetcher</span></a></li>
+                </ul>
+                <h4>API demos <span class="n">(5)</span></h4>
+                <ul class="links">
+                  <li><a class="link" href="week6/week6_1/api_jsonplaceholder_posts.html"><span class="num">1</span><span class="label">JSONPlaceholder posts</span></a></li>
+                  <li><a class="link" href="week6/week6_1/api_open_meteo_weather.html"><span class="num">2</span><span class="label">Open-Meteo weather</span></a></li>
+                  <li><a class="link" href="week6/week6_1/api_pokeapi_pokedex.html"><span class="num">3</span><span class="label">PokéAPI Pokédex</span></a></li>
+                  <li><a class="link" href="week6/week6_1/api_random_user_profile.html"><span class="num">4</span><span class="label">Random user profiles</span></a></li>
+                  <li><a class="link" href="week6/week6_1/api_rest_countries_table.html"><span class="num">5</span><span class="label">REST Countries table</span></a></li>
                 </ul>
               </div>
               <div class="group">
@@ -282,21 +295,43 @@
                   <li><a class="link" href="week6/week6_2/ex2.html"><span class="num">2</span><span class="label">Gachon registration form</span></a></li>
                   <li><a class="link" href="week6/week6_2/ex3.html"><span class="num">3</span><span class="label">Validation styles demo</span></a></li>
                 </ul>
-                <h4>Homework <span class="n">(1)</span></h4>
+                <h4>Homework <span class="n">(2)</span></h4>
                 <ul class="links">
                   <li><a class="link" href="week6/week6_2/homework.html"><span class="num">1</span><span class="label">Student registration form</span></a></li>
+                  <li><a class="link" href="week6/week6_2/report.html"><span class="num">2</span><span class="label">Accessibility report</span></a></li>
                 </ul>
               </div>
             </div>
         </div></div>
       </section>
 
-      <section class="week wk4" id="week-7" aria-labelledby="week-7-title">
+      <section class="week wk7" id="week-7" aria-labelledby="week-7-title">
         <div class="container"><div class="week-layout">
             <header class="week-head">
               <h2 id="week-7-title">Week 7</h2>
-              <p class="week-topic">Project</p>
-              <p class="week-desc">Team 16's club project: a proposal for a better Gachon Wind baseball club website — the problems, the plan, and the team behind it.</p>
+              <p class="week-topic">API lab</p>
+              <p class="week-desc">A fetch lab: a book search app on the Open Library API, with skeleton loading cards, a request timeout, retries, and a local cache for when the API is down.</p>
+              <p class="week-count">1 page</p>
+            </header>
+            <div class="week-body">
+              <div class="group">
+                <h3>Book search lab</h3>
+                <p class="path">Folder: <code>week7/</code></p>
+                <h4>Exercises <span class="n">(1)</span></h4>
+                <ul class="links">
+                  <li><a class="link" href="week7/book_search.html"><span class="num">1</span><span class="label">Book Search App <span class="note">Open Library API</span></span></a></li>
+                </ul>
+              </div>
+            </div>
+        </div></div>
+      </section>
+
+      <section class="week wk4" id="project" aria-labelledby="project-title">
+        <div class="container"><div class="week-layout">
+            <header class="week-head">
+              <h2 id="project-title">Project</h2>
+              <p class="week-topic">Team 16</p>
+              <p class="week-desc">The club project: a proposal for a better Gachon Wind baseball club website — the problems, the plan, and the team behind it.</p>
               <p class="week-count">1 page</p>
             </header>
             <div class="week-body">

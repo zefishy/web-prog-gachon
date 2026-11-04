@@ -1,0 +1,117 @@
+/* ---------- week7.css (Week 7: API lab) ----------
+   The Week 7 layer on top of css/shared.css: the book search app's search
+   form, result cards, and skeleton loading state. Tokens, the theme
+   cross-fade, the header frame, buttons, and the footer all come from
+   shared.css.
+
+   One token override: this week gets its own green from the shelf, with the
+   dark ink on top for contrast (like Week 2). */
+
+:root {
+  --wk: #57A773;
+}
+
+/* ---------- Content layout ---------- */
+.layout {
+  display: grid;
+  gap: 2rem;
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+}
+
+/* ---------- Search form ---------- */
+.search-form { display: flex; gap: .75rem; }
+
+.search-input {
+  flex: 1; min-width: 0;
+  min-height: 2.875rem;
+  padding: .6rem .8rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 2px solid var(--rule);
+  border-radius: 8px;
+}
+
+.search-input::placeholder { color: var(--muted); opacity: .85; }
+
+/* The shared :focus-visible outline stays; the border just picks up the week green */
+.search-input:focus { border-color: var(--wk); }
+
+.search-form .btn { flex: none; }
+
+/* ---------- Status line ---------- */
+.status { color: var(--muted); min-height: 1.4em; }
+.status.error { color: var(--danger); font-weight: 600; }
+
+/* ---------- Results (Grid) ---------- */
+.results {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+}
+
+/* The retry button after a failed search spans the whole row */
+.results .btn { grid-column: 1 / -1; justify-self: start; }
+
+.book-card {
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 8px;
+  color: inherit; text-decoration: none;
+  animation: fade-up .45s var(--ease-out) both;
+  transition: transform .18s ease, border-color .18s ease;
+}
+
+.book-card:hover { transform: translateY(-.35rem); border-color: var(--wk); }
+
+.cover {
+  display: block;
+  width: 100%; aspect-ratio: 2 / 3; object-fit: cover;
+  background: color-mix(in srgb, var(--ink) 8%, var(--surface));
+}
+
+.no-cover {
+  display: grid; place-items: center;
+  aspect-ratio: 2 / 3; font-size: 3rem;
+  background: linear-gradient(160deg,
+    color-mix(in srgb, var(--wk) 14%, var(--surface)),
+    color-mix(in srgb, var(--wk) 30%, var(--surface)));
+}
+
+.book-info { padding: .85rem 1rem 1.05rem; }
+.book-title { margin: 0 0 .3rem; font-size: 1rem; line-height: 1.3; }
+.book-meta { margin: 0; font-size: .875rem; color: var(--muted); }
+
+/* ---------- Skeleton loading cards ---------- */
+.skeleton { pointer-events: none; }
+
+.skeleton .cover-skel,
+.skeleton .line {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--ink) 8%, var(--surface)) 25%,
+    color-mix(in srgb, var(--ink) 16%, var(--surface)) 50%,
+    color-mix(in srgb, var(--ink) 8%, var(--surface)) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+
+.skeleton .cover-skel { aspect-ratio: 2 / 3; }
+.skeleton .line { height: .75rem; border-radius: 6px; margin: .5rem 0; }
+.skeleton .line.short { width: 60%; }
+
+@keyframes shimmer { to { background-position: -200% 0; } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(1rem); } }
+
+/* ---------- Narrow phones ---------- */
+@media (max-width: 36rem) {
+  .search-form { flex-direction: column; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .book-card { animation: none; transition: none; }
+  .book-card:hover { transform: none; }
+  .skeleton .cover-skel,
+  .skeleton .line { animation: none; }
+}

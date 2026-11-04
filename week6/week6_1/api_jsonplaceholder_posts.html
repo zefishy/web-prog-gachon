@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 6 API demo by Ryan Wong: JSONPlaceholder posts joined with author names via two parallel fetches, rendered as cards you can filter by title or author.">
+  <title>Week 6: JSONPlaceholder Posts</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../../static/shared.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 6</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">JSONPlaceholder Posts</h1>
+        <p class="lead">Fake blog posts joined with their author names via two parallel fetches, rendered as cards you can filter as you type. <span class="endpoint">jsonplaceholder.typicode.com/posts</span></p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <div class="controls">
+        <input id="filter" class="field" type="search" placeholder="Filter posts by title or author" aria-label="Filter posts">
+        <button id="reload" class="btn btn-secondary" type="button">Reload</button>
+      </div>
+
+      <div id="panel" class="panel" aria-live="polite"></div>
+
+      <noscript>
+        <p class="status">This page needs JavaScript turned on to load posts from JSONPlaceholder.</p>
+      </noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 6 API demo by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript. Data comes from the JSONPlaceholder API.</p>
+      <ul>
+        <li><a href="../../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="../../js/week6.js"></script>
+  <script>
+    const panel = document.querySelector('#panel');
+    const filter = document.querySelector('#filter');
+    const reloadBtn = document.querySelector('#reload');
+    let posts = [];
+
+    function render() {
+        const query = filter.value.trim().toLowerCase();
+        const shown = posts.filter((p) =>
+            p.title.toLowerCase().includes(query) || p.author.toLowerCase().includes(query));
+
+        if (!shown.length) {
+            panel.replaceChildren(el('div', 'status', 'No matching posts.'));
+            return;
+        }
+
+        const grid = el('div', 'grid');
+        shown.forEach((post, i) => {
+            const card = el('article', 'card');
+            card.style.animationDelay = i * 0.04 + 's';
+            card.append(el('h3', '', post.title), el('p', '', post.body));
+            card.append(el('span', 'tag', '✍️ ' + post.author));
+            grid.append(card);
+        });
+        panel.replaceChildren(grid);
+    }
+
+    async function loadPosts() {
+        showLoading(panel);
+        reloadBtn.disabled = true;
+        try {
+            // Two requests in parallel: posts and users
+            const [postData, users] = await Promise.all([
+                getJSON('https://jsonplaceholder.typicode.com/posts?_limit=12'),
+                getJSON('https://jsonplaceholder.typicode.com/users')
+            ]);
+            const names = Object.fromEntries(users.map((u) => [u.id, u.name]));
+            posts = postData.map((p) => ({ ...p, author: names[p.userId] || 'Unknown' }));
+            render();
+        } catch (err) {
+            console.error(err);
+            showError(panel, 'Could not load posts. Please check your connection and try again.');
+        } finally {
+            reloadBtn.disabled = false;
+        }
+    }
+
+    filter.addEventListener('input', render);
+    reloadBtn.addEventListener('click', loadPosts);
+    loadPosts();
+  </script>
+</body>
+
+</html>

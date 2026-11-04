@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 6 API demo by Ryan Wong: a Pokédex powered by the PokéAPI — search a Pokémon by name or number and see its sprite, types, and stat bars.">
+  <title>Week 6: PokéAPI Pokédex</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../../static/shared.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 6</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">PokéAPI Pokédex</h1>
+        <p class="lead">The full Pokémon database — search by name or number (or roll a random one) and read the sprite, types, and stat bars that animate in. <span class="endpoint">pokeapi.co/api/v2/pokemon/pikachu</span></p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <form id="form" class="controls">
+        <input id="name" class="field" type="text" value="pikachu" placeholder="Pokémon name or number" aria-label="Pokémon name" autocomplete="off">
+        <button type="submit" id="search" class="btn btn-primary">Search</button>
+        <button type="button" id="random" class="btn btn-secondary">Random</button>
+      </form>
+
+      <div id="panel" class="panel" aria-live="polite"></div>
+
+      <noscript>
+        <p class="status">This page needs JavaScript turned on to load Pokémon from the PokéAPI.</p>
+      </noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 6 API demo by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript. Data comes from the PokéAPI.</p>
+      <ul>
+        <li><a href="../../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="../../js/week6.js"></script>
+  <script>
+    const panel = document.querySelector('#panel');
+    const form = document.querySelector('#form');
+    const nameInput = document.querySelector('#name');
+    const buttons = form.querySelectorAll('button');
+
+    async function loadPokemon(query) {
+        showLoading(panel);
+        buttons.forEach((b) => (b.disabled = true));
+        try {
+            const response = await fetch('https://pokeapi.co/api/v2/pokemon/' + encodeURIComponent(query.toLowerCase()));
+            if (response.status === 404) throw new Error('notfound');
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const p = await response.json();
+
+            const card = el('div', 'card poke');
+            const img = el('img');
+            img.src = p.sprites.other['official-artwork'].front_default || p.sprites.front_default;
+            img.alt = p.name;
+
+            const info = el('div', 'stats');
+            info.append(el('h3', '', '#' + p.id + ' ' + p.name));
+            const types = el('div');
+            p.types.forEach((t) => types.append(el('span', 'tag', t.type.name)));
+            info.append(types);
+            info.append(el('p', '', 'Height ' + p.height / 10 + ' m · Weight ' + p.weight / 10 + ' kg'));
+
+            const bars = [];
+            p.stats.forEach((s) => {
+                const row = el('div', 'stat');
+                const bar = el('div', 'bar');
+                const fill = el('span');
+                bar.append(fill);
+                row.append(el('span', '', s.stat.name.replace('-', ' ')), bar, el('span', '', s.base_stat));
+                info.append(row);
+                bars.push([fill, Math.min(100, (s.base_stat / 160) * 100)]);
+            });
+
+            card.append(img, info);
+            panel.replaceChildren(card);
+            // animate the bars after they're in the DOM
+            requestAnimationFrame(() => requestAnimationFrame(() => bars.forEach(([f, w]) => (f.style.width = w + '%'))));
+        } catch (err) {
+            console.error(err);
+            showError(panel, err.message === 'notfound'
+                ? 'No Pokémon called "' + query + '". Check the spelling and try again.'
+                : 'Could not reach PokéAPI. Please try again.');
+        } finally {
+            buttons.forEach((b) => (b.disabled = false));
+        }
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (nameInput.value.trim()) loadPokemon(nameInput.value.trim());
+    });
+    document.querySelector('#random').addEventListener('click', () => {
+        const id = Math.floor(Math.random() * 1025) + 1;
+        nameInput.value = id;
+        loadPokemon(String(id));
+    });
+    loadPokemon('pikachu');
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 6 API demo by Ryan Wong: real weather from the key-free Open-Meteo API — current conditions and a five-day forecast for five cities.">
+  <title>Week 6: Open-Meteo Weather</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../../static/shared.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 6</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Open-Meteo Weather</h1>
+        <p class="lead">Real weather for five cities, no API key — current conditions plus the week's forecast, mapped from WMO weather codes to icons. <span class="endpoint">api.open-meteo.com/v1/forecast</span></p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <div class="controls">
+        <select id="city" class="field" aria-label="City">
+          <option value="37.5665,126.978,Seoul">Seoul</option>
+          <option value="35.1796,129.0756,Busan">Busan</option>
+          <option value="35.6762,139.6503,Tokyo">Tokyo</option>
+          <option value="51.5072,-0.1276,London">London</option>
+          <option value="40.7128,-74.006,New York">New York</option>
+        </select>
+        <button id="reload" class="btn btn-secondary" type="button">Refresh</button>
+      </div>
+
+      <div id="panel" class="panel" aria-live="polite"></div>
+
+      <noscript>
+        <p class="status">This page needs JavaScript turned on to load weather from Open-Meteo.</p>
+      </noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 6 API demo by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript. Data comes from the Open-Meteo API.</p>
+      <ul>
+        <li><a href="../../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="../../js/week6.js"></script>
+  <script>
+    const panel = document.querySelector('#panel');
+    const citySelect = document.querySelector('#city');
+    const reloadBtn = document.querySelector('#reload');
+
+    // WMO weather codes -> emoji + label
+    function describe(code) {
+        if (code === 0) return ['☀️', 'Clear sky'];
+        if (code <= 3) return ['⛅', 'Partly cloudy'];
+        if (code <= 48) return ['🌫️', 'Fog'];
+        if (code <= 57) return ['🌦️', 'Drizzle'];
+        if (code <= 67) return ['🌧️', 'Rain'];
+        if (code <= 77) return ['❄️', 'Snow'];
+        if (code <= 82) return ['🌧️', 'Showers'];
+        if (code <= 86) return ['🌨️', 'Snow showers'];
+        return ['⛈️', 'Thunderstorm'];
+    }
+
+    async function loadWeather() {
+        const [lat, lon, name] = citySelect.value.split(',');
+        showLoading(panel);
+        reloadBtn.disabled = true;
+        try {
+            const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon +
+                '&current=temperature_2m,wind_speed_10m,weather_code' +
+                '&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto';
+            const data = await getJSON(url);
+
+            const [icon, label] = describe(data.current.weather_code);
+            const now = el('div', 'card now');
+            now.append(el('div', 'icon', icon));
+            const info = el('div');
+            info.append(
+                el('div', 'temp', Math.round(data.current.temperature_2m) + '°C'),
+                el('p', '', name + ' · ' + label + ' · wind ' + data.current.wind_speed_10m + ' km/h')
+            );
+            now.append(info);
+
+            const forecast = el('div', 'forecast');
+            data.daily.time.forEach((date, i) => {
+                const [dayIcon] = describe(data.daily.weather_code[i]);
+                const day = el('div', 'card day');
+                day.style.animationDelay = i * 0.05 + 's';
+                const weekday = new Date(date + 'T00:00').toLocaleDateString('en-US', { weekday: 'short' });
+                day.append(
+                    el('h3', '', weekday),
+                    el('div', 'icon', dayIcon),
+                    el('p', '', Math.round(data.daily.temperature_2m_max[i]) + '° / ' + Math.round(data.daily.temperature_2m_min[i]) + '°')
+                );
+                forecast.append(day);
+            });
+
+            panel.replaceChildren(now, forecast);
+        } catch (err) {
+            console.error(err);
+            showError(panel, 'Could not load the weather. Please try again.');
+        } finally {
+            reloadBtn.disabled = false;
+        }
+    }
+
+    citySelect.addEventListener('change', loadWeather);
+    reloadBtn.addEventListener('click', loadWeather);
+    loadWeather();
+  </script>
+</body>
+
+</html>
