@@ -46,14 +46,15 @@
   --gutter: clamp(1rem, 4vw, 2.5rem);
   --header-h: 3.5rem;
 
-  /* Theme-motion curve: a fast start and a long, gentle settle (ease-out-quint),
-     so the flip feels instant while the colours glide to a stop. It never
-     overshoots, so colour interpolation can't swing past its target.
-     --ease-spring adds a small overshoot for the toggle icon's swing, where
-     that reads as a snap. */
-  --theme-dur: 0.45s;
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Theme-motion curves. --ease-sweep drives the colours themselves: a
+     pronounced S-curve (hold, sweep, settle) so the colour travel is visible
+     instead of reading as an instant flip. It never overshoots, so colour
+     interpolation can't swing past its target. The icon fades on the
+     fast-attack --ease-out and swings on --ease-spring. */
+  --theme-dur: 0.8s;
+  --ease-sweep: cubic-bezier(0.8, 0, 0.16, 1);
+  --ease-out: cubic-bezier(0.05, 0.9, 0.1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.8, 0.64, 1);
 }
 
 /* Light theme: only when chosen with the switch */
@@ -93,17 +94,17 @@
 @media (prefers-reduced-motion: no-preference) {
   :root {
     transition:
-      --paper var(--theme-dur) var(--ease-out),
-      --surface var(--theme-dur) var(--ease-out),
-      --ink var(--theme-dur) var(--ease-out),
-      --muted var(--theme-dur) var(--ease-out),
-      --rule var(--theme-dur) var(--ease-out),
-      --head var(--theme-dur) var(--ease-out),
-      --footer-bg var(--theme-dur) var(--ease-out),
-      --accent var(--theme-dur) var(--ease-out),
-      --on-accent var(--theme-dur) var(--ease-out),
-      --danger var(--theme-dur) var(--ease-out),
-      --on-danger var(--theme-dur) var(--ease-out);
+      --paper var(--theme-dur) var(--ease-sweep),
+      --surface var(--theme-dur) var(--ease-sweep),
+      --ink var(--theme-dur) var(--ease-sweep),
+      --muted var(--theme-dur) var(--ease-sweep),
+      --rule var(--theme-dur) var(--ease-sweep),
+      --head var(--theme-dur) var(--ease-sweep),
+      --footer-bg var(--theme-dur) var(--ease-sweep),
+      --accent var(--theme-dur) var(--ease-sweep),
+      --on-accent var(--theme-dur) var(--ease-sweep),
+      --danger var(--theme-dur) var(--ease-sweep),
+      --on-danger var(--theme-dur) var(--ease-sweep);
   }
 }
 
@@ -180,7 +181,7 @@ code { font-family: var(--mono); font-size: .875em; }
   grid-area: 1 / 1; /* sun and moon share one grid cell, stacked */
   fill: none; stroke: currentColor; stroke-width: 2;
   stroke-linecap: round; stroke-linejoin: round;
-  transition: opacity .2s var(--ease-out), transform .35s var(--ease-spring);
+  transition: opacity .2s var(--ease-out), transform .5s var(--ease-spring);
 }
 /* The hidden icon fades out and swings aside instead of being display-swapped,
    so toggling reads as the icon turning over. */
