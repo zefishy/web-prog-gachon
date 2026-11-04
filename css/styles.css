@@ -1,66 +1,17 @@
-/* ---------- Design tokens ----------
-   Palette: #8BBB92  #2A835F  #12544F  #092328
-   Dark is the default look. Neutrals are tints and shades of those greens. */
+/* ---------- styles.css (homepage) ----------
+   The homepage layer on top of css/shared.css: the bookshelf, the week
+   sections with their coloured spines, and the about strip. Tokens, the
+   theme cross-fade, the header frame, the light/dark switch, buttons, and
+   the footer all live in shared.css. */
+
+/* ---------- Week tokens ----------
+   Each week of the shelf gets its own colour from the palette. Week 6 flips
+   with the theme: deep green-black in light, pale mint in dark. */
 :root {
-  color-scheme: dark;
-
-  --paper: #092328;
-  --surface: #0F2F35;
-  --ink: #E6F0EA;
-  --muted: #A9C2B6;
-  --rule: #24474B;
-  --head: #8BBB92;
-
   --wk2: #8BBB92;  --on-wk2: #092328;
   --wk3: #2A835F;  --on-wk3: #FFFFFF;
   --wk4: #12544F;  --on-wk4: #FFFFFF;
-  --wk6: var(--ink);  --on-wk6: var(--paper);   /* flips with the theme: deep green-black in light, pale mint in dark */
-
-  --edge: color-mix(in srgb, var(--ink) 22%, transparent);
-
-  --footer-bg: #061619;
-  --footer-ink: #E6F0EA;
-
-  --sans: "Helvetica Neue", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
-
-  --max: 72rem;
-  --gutter: clamp(1rem, 4vw, 2.5rem);
-  --header-h: 3.5rem;
-}
-
-/* Light theme: only when chosen with the switch */
-:root[data-theme="light"] {
-  color-scheme: light;
-  --paper: #F2F7F3;
-  --surface: #FFFFFF;
-  --ink: #092328;
-  --muted: #3F5B5C;
-  --rule: #CBDCCF;
-  --head: #12544F;
-  --footer-bg: #092328;
-}
-
-/* ---------- Theme cross-fade ----------
-   Registering the colour tokens as real <color> properties lets the switch
-   animate the variables themselves. Every rule that reads them — backgrounds,
-   text, borders, the Week 6 spine, the mixed hover tints — then follows the
-   animated value frame by frame, so this one rule fades the whole page.
-   Browsers without @property support just switch instantly, as before. */
-@property --paper     { syntax: "<color>"; inherits: true; initial-value: #092328; }
-@property --surface   { syntax: "<color>"; inherits: true; initial-value: #0F2F35; }
-@property --ink       { syntax: "<color>"; inherits: true; initial-value: #E6F0EA; }
-@property --muted     { syntax: "<color>"; inherits: true; initial-value: #A9C2B6; }
-@property --rule      { syntax: "<color>"; inherits: true; initial-value: #24474B; }
-@property --head      { syntax: "<color>"; inherits: true; initial-value: #8BBB92; }
-@property --footer-bg { syntax: "<color>"; inherits: true; initial-value: #061619; }
-
-@media (prefers-reduced-motion: no-preference) {
-  :root {
-    transition:
-      --paper .35s ease, --surface .35s ease, --ink .35s ease,
-      --muted .35s ease, --rule .35s ease, --head .35s ease,
-      --footer-bg .35s ease;
-  }
+  --wk6: var(--ink);  --on-wk6: var(--paper);
 }
 
 .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
@@ -68,89 +19,21 @@
 .wk4 { --wk: var(--wk4); --on-wk: var(--on-wk4); }
 .wk6 { --wk: var(--wk6); --on-wk: var(--on-wk6); }
 
-/* ---------- Base ---------- */
-*, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
-body {
-  margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--sans);
-  font-size: 1.0625rem;
-  line-height: 1.6;
-  -webkit-text-size-adjust: 100%;
-}
-h1, h2, h3 { line-height: 1.15; margin: 0; }
-h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
-p { margin: 0; }
-ul { list-style: none; margin: 0; padding: 0; }
-a { color: inherit; }
-code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .875em; }
-
-:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
-
-.container { max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
-
-.skip {
-  position: absolute; left: var(--gutter); top: -4rem;
-  background: var(--ink); color: var(--paper);
-  padding: .6rem 1rem; border-radius: 6px; z-index: 20;
-}
-.skip:focus { top: .75rem; }
-
-/* ---------- Header ---------- */
-.site-header {
-  position: sticky; top: 0; z-index: 10;
-  background: var(--paper);
-  border-bottom: 1px solid var(--rule);
-}
-.site-header .container {
-  min-height: var(--header-h);
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-}
+/* ---------- Header content ----------
+   The sticky frame comes from shared.css. The homepage packs its nav a
+   little tighter than the standalone pages' back-link header. */
 .owner { font-weight: 700; text-decoration: none; }
 .owner small { font-weight: 400; color: var(--muted); margin-left: .5rem; }
-.header-end { display: flex; align-items: center; gap: .5rem; }
+.header-end { gap: .5rem; }
 .site-nav ul { display: flex; gap: .25rem; }
 .site-nav a {
   display: inline-block; padding: .5rem .75rem; border-radius: 6px; text-decoration: none;
 }
 .site-nav a:hover { background: color-mix(in srgb, var(--ink) 8%, var(--paper)); }
 
-/* ---------- Light / dark icon button ---------- */
-.theme-toggle {
-  display: none;
-  place-items: center;
-  width: 2.5rem; height: 2.5rem; padding: 0;
-  border: 1px solid var(--rule); border-radius: 50%;
-  background: none; color: var(--ink);
-  cursor: pointer;
-}
-.js .theme-toggle { display: inline-grid; }
-.theme-toggle:hover { background: color-mix(in srgb, var(--ink) 10%, var(--paper)); }
-.theme-toggle svg {
-  display: block; width: 1.25rem; height: 1.25rem;
-  grid-area: 1 / 1; /* sun and moon share one grid cell, stacked */
-  fill: none; stroke: currentColor; stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
-  transition: opacity .2s ease, transform .35s ease;
-}
-/* The hidden icon fades out and swings aside instead of being display-swapped,
-   so toggling reads as the icon turning over. */
-.theme-toggle .icon-moon { opacity: 0; transform: rotate(-90deg) scale(.5); }
-:root[data-theme="light"] .theme-toggle .icon-sun { opacity: 0; transform: rotate(90deg) scale(.5); }
-:root[data-theme="light"] .theme-toggle .icon-moon { opacity: 1; transform: none; }
-
-/* ---------- Hero ---------- */
+/* ---------- Hero ----------
+   The homepage hero breathes a little more than the shared default. */
 .hero { padding-block: clamp(2.5rem, 7vw, 5rem) clamp(2.5rem, 6vw, 4rem); }
-.hero h1 {
-  font-size: clamp(2.25rem, 1.2rem + 4.6vw, 4.5rem);
-  font-weight: 700;
-  letter-spacing: -.03em;
-  text-wrap: balance;
-}
-@media (min-width: 40rem) { .h1-line { display: block; } }
-.lead { margin-top: 1.5rem; max-width: 62ch; font-size: 1.1875rem; }
 
 .browse { margin-top: clamp(2rem, 5vw, 3.5rem); }
 .browse h2 { font-size: 1.5rem; }
@@ -168,6 +51,7 @@ code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; 
 .pages-16 { --pages: 16; }
 .pages-55 { --pages: 55; }
 .pages-4 { --pages: 4; }
+.pages-12 { --pages: 12; }
 .pages-1 { --pages: 1; }
 .spine {
   width: 100%; min-height: 11rem;
@@ -194,6 +78,8 @@ code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; 
 .week-topic { margin-top: .5rem; font-weight: 700; font-size: 1.25rem; }
 .week-desc { margin-top: .75rem; color: var(--muted); max-width: 46ch; }
 .week-count { margin-top: 1rem; font-weight: 700; }
+
+h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
 
 .group + .group { margin-top: 3rem; }
 .group h3 { font-size: 1.5rem; }
@@ -253,20 +139,10 @@ code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; 
   .about-layout { grid-template-columns: 1fr 1.4fr; gap: 4rem; }
 }
 
-/* ---------- Footer ---------- */
-.site-footer { background: var(--footer-bg); color: var(--footer-ink); padding-block: 2.5rem; }
-.site-footer .container { display: grid; gap: 1.25rem; }
-.foot-title { font-weight: 700; font-size: 1.25rem; }
-.site-footer ul { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
-.site-footer a { text-underline-offset: .2em; }
-.site-footer :focus-visible { outline-color: var(--footer-ink); }
-.fine { font-size: .9375rem; opacity: .85; }
-
+/* ---------- Motion & narrow screens ---------- */
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
   .spine { transition: none; }
   .spine:hover { transform: none; }
-  .theme-toggle svg { transition: none; }
 }
 
 @media (max-width: 36rem) {
@@ -283,9 +159,9 @@ code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; 
 @media (max-width: 24rem) {
   .site-nav a { padding-inline: .25rem; }
 }
-/* With four weeks, the header links and the shelf spines need to be more compact on narrow phones.
+/* With five weeks, the header links and the shelf spines need to be more compact on narrow phones.
    Links show just the number (the accessible name stays "Week N" via aria-label in the HTML),
-   and the spines are allowed to shrink so all four fit side by side. */
+   and the spines are allowed to shrink so all five fit side by side. */
 @media (max-width: 25rem) {
   .nav-week .nav-word { display: none; }
   .nav-week { min-width: 2.5rem; text-align: center; }

@@ -1,0 +1,239 @@
+/* ---------- shared.css ----------
+   Site-wide foundation loaded by every page in the library: the design
+   tokens and theme machinery, base element styles, the sticky header with
+   its light/dark switch, the page intro, buttons, and the footer.
+
+   Each page adds one layer of its own on top:
+     index.html               -> css/styles.css               (shelf, weeks, about)
+     assignment/project.html  -> assignment/project.css       (proposal cards, embeds)
+     week6/week6_2/homework   -> week6/week6_2/homework.css   (form, validation, slider)
+     week6/week6_2/report     -> week6/week6_2/report.css     (stats, table, screenshots)
+
+   Load order matters: shared.css first, the page layer second, so a page can
+   override any shared value (the homepage widens .hero and tightens the
+   header, the project page deepens --wk). */
+
+/* ---------- Design tokens ----------
+   Palette: #8BBB92  #2A835F  #12544F  #092328
+   Dark is the default look. Neutrals are tints and shades of those greens. */
+:root {
+  color-scheme: dark;
+
+  --paper: #092328;
+  --surface: #0F2F35;
+  --ink: #E6F0EA;
+  --muted: #A9C2B6;
+  --rule: #24474B;
+  --head: #8BBB92;
+
+  /* Week accent for the standalone pages. The homepage ignores it: the shelf
+     maps .wk2/.wk3/.wk4/.wk6 to their own tokens (see css/styles.css). */
+  --wk: #2A835F;  --on-wk: #FFFFFF;
+
+  /* Accent and status colours (buttons, valid fields, failing badges) */
+  --accent: #8BBB92;  --on-accent: #092328;
+  --danger: #F3A596;  --on-danger: #092328;
+
+  --edge: color-mix(in srgb, var(--ink) 22%, transparent);
+
+  --footer-bg: #061619;
+  --footer-ink: #E6F0EA;
+
+  --sans: "Helvetica Neue", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --max: 72rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --header-h: 3.5rem;
+
+  /* Theme-motion curve: a fast start and a long, gentle settle (ease-out-quint),
+     so the flip feels instant while the colours glide to a stop. It never
+     overshoots, so colour interpolation can't swing past its target.
+     --ease-spring adds a small overshoot for the toggle icon's swing, where
+     that reads as a snap. */
+  --theme-dur: 0.45s;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Light theme: only when chosen with the switch */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --paper: #F2F7F3;
+  --surface: #FFFFFF;
+  --ink: #092328;
+  --muted: #3F5B5C;
+  --rule: #CBDCCF;
+  --head: #12544F;
+  --accent: #12544F;
+  --on-accent: #FFFFFF;
+  --danger: #A12D1B;
+  --on-danger: #FFFFFF;
+  --footer-bg: #092328;
+}
+
+/* ---------- Theme cross-fade ----------
+   Registering the colour tokens as real <color> properties lets the switch
+   animate the variables themselves. Every rule that reads them — backgrounds,
+   text, borders, the mixed hover tints, the form accents, the danger badges —
+   then follows the animated value frame by frame, so this one rule fades the
+   whole page. Browsers without @property support just switch instantly. */
+@property --paper     { syntax: "<color>"; inherits: true; initial-value: #092328; }
+@property --surface   { syntax: "<color>"; inherits: true; initial-value: #0F2F35; }
+@property --ink       { syntax: "<color>"; inherits: true; initial-value: #E6F0EA; }
+@property --muted     { syntax: "<color>"; inherits: true; initial-value: #A9C2B6; }
+@property --rule      { syntax: "<color>"; inherits: true; initial-value: #24474B; }
+@property --head      { syntax: "<color>"; inherits: true; initial-value: #8BBB92; }
+@property --footer-bg { syntax: "<color>"; inherits: true; initial-value: #061619; }
+@property --accent    { syntax: "<color>"; inherits: true; initial-value: #8BBB92; }
+@property --on-accent { syntax: "<color>"; inherits: true; initial-value: #092328; }
+@property --danger    { syntax: "<color>"; inherits: true; initial-value: #F3A596; }
+@property --on-danger { syntax: "<color>"; inherits: true; initial-value: #092328; }
+
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    transition:
+      --paper var(--theme-dur) var(--ease-out),
+      --surface var(--theme-dur) var(--ease-out),
+      --ink var(--theme-dur) var(--ease-out),
+      --muted var(--theme-dur) var(--ease-out),
+      --rule var(--theme-dur) var(--ease-out),
+      --head var(--theme-dur) var(--ease-out),
+      --footer-bg var(--theme-dur) var(--ease-out),
+      --accent var(--theme-dur) var(--ease-out),
+      --on-accent var(--theme-dur) var(--ease-out),
+      --danger var(--theme-dur) var(--ease-out),
+      --on-danger var(--theme-dur) var(--ease-out);
+  }
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+h1, h2, h3 { line-height: 1.15; margin: 0; }
+p { margin: 0; }
+ul { list-style: none; margin: 0; padding: 0; }
+a { color: inherit; }
+code { font-family: var(--mono); font-size: .875em; }
+[hidden] { display: none !important; }
+
+/* Visually hidden, still read by screen readers */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+
+.container { max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
+
+.skip {
+  position: absolute; left: var(--gutter); top: -4rem;
+  background: var(--ink); color: var(--paper);
+  padding: .6rem 1rem; border-radius: 6px; z-index: 20;
+}
+.skip:focus { top: .75rem; }
+
+/* ---------- Header ----------
+   One sticky frame for every page. The homepage fills it with the owner and
+   the week nav (css/styles.css); the standalone pages fill it with a back
+   link and a "you are here" label. */
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+.site-header .container {
+  min-height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.header-end { display: flex; align-items: center; gap: .75rem; }
+
+.back { font-weight: 700; text-decoration: none; padding: .5rem .25rem; border-radius: 6px; }
+.back:hover { text-decoration: underline; text-underline-offset: .2em; }
+.back-short { display: none; }
+.here { color: var(--muted); }
+
+/* ---------- Light / dark icon button ---------- */
+.theme-toggle {
+  display: none;
+  place-items: center;
+  width: 2.5rem; height: 2.5rem; padding: 0;
+  border: 1px solid var(--rule); border-radius: 50%;
+  background: none; color: var(--ink);
+  cursor: pointer;
+}
+.js .theme-toggle { display: inline-grid; }
+.theme-toggle:hover { background: color-mix(in srgb, var(--ink) 10%, var(--paper)); }
+.theme-toggle svg {
+  display: block; width: 1.25rem; height: 1.25rem;
+  grid-area: 1 / 1; /* sun and moon share one grid cell, stacked */
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  transition: opacity .2s var(--ease-out), transform .35s var(--ease-spring);
+}
+/* The hidden icon fades out and swings aside instead of being display-swapped,
+   so toggling reads as the icon turning over. */
+.theme-toggle .icon-moon { opacity: 0; transform: rotate(-90deg) scale(.5); }
+:root[data-theme="light"] .theme-toggle .icon-sun { opacity: 0; transform: rotate(90deg) scale(.5); }
+:root[data-theme="light"] .theme-toggle .icon-moon { opacity: 1; transform: none; }
+
+/* ---------- Page intro ----------
+   The standalone pages keep a tighter hero than the homepage; index.css
+   overrides the padding for the homepage. */
+.hero { padding-block: clamp(2.5rem, 7vw, 4.5rem) clamp(2rem, 5vw, 3rem); }
+.hero h1 {
+  font-size: clamp(2.25rem, 1.2rem + 4.6vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  text-wrap: balance;
+}
+@media (min-width: 40rem) { .h1-line { display: block; } }
+.lead { margin-top: 1.5rem; max-width: 62ch; font-size: 1.1875rem; }
+
+/* ---------- Buttons ---------- */
+.actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 2.875rem; padding: .6rem 1.5rem;
+  border: 2px solid var(--accent); border-radius: 8px;
+  font: inherit; font-weight: 700;
+  text-decoration: none; cursor: pointer;
+}
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { background: color-mix(in srgb, var(--accent) 86%, var(--ink)); }
+.btn-secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
+.btn-secondary:hover { background: color-mix(in srgb, var(--ink) 10%, var(--surface)); }
+
+/* ---------- Footer ---------- */
+.site-footer { background: var(--footer-bg); color: var(--footer-ink); padding-block: 2.5rem; }
+.site-footer .container { display: grid; gap: 1.25rem; }
+.foot-title { font-weight: 700; font-size: 1.25rem; }
+.site-footer ul { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+.site-footer a { text-underline-offset: .2em; }
+.site-footer :focus-visible { outline-color: var(--footer-ink); }
+.fine { font-size: .9375rem; opacity: .85; }
+
+/* ---------- Narrow phones ---------- */
+@media (max-width: 36rem) {
+  .back-full { display: none; }
+  .back-short { display: inline; }
+  .here { display: none; }
+  .btn { flex: 1 1 100%; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .theme-toggle svg { transition: none; }
+}
