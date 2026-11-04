@@ -40,6 +40,29 @@
   --footer-bg: #092328;
 }
 
+/* ---------- Theme cross-fade ----------
+   Registering the colour tokens as real <color> properties lets the switch
+   animate the variables themselves. Every rule that reads them — backgrounds,
+   text, borders, the Week 6 spine, the mixed hover tints — then follows the
+   animated value frame by frame, so this one rule fades the whole page.
+   Browsers without @property support just switch instantly, as before. */
+@property --paper     { syntax: "<color>"; inherits: true; initial-value: #092328; }
+@property --surface   { syntax: "<color>"; inherits: true; initial-value: #0F2F35; }
+@property --ink       { syntax: "<color>"; inherits: true; initial-value: #E6F0EA; }
+@property --muted     { syntax: "<color>"; inherits: true; initial-value: #A9C2B6; }
+@property --rule      { syntax: "<color>"; inherits: true; initial-value: #24474B; }
+@property --head      { syntax: "<color>"; inherits: true; initial-value: #8BBB92; }
+@property --footer-bg { syntax: "<color>"; inherits: true; initial-value: #061619; }
+
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    transition:
+      --paper .35s ease, --surface .35s ease, --ink .35s ease,
+      --muted .35s ease, --rule .35s ease, --head .35s ease,
+      --footer-bg .35s ease;
+  }
+}
+
 .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
 .wk3 { --wk: var(--wk3); --on-wk: var(--on-wk3); }
 .wk4 { --wk: var(--wk4); --on-wk: var(--on-wk4); }
@@ -107,12 +130,16 @@ code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; 
 .theme-toggle:hover { background: color-mix(in srgb, var(--ink) 10%, var(--paper)); }
 .theme-toggle svg {
   display: block; width: 1.25rem; height: 1.25rem;
+  grid-area: 1 / 1; /* sun and moon share one grid cell, stacked */
   fill: none; stroke: currentColor; stroke-width: 2;
   stroke-linecap: round; stroke-linejoin: round;
+  transition: opacity .2s ease, transform .35s ease;
 }
-.theme-toggle .icon-moon { display: none; }
-:root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
-:root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+/* The hidden icon fades out and swings aside instead of being display-swapped,
+   so toggling reads as the icon turning over. */
+.theme-toggle .icon-moon { opacity: 0; transform: rotate(-90deg) scale(.5); }
+:root[data-theme="light"] .theme-toggle .icon-sun { opacity: 0; transform: rotate(90deg) scale(.5); }
+:root[data-theme="light"] .theme-toggle .icon-moon { opacity: 1; transform: none; }
 
 /* ---------- Hero ---------- */
 .hero { padding-block: clamp(2.5rem, 7vw, 5rem) clamp(2.5rem, 6vw, 4rem); }
@@ -239,6 +266,7 @@ code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; 
   html { scroll-behavior: auto; }
   .spine { transition: none; }
   .spine:hover { transform: none; }
+  .theme-toggle svg { transition: none; }
 }
 
 @media (max-width: 36rem) {
