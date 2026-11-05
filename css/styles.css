@@ -161,6 +161,66 @@ h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
   .about-layout { grid-template-columns: 1fr 1.4fr; gap: 4rem; }
 }
 
+/* ---------- Back to top ----------
+   A small floating circle, bottom right. It stays out of sight until the
+   "Browse by week" shelf has scrolled away, then fades up from the corner
+   (js/main.js toggles .is-visible). Styled as a sibling of the header's
+   theme switch: same circular frame, stroke icon, and surface/ink tokens,
+   with a deep footer-toned shadow so it lifts off whatever scrolls under
+   it. visibility (not display) does the hiding, so it can fade and, while
+   hidden, drops out of the tab order and hit-testing. */
+.to-top {
+  position: fixed;
+  right: var(--gutter);
+  bottom: var(--gutter);
+  z-index: 15; /* above the page, below the skip link */
+  width: 2.75rem; height: 2.75rem; padding: 0;
+  display: grid; place-items: center;
+  border: 1px solid var(--rule); border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: 0 .375rem 1.25rem color-mix(in srgb, var(--footer-bg) 45%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(.375rem);
+}
+.to-top svg {
+  display: block; width: 1.25rem; height: 1.25rem;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.to-top:hover {
+  background: color-mix(in srgb, var(--ink) 10%, var(--surface));
+  box-shadow: 0 .5rem 1.5rem color-mix(in srgb, var(--footer-bg) 55%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .to-top {
+    transition: opacity .25s var(--ease-out), transform .25s var(--ease-out),
+                visibility 0s linear .25s;
+  }
+  /* No delay when showing: the fade starts at once; the delayed visibility
+     in the hidden state is what lets the fade-out finish before it vanishes. */
+  .to-top.is-visible {
+    transition: opacity .25s var(--ease-out), transform .25s var(--ease-out);
+  }
+  .to-top:hover { transform: translateY(-2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .to-top { transition: none; }
+}
+
+@media print {
+  .to-top { display: none; }
+}
+
 /* ---------- Motion & narrow screens ---------- */
 @media (prefers-reduced-motion: reduce) {
   .spine { transition: none; }
