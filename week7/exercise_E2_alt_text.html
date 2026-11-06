@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 7 exercise by Ryan Wong: writing proper alt text for four kinds of images — informational, decorative, linked logo, and a data chart — with a button that checks the alt text on the page.">
+  <title>Week 7: E2 · alt text</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="week7.css">
+  <script src="../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 7</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">E2 · alt text</h1>
+        <p class="lead">Four images, four right answers: describe what an informational image shows, leave decorative ones <em>empty</em> (not missing!), say where a linked logo goes, and put a chart's key data into its text equivalent. The button at the end checks the alt text on this page.</p>
+      </div>
+    </section>
+
+    <div class="container layout exercise">
+      <!-- Image 1: informational photo -> describe what it shows -->
+      <figure class="figure-card">
+        <img src="img/campus.svg" width="640" height="360" loading="lazy"
+             alt="Gachon University main building, a modern structure with a row of windows, flanked by trees">
+        <figcaption>Image 1: Campus building photo (informational)</figcaption>
+      </figure>
+
+      <!-- Image 2: decorative -> EMPTY alt (not missing!) so screen readers skip it -->
+      <figure class="figure-card">
+        <img src="img/wave.svg" width="640" height="120" loading="lazy" alt="">
+        <figcaption>Image 2: Decorative wavy divider</figcaption>
+      </figure>
+
+      <!-- Image 3: linked logo -> alt describes where the link goes -->
+      <figure class="figure-card">
+        <a href="../index.html"><img class="inline-img" src="img/logo.svg" width="200" height="100" loading="lazy" alt="Web Programming Library &mdash; go to the homepage"></a>
+        <figcaption>Image 3: Site logo (inside a link to the homepage)</figcaption>
+      </figure>
+
+      <!-- Image 4: chart -> put the key data in the text equivalent -->
+      <figure class="figure-card">
+        <img src="img/chart.svg" width="640" height="360" loading="lazy"
+             alt="Bar chart showing student enrollment: 2024: 1,200 students; 2025: 1,400 students; 2026: 1,476 students">
+        <figcaption>Image 4: Enrollment chart: 2024: 1,200 | 2025: 1,400 | 2026: 1,476 students</figcaption>
+      </figure>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="check-btn">Check my alt text</button>
+      </div>
+      <div id="feedback" class="status" role="status" aria-live="polite"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 7 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript.</p>
+      <ul>
+        <li><a href="../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script>
+    const GENERIC = ['image', 'logo', 'chart', 'photo', 'picture', 'click here'];
+
+    function checkAlts() {
+      const imgs = document.querySelectorAll('.figure-card img');
+      const results = [];
+      imgs.forEach((img, i) => {
+        const alt = img.getAttribute('alt');
+        if (alt === null) results.push(`\u274C Image ${i + 1}: missing alt attribute`);
+        else if (GENERIC.includes(alt.trim().toLowerCase()))
+          results.push(`\u26A0\uFE0F Image ${i + 1}: alt="${alt}" is too generic`);
+        else if (i === 1 && alt !== '')
+          results.push('\u26A0\uFE0F Image 2 should have alt="" (decorative)');
+        else if (i !== 1 && alt === '')
+          results.push(`\u26A0\uFE0F Image ${i + 1}: empty alt, but this image carries information`);
+        else results.push(`\u2705 Image ${i + 1}: alt="${alt}"`);
+      });
+      document.getElementById('feedback').innerHTML = results.join('<br>');
+    }
+
+    document.getElementById('check-btn').addEventListener('click', checkAlts);
+  </script>
+</body>
+
+</html>

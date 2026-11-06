@@ -1,8 +1,9 @@
 /* ---------- week7.css (Week 7: API lab) ----------
    The Week 7 layer on top of css/shared.css: the book search app's search
-   form, result cards, and skeleton loading state. Tokens, the theme
-   cross-fade, the header frame, buttons, and the footer all come from
-   shared.css.
+   form, result cards, and skeleton loading state, plus the Monday
+   accessibility exercises (E1-E3) and the demo parts only they use.
+   Tokens, the theme cross-fade, the header frame, buttons, and the footer
+   all come from shared.css.
 
    One token override: this week gets its own green from the shelf, with the
    dark ink on top for contrast (like Week 2). */
@@ -42,6 +43,7 @@
 /* ---------- Status line ---------- */
 .status { color: var(--muted); min-height: 1.4em; }
 .status.error { color: var(--danger); font-weight: 600; }
+.status.good { color: var(--accent); font-weight: 600; }
 
 /* ---------- Results (Grid) ---------- */
 .results {
@@ -103,6 +105,106 @@
 @keyframes shimmer { to { background-position: -200% 0; } }
 @keyframes fade-up { from { opacity: 0; transform: translateY(1rem); } }
 
+/* ---------- Exercises (E1-E3) ----------
+   The Monday accessibility exercises share the demo-column layout and a few
+   small parts the book search doesn't use: keyboard hints, figure cards for
+   the alt-text exercise, and the sign-up form demo that E3 shows broken and
+   fixed. The deliberate flaws in the "before" page (missing label, unnamed
+   icon button, colour-only error, bad alt) are the lesson, not oversights. */
+.layout.exercise {
+  gap: 1.5rem;
+  align-content: start;
+}
+.layout.exercise > * { max-width: 34rem; }
+
+.actions { margin-top: .25rem; }
+
+/* Keyboard hint: Tab / Enter / Space rendered as key caps */
+kbd {
+  padding: .15rem .5rem;
+  font-family: var(--mono);
+  font-size: .875em;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+}
+
+/* E1: the round icon-only close button, with its accessible name */
+.close-btn {
+  width: 2.5rem; height: 2.5rem; padding: 0;
+  border: none; border-radius: 50%;
+  font: inherit; font-size: 1.125rem; line-height: 1;
+  color: var(--on-danger);
+  background: var(--danger);
+  cursor: pointer;
+}
+.close-btn:hover { background: color-mix(in srgb, var(--danger) 86%, var(--ink)); }
+
+/* E2: each sample image sits on a card, caption underneath */
+.figure-card {
+  margin: 0;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+.figure-card img {
+  display: block;
+  width: 100%; height: auto;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+.figure-card .inline-img { width: 7.5rem; }
+.figure-card figcaption {
+  margin-top: .6rem;
+  font-size: .875rem;
+  color: var(--muted);
+}
+
+/* E3: the sign-up demo form (before and after) */
+.field-group { display: flex; flex-direction: column; gap: .4rem; }
+.field-group label { font-weight: 700; }
+
+/* Validation message. On the "after" page it also carries a text marker and
+   role="alert"; on the "before" page the colour alone is the deliberate flaw. */
+.error { color: var(--danger); font-weight: 600; }
+
+.field-group input {
+  width: 100%;
+  min-height: 2.875rem;
+  padding: .6rem .8rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 2px solid var(--rule);
+  border-radius: 8px;
+  transition: border-color .2s;
+}
+.field-group input::placeholder { color: var(--muted); opacity: .85; }
+.field-group input:focus { border-color: var(--wk); }
+
+.icon-btn {
+  width: 2.5rem; height: 2.5rem; padding: 0;
+  border: none; border-radius: 50%;
+  font-size: 1.125rem; line-height: 1;
+  color: var(--on-wk);
+  background: var(--wk);
+  cursor: pointer;
+}
+.icon-btn:hover { background: color-mix(in srgb, var(--wk) 86%, var(--ink)); }
+
+.btn-block { width: 100%; }
+
+.logo-link img {
+  display: block;
+  width: 5rem; height: 2.5rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
 /* ---------- Narrow phones ---------- */
 @media (max-width: 36rem) {
   .search-form { flex-direction: column; }
@@ -114,4 +216,5 @@
   .book-card:hover { transform: none; }
   .skeleton .cover-skel,
   .skeleton .line { animation: none; }
+  .field-group input { transition: none; }
 }

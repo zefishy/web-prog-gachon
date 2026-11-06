@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 120" role="presentation">
+  <!-- Decorative wavy divider: purely ornamental, so it is referenced with alt="" -->
+  <path d="M0 68 C 80 28, 160 108, 240 68 S 400 28, 480 68 S 600 98, 640 58"
+        fill="none" stroke="#2A835F" stroke-width="10" stroke-linecap="round"/>
+  <path d="M0 92 C 90 52, 170 122, 260 87 S 410 52, 500 90 S 604 112, 640 82"
+        fill="none" stroke="#8BBB92" stroke-width="6" stroke-linecap="round" opacity=".8"/>
+</svg>

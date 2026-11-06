@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" role="img" aria-label="Web Programming Library">
+  <!-- Site badge: an open book on the deep shelf green -->
+  <rect x="4" y="4" width="192" height="92" rx="16" fill="#12544F"/>
+  <!-- Open book -->
+  <path d="M100 38 C 92 30 76 28 66 31 L 66 63 C 76 60 92 62 100 70 Z" fill="#F2F7F3"/>
+  <path d="M100 38 C 108 30 124 28 134 31 L 134 63 C 124 60 108 62 100 70 Z" fill="#DCEAE0"/>
+  <!-- Text lines on the pages -->
+  <path d="M76 40 L92 42 M76 47 L92 49 M108 42 L124 40 M108 49 L124 47"
+        stroke="#8BBB92" stroke-width="3" stroke-linecap="round"/>
+  <!-- Bookmark -->
+  <path d="M128 30 L128 48 L122 42 L116 48 L116 32 Z" fill="#8BBB92"/>
+</svg>

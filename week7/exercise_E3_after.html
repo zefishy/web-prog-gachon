@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 7 exercise by Ryan Wong: the fixed sign-up form — a named icon button, a real label, errors that don't rely on colour alone, and alt text that says where the linked image goes.">
+  <title>Week 7: E3 · Sign-up form (after)</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="week7.css">
+  <script src="../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 7</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Sign-up form &mdash; after</h1>
+        <p class="lead">The same sign-up demo after the fixes: the icon button has an accessible name, the input has a real <code>&lt;label&gt;</code>, the errors no longer rely on colour alone, and the linked image's alt says where the link goes.</p>
+      </div>
+    </section>
+
+    <div class="container layout exercise">
+      <!-- Fix 1: icon-only button now has an accessible name -->
+      <div class="actions">
+        <button type="button" class="icon-btn" aria-label="Search">&#128269;</button>
+      </div>
+
+      <!-- Fix 2: the input now has a real <label> -->
+      <div class="field-group">
+        <label for="email-field">Email address</label>
+        <input type="email" placeholder="you@example.com" id="email-field" aria-describedby="email-err">
+        <div class="error" id="email-err">&#9888;&#65039; Error: Please enter a valid email address.</div>
+      </div>
+
+      <!-- Fix 3: don't rely on colour alone - the message starts with the word "Error:" and an icon -->
+      <div class="error" role="alert">&#9888;&#65039; Error: Password too short. Must be 8+ characters.</div>
+
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+
+      <!-- Fix 4: the linked image's alt describes where the link goes -->
+      <a href="../index.html" class="logo-link">
+        <img src="img/logo.svg" alt="Web Programming Library &mdash; go to the homepage" width="200" height="100">
+      </a>
+
+      <div class="actions">
+        <a class="btn btn-secondary" href="exercise_E3_before.html">&larr; Compare with the before version</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 7 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript.</p>
+      <ul>
+        <li><a href="../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+</body>
+
+</html>

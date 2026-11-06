@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 7 exercise by Ryan Wong: the un-fixed sign-up form from the accessibility lab — an icon button with no name, an input with no label, errors signalled by colour alone, and a linked image with a useless alt. Compare with the fixed version.">
+  <title>Week 7: E3 · Sign-up form (before)</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="week7.css">
+  <script src="../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 7</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Sign-up form &mdash; before</h1>
+        <p class="lead">The un-fixed sign-up demo from the lab. Four accessibility problems hide in plain sight: an icon button with no name, an input with no label, an error signalled by colour alone, and a linked image with a useless alt. Spot them, then open the fixed version.</p>
+      </div>
+    </section>
+
+    <div class="container layout exercise">
+      <!-- Issue 1: icon button with no label -->
+      <div class="actions">
+        <button type="button" class="icon-btn">&#128269;</button>
+      </div>
+
+      <!-- Issue 2: input with no label -->
+      <div class="field-group">
+        <input type="email" placeholder="Email address" id="email-field">
+        <div class="error">Please enter a valid email address.</div>
+      </div>
+
+      <!-- Issue 3: error shown only in color (no text marker like "Error:") -->
+      <div class="error">Password too short.</div>
+
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+
+      <!-- Issue 4: linked image with bad alt -->
+      <a href="../index.html" class="logo-link">
+        <img src="img/logo.svg" alt="click here" width="200" height="100">
+      </a>
+
+      <div class="actions">
+        <a class="btn btn-secondary" href="exercise_E3_after.html">See the fixed version &rarr;</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 7 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript.</p>
+      <ul>
+        <li><a href="../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+</body>
+
+</html>
