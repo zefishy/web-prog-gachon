@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 8 homework by Ryan Wong: a student registration form validated entirely in JavaScript — live per-field checks, ARIA announcements, a gated submit button, and a success summary.">
+  <title>Week 8: Student Registration with JS Validation</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week8.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 8</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Student Registration</h1>
+        <p class="lead">The Week 8 homework: a registration form where JavaScript does all the validating &mdash; live per-field checks, ARIA announcements, a Register button that stays switched off until every rule passes, and a summary panel on success.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="success" id="success" role="status" aria-live="polite" hidden>
+        <h2>Registration complete</h2>
+        <p id="success-text"></p>
+        <div class="actions">
+          <button type="button" class="btn btn-secondary" id="reset-btn">Register another student</button>
+        </div>
+      </section>
+
+      <p class="required-note">Fields marked <span class="req-mark">*</span> are required.</p>
+
+      <!-- novalidate: turn off the browser's own popups; JavaScript does the validating -->
+      <form id="registration-form" method="post" action="/register" novalidate>
+
+        <fieldset>
+          <legend>Personal Info</legend>
+
+          <div class="field-group">
+            <label for="fullname" class="req">Full Name</label>
+            <input type="text" id="fullname" name="full_name" required
+                   aria-required="true" aria-invalid="false" aria-describedby="fullname-err"
+                   placeholder="Kim Jisoo" autocomplete="name">
+            <span class="error" id="fullname-err" aria-live="polite"></span>
+          </div>
+
+          <div class="field-group">
+            <label for="sid" class="req">Student ID</label>
+            <input type="text" id="sid" name="student_id" required inputmode="numeric"
+                   aria-required="true" aria-invalid="false" aria-describedby="sid-err"
+                   placeholder="202112345">
+            <span class="error" id="sid-err" aria-live="polite"></span>
+          </div>
+
+          <div class="field-group">
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" name="dob"
+                   aria-invalid="false" aria-describedby="dob-err">
+            <span class="error" id="dob-err" aria-live="polite"></span>
+          </div>
+
+          <div class="field-group">
+            <label for="major">Major</label>
+            <select id="major" name="major" aria-invalid="false" aria-describedby="major-err">
+              <option value="">-- Select your major --</option>
+              <option value="cs">Computer Science</option>
+              <option value="se">Software Engineering</option>
+              <option value="ai">Artificial Intelligence</option>
+              <option value="ds">Data Science</option>
+              <option value="ee">Electrical Engineering</option>
+              <option value="bus">Business Administration</option>
+            </select>
+            <span class="error" id="major-err" aria-live="polite"></span>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Account Info</legend>
+
+          <div class="field-group">
+            <label for="email" class="req">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="email"
+                   aria-required="true" aria-invalid="false" aria-describedby="email-err"
+                   placeholder="name@gachon.ac.kr">
+            <span class="error" id="email-err" aria-live="polite"></span>
+          </div>
+
+          <div class="field-group">
+            <label for="password" class="req">Password</label>
+            <input type="password" id="password" name="password" required minlength="8"
+                   autocomplete="new-password"
+                   aria-required="true" aria-invalid="false" aria-describedby="password-err"
+                   placeholder="At least 8 characters">
+            <span class="error" id="password-err" aria-live="polite"></span>
+          </div>
+
+          <div class="field-group">
+            <label for="confirm" class="req">Confirm Password</label>
+            <input type="password" id="confirm" name="confirm" required autocomplete="new-password"
+                   aria-required="true" aria-invalid="false" aria-describedby="confirm-err"
+                   placeholder="Repeat your password">
+            <span class="error" id="confirm-err" aria-live="polite"></span>
+          </div>
+
+          <div class="field-group">
+            <label for="phone">Phone</label>
+            <input type="text" id="phone" name="phone" inputmode="tel"
+                   aria-invalid="false" aria-describedby="phone-err"
+                   placeholder="010-1234-5678">
+            <span class="error" id="phone-err" aria-live="polite"></span>
+          </div>
+
+          <div class="field-group">
+            <label for="experience">Years of coding experience</label>
+            <div class="range-row">
+              <input type="range" id="experience" name="experience" min="0" max="10" value="0" aria-describedby="experience-value">
+              <output id="experience-value" for="experience">0 years</output>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="field-group">
+          <div class="checkbox-row">
+            <input type="checkbox" id="terms" name="terms" required
+                   aria-required="true" aria-invalid="false" aria-describedby="terms-err">
+            <label for="terms" class="req">I agree to the terms</label>
+          </div>
+          <span class="error" id="terms-err" aria-live="polite"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submit-btn" disabled>Register</button>
+        <p class="hint" id="submit-hint">Complete all required fields to enable Register.</p>
+      </form>
+
+      <noscript>
+        <p class="noscript">This form needs JavaScript turned on &mdash; the validation runs in the browser.</p>
+      </noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 8 homework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript.</p>
+      <ul>
+        <li><a href="../../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script>
+    const form = document.getElementById('registration-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const submitHint = document.getElementById('submit-hint');
+    const successBox = document.getElementById('success');
+
+    const SID_PATTERN = /^\d{9}$/;
+    const PHONE_PATTERN = /^\d{3}-\d{4}-\d{4}$/;
+
+    // One entry per validated field. check() returns an error message, '' when valid,
+    // or { ok: '...' } for a positive message. Reading input.validity keeps it close to the HTML5 API.
+    const fields = [
+        {
+            id: 'fullname',
+            check: (el) => (el.validity.valueMissing || el.value.trim() === '') ? 'Full name is required.' : ''
+        },
+        {
+            id: 'sid',
+            check: (el) => {
+                if (el.validity.valueMissing) return 'Student ID is required.';
+                if (!SID_PATTERN.test(el.value)) return 'Student ID must be exactly 9 digits.';
+                return '';
+            }
+        },
+        {
+            id: 'dob',
+            optional: true,
+            check: (el) => {
+                if (el.value && new Date(el.value) > new Date()) return 'Date of birth cannot be in the future.';
+                return '';
+            }
+        },
+        {
+            id: 'major',
+            optional: true,
+            check: () => ''
+        },
+        {
+            id: 'email',
+            check: (el) => {
+                if (el.validity.valueMissing) return 'Email is required.';
+                if (el.validity.typeMismatch) return 'Please enter a valid email address.';
+                return '';
+            }
+        },
+        {
+            id: 'password',
+            check: (el) => {
+                if (el.validity.valueMissing) return 'Password is required.';
+                if (el.validity.tooShort || el.value.length < el.minLength) return 'Password must be at least 8 characters.';
+                return '';
+            }
+        },
+        {
+            id: 'confirm',
+            check: (el) => {
+                const pw = document.getElementById('password').value;
+                if (el.value === '') return 'Please confirm your password.';
+                if (el.value !== pw) return 'Passwords do not match.';
+                return { ok: '✓ Passwords match' };
+            }
+        },
+        {
+            id: 'phone',
+            optional: true,
+            check: (el) => (el.value !== '' && !PHONE_PATTERN.test(el.value)) ? 'Format: 010-1234-5678' : ''
+        },
+        {
+            id: 'terms',
+            check: (el) => el.checked ? '' : 'You must agree to the terms.'
+        }
+    ];
+
+    const touched = new Set();   // errors only show once the user has interacted with a field
+
+    // Run one field's check, keep the browser's validity state in sync, and (optionally) show the result
+    function validateField(field, show) {
+        const el = document.getElementById(field.id);
+        const err = document.getElementById(field.id + '-err');
+        const result = field.check(el);
+        const message = typeof result === 'object' ? '' : result;
+        const okMessage = typeof result === 'object' ? result.ok : '';
+
+        // setCustomValidity makes form.checkValidity() reflect our JS rules too
+        el.setCustomValidity(message);
+
+        if (show) {
+            const hasValue = el.type === 'checkbox' ? el.checked : el.value !== '';
+            const invalid = message !== '';
+            el.classList.toggle('is-invalid', invalid);
+            el.classList.toggle('is-valid', !invalid && hasValue);
+            el.setAttribute('aria-invalid', invalid ? 'true' : 'false');
+            err.textContent = message || okMessage;
+            err.classList.toggle('good', okMessage !== '');
+        }
+        return message === '';
+    }
+
+    // Bonus: the Register button stays disabled until every field is valid
+    function updateSubmitState() {
+        fields.forEach((f) => validateField(f, touched.has(f.id)));
+        const allValid = form.checkValidity();
+        submitBtn.disabled = !allValid;
+        submitHint.style.visibility = allValid ? 'hidden' : 'visible';
+    }
+
+    // Real-time validation on every field
+    fields.forEach((field) => {
+        const el = document.getElementById(field.id);
+        const handler = () => {
+            touched.add(field.id);
+            // Changing the password also affects the confirm field
+            if (field.id === 'password' && document.getElementById('confirm').value !== '') touched.add('confirm');
+            updateSubmitState();
+        };
+        el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', handler);
+        el.addEventListener('blur', handler);
+    });
+
+    // Slider: live display of the current value
+    const slider = document.getElementById('experience');
+    const sliderValue = document.getElementById('experience-value');
+    function updateExperience() {
+        const years = Number(slider.value);
+        sliderValue.textContent = years + (years === 1 ? ' year' : ' years');
+    }
+    slider.addEventListener('input', updateExperience);
+    updateExperience();
+
+    // Intercept submit
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        fields.forEach((f) => touched.add(f.id));
+        updateSubmitState();
+
+        if (!form.checkValidity()) {
+            const firstBad = form.querySelector('[aria-invalid="true"]');
+            if (firstBad) firstBad.focus();
+            return;
+        }
+
+        const name = document.getElementById('fullname').value.trim();
+        document.getElementById('success-text').textContent =
+            'Welcome, ' + name + '! Your account has been created.';
+        form.hidden = true;
+        successBox.hidden = false;
+    });
+
+    document.getElementById('reset-btn').addEventListener('click', () => {
+        form.reset();
+        touched.clear();
+        form.querySelectorAll('.is-valid, .is-invalid').forEach((el) => el.classList.remove('is-valid', 'is-invalid'));
+        form.querySelectorAll('.error').forEach((el) => { el.textContent = ''; el.classList.remove('good'); });
+        updateExperience();
+        updateSubmitState();
+        successBox.hidden = true;
+        form.hidden = false;
+    });
+
+    updateSubmitState();
+  </script>
+</body>
+
+</html>

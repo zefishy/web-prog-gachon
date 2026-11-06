@@ -8,7 +8,9 @@
    Each week of the shelf gets its own colour from the palette. Week 6 flips
    with the theme: deep green-black in light, pale mint in dark. Week 7 gets
    a fresh mid-green of its own, sitting between Weeks 2 and 3 on the same
-   green ramp, with the dark ink on top for contrast.
+   green ramp, with the dark ink on top for contrast. Week 8 takes the step
+   just below Week 3 on that ramp, with white ink on top for contrast
+   (like Weeks 3 and 4).
 
    On the shelf itself these give way to a positional ramp (see below): every
    spine keeps one uniform fill, and each spine to the right is a step
@@ -19,6 +21,7 @@
   --wk4: #12544F;  --on-wk4: #FFFFFF;
   --wk6: var(--ink);  --on-wk6: var(--paper);
   --wk7: #57A773;  --on-wk7: #092328;
+  --wk8: #1E6C57;  --on-wk8: #FFFFFF;
 }
 
 .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
@@ -26,6 +29,7 @@
 .wk4 { --wk: var(--wk4); --on-wk: var(--on-wk4); }
 .wk6 { --wk: var(--wk6); --on-wk: var(--on-wk6); }
 .wk7 { --wk: var(--wk7); --on-wk: var(--on-wk7); }
+.wk8 { --wk: var(--wk8); --on-wk: var(--on-wk8); }
 
 /* ---------- Header content ----------
    The sticky frame comes from shared.css. The homepage packs its nav a
@@ -62,19 +66,21 @@
 .pages-16 { --pages: 16; }
 .pages-55 { --pages: 55; }
 .pages-4 { --pages: 4; }
+.pages-7 { --pages: 7; }
 .pages-12 { --pages: 12; }
 .pages-13 { --pages: 13; }
 .pages-18 { --pages: 18; }
 .pages-1 { --pages: 1; }
 /* The stepped shelf ramp, anchored on the palette greens (#12544F, #2A835F,
    #8BBB92) with even mixes between. White text on the three dark steps, ink
-   on the three light ones — every pair clears WCAG AA (4.5:1). */
+   on the four light ones — every pair clears WCAG AA (4.5:1). */
 .shelf li:nth-child(1) .spine { --wk: #12544F; --on-wk: #FFFFFF; }
 .shelf li:nth-child(2) .spine { --wk: #1E6C57; --on-wk: #FFFFFF; }
 .shelf li:nth-child(3) .spine { --wk: #2A835F; --on-wk: #FFFFFF; }
 .shelf li:nth-child(4) .spine { --wk: #4D9A73; --on-wk: #092328; }
 .shelf li:nth-child(5) .spine { --wk: #6BA881; --on-wk: #092328; }
-.shelf li:nth-child(6) .spine { --wk: #8BBB92; --on-wk: #092328; }
+.shelf li:nth-child(6) .spine { --wk: #7BB28A; --on-wk: #092328; }
+.shelf li:nth-child(7) .spine { --wk: #8BBB92; --on-wk: #092328; }
 .spine {
   width: 100%; min-height: 11rem;
   display: flex; flex-direction: column; justify-content: space-between;
@@ -231,7 +237,7 @@ h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
   .owner { display: none; }
   .header-end { width: 100%; }
   .site-nav { flex: 1; }
-  .site-nav ul { justify-content: space-between; }
+  .site-nav ul { justify-content: flex-end; }
 
   .site-nav a { white-space: nowrap; padding-inline: .35rem; font-size: .9375rem; }
   .site-nav ul { gap: 0; }
@@ -245,13 +251,9 @@ h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
 @media (max-width: 24rem) {
   .site-nav a { padding-inline: .25rem; }
 }
-/* With six sections, the header links and the shelf spines need to be more compact on narrow phones.
-   Week links show just the number (the accessible name stays "Week N" via aria-label in the HTML),
-   and the spines are allowed to shrink so all six fit side by side. */
+/* On narrow phones the shelf spines are allowed to shrink so all seven fit
+   side by side. */
 @media (max-width: 30rem) {
-  .nav-week .nav-word { display: none; }
-  .nav-week { min-width: 2.5rem; text-align: center; }
-
   .shelf { gap: .4rem; }
   .spine { padding: .7rem .6rem .8rem; }
   .spine-num { font-size: 3rem; }

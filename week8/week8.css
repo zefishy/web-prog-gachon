@@ -1,0 +1,144 @@
+/* ---------- week8.css (Week 8: JavaScript validation) ----------
+   The Week 8 layer on top of css/shared.css, shared by the seven pages in
+   week8_1 (exercises E1-E3 and the homework) and week8_2 (challenges
+   C1-C3): the narrow demo column, the form controls, the live validation
+   colouring, and the status messages. Tokens, the theme cross-fade, the
+   header frame, buttons, and the footer all come from shared.css.
+
+   One token override: this week takes its own green from the homepage
+   shelf ramp, a step deeper than Week 7, with white ink on top for
+   contrast (like Weeks 3 and 4). */
+
+:root {
+  --wk: #1E6C57;  --on-wk: #FFFFFF;
+}
+
+/* ---------- Layout: a narrow demo column ----------
+   These pages are small one-form demos, so every block in the column keeps
+   a readable measure instead of stretching across the full shelf width,
+   while its left edge stays aligned with the hero above (like week7 and
+   the project and report pages). */
+.layout {
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+}
+
+.layout > * { max-width: 34rem; }
+
+/* ---------- Form ---------- */
+form { display: grid; gap: 1.25rem; }
+
+fieldset {
+  margin: 0;
+  min-width: 0;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+legend {
+  padding-inline: .5rem;
+  font-weight: 700;
+  font-size: 1.375rem;
+  color: var(--head);
+}
+
+/* One labelled control plus its message */
+.field-group { display: flex; flex-direction: column; gap: .4rem; }
+fieldset .field-group + .field-group { margin-top: 1.25rem; }
+
+label { font-weight: 700; }
+
+input[type="text"], input[type="email"], input[type="password"], input[type="date"], select {
+  width: 100%;
+  min-height: 2.875rem;
+  padding: .6rem .8rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 2px solid var(--rule);
+  border-radius: 8px;
+  transition: border-color .2s, background .2s;
+}
+
+input::placeholder { color: var(--muted); opacity: .85; }
+
+/* The shared :focus-visible outline stays; the border picks up the week green */
+input:focus, select:focus { border-color: var(--wk); }
+
+/* ---------- Live validation colours ----------
+   A field only colours in once it holds a value or fails a check, so
+   untouched fields stay neutral. The page scripts toggle the classes;
+   the challenges drive their red state from the aria-invalid attribute
+   alone. */
+:is(input, select).valid-ok, :is(input, select).ok, :is(input, select).is-valid {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+
+:is(input, select).valid-err, :is(input, select).err, :is(input, select).is-invalid,
+input[aria-invalid="true"] {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 9%, var(--surface));
+}
+
+/* ---------- Messages ---------- */
+.error, .error-msg, .err-span, .ok-msg, [role="alert"] {
+  min-height: 1.25em;
+  font-size: .9375rem;
+  font-weight: 600;
+}
+
+.error, .error-msg, .err-span, [role="alert"] { color: var(--danger); }
+.good, .ok-msg, [role="alert"].ok { color: var(--accent); }
+
+/* ---------- Submit state ----------
+   .btn, .btn-primary and .btn-secondary come from shared.css. */
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-primary:disabled:hover { background: var(--accent); }
+
+/* ---------- Homework: required marks, checkbox, slider, success ---------- */
+.req::after { content: " *"; color: var(--danger); }
+.req-mark { color: var(--danger); }
+.required-note { color: var(--muted); }
+
+.checkbox-row { display: flex; align-items: center; gap: .75rem; }
+.checkbox-row input { width: 1.25rem; height: 1.25rem; accent-color: var(--accent); }
+
+.range-row { display: flex; align-items: center; gap: 1rem; }
+.range-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+
+output {
+  min-width: 4.5rem;
+  padding: .25rem .75rem;
+  text-align: center;
+  font-weight: 700;
+  color: var(--head);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+}
+
+.hint { font-size: .9375rem; color: var(--muted); }
+
+.success {
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-left-width: .5rem;
+  border-radius: 8px;
+}
+
+.success h2 { font-size: 1.5rem; }
+.success p { margin-top: .5rem; }
+.success .actions { margin-top: 1.25rem; }
+
+/* ---------- No-JS note ---------- */
+.noscript { color: var(--danger); font-weight: 600; }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  input, select { transition: none; }
+}

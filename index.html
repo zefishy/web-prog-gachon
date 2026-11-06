@@ -23,11 +23,6 @@
         <div class="header-end">
           <nav class="site-nav" aria-label="Jump to a section">
             <ul>
-              <li><a class="nav-week" href="#week-2" aria-label="Week 2"><span class="nav-word">Week </span>2</a></li>
-              <li><a class="nav-week" href="#week-3" aria-label="Week 3"><span class="nav-word">Week </span>3</a></li>
-              <li><a class="nav-week" href="#week-4" aria-label="Week 4"><span class="nav-word">Week </span>4</a></li>
-              <li><a class="nav-week" href="#week-6" aria-label="Week 6"><span class="nav-word">Week </span>6</a></li>
-              <li><a class="nav-week" href="#week-7" aria-label="Week 7"><span class="nav-word">Week </span>7</a></li>
               <li><a href="#project">Project</a></li>
               <li><a href="#about">About</a></li>
             </ul>
@@ -53,7 +48,7 @@
 
           <div class="browse">
             <h2>Browse by week</h2>
-            <p>95 pages across five weeks and a project. Each spine is as wide as its section has pages. Select one to jump to it.</p>
+            <p>102 pages across six weeks and a project. Each spine is as wide as its section has pages. Select one to jump to it.</p>
             <nav aria-label="Sections on the shelf">
               <ul class="shelf">
                 <li class="pages-16"><a class="spine wk2" href="#week-2" aria-label="Week 2: HTML, 16 pages">
@@ -76,6 +71,10 @@
                     <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">7</span></span>
                     <span class="spine-bottom"><span class="spine-topic">API lab</span><span class="spine-count">1 page</span></span>
                 </a></li>
+                <li class="pages-7"><a class="spine wk8" href="#week-8" aria-label="Week 8: JS validation, 7 pages">
+                    <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">8</span></span>
+                    <span class="spine-bottom"><span class="spine-topic">JS validation</span><span class="spine-count">7 pages</span></span>
+                </a></li>
                 <li class="pages-1"><a class="spine wk4" href="#project" aria-label="Project: Team 16, 1 page">
                     <span class="spine-top"><span class="spine-week">Team</span><span class="spine-num">16</span></span>
                     <span class="spine-bottom"><span class="spine-topic">Project</span><span class="spine-count">1 page</span></span>
@@ -89,13 +88,12 @@
       <!--
       TO ADD A NEW WEEK
       1. Copy a whole <section class="week wk7" ...> block below and change the number, id, and links.
-      Use class wk2, wk3, wk4, wk6, or wk7 to pick a color, or add a new --wkN token and .wkN class in css/styles.css.
+      Use class wk2, wk3, wk4, wk6, wk7, or wk8 to pick a color, or add a new --wkN token and .wkN class in css/styles.css.
       2. Copy one <li> in the .shelf list above and update its link and text. Give it a class
       like pages-1, where the number is how many pages the week has, and add a matching
       .pages-N rule in css/styles.css. That number sets the spine width. Spine colours are
       positional: add a matching .shelf li:nth-child(N) rule in css/styles.css so the ramp
       keeps stepping one shade lighter to the right.
-      3. Add a link to the header nav.
       -->
 
       <section class="week wk2" id="week-2" aria-labelledby="week-2-title">
@@ -322,6 +320,43 @@
                 <h4>Exercises <span class="n">(1)</span></h4>
                 <ul class="links">
                   <li><a class="link" href="week7/book_search.html"><span class="num">1</span><span class="label">Book Search App <span class="note">Open Library API</span></span></a></li>
+                </ul>
+              </div>
+            </div>
+        </div></div>
+      </section>
+
+      <section class="week wk8" id="week-8" aria-labelledby="week-8-title">
+        <div class="container"><div class="week-layout">
+            <header class="week-head">
+              <h2 id="week-8-title">Week 8</h2>
+              <p class="week-topic">JS validation</p>
+              <p class="week-desc">Forms that check themselves with JavaScript: intercepting the submit event, live per-field validation with custom errors and ARIA announcements, and submit buttons that wait until every rule passes.</p>
+              <p class="week-count">7 pages</p>
+            </header>
+            <div class="week-body">
+              <div class="group">
+                <h3>Exercises &amp; homework</h3>
+                <p class="path">Folder: <code>week8/week8_1/</code></p>
+                <h4>Exercises <span class="n">(3)</span></h4>
+                <ul class="links">
+                  <li><a class="link" href="week8/week8_1/exercise_E1_prevent_submit.html"><span class="num">1</span><span class="label">Prevent submit &amp; custom error</span></a></li>
+                  <li><a class="link" href="week8/week8_1/exercise_E2_realtime_email.html"><span class="num">2</span><span class="label">Real-time email validation</span></a></li>
+                  <li><a class="link" href="week8/week8_1/exercise_E3_password_confirm_aria.html"><span class="num">3</span><span class="label">Password confirmation with ARIA</span></a></li>
+                </ul>
+                <h4>Homework <span class="n">(1)</span></h4>
+                <ul class="links">
+                  <li><a class="link" href="week8/week8_1/homework_registration_js_validation.html"><span class="num">1</span><span class="label">Registration form with JS validation</span></a></li>
+                </ul>
+              </div>
+              <div class="group">
+                <h3>Challenges</h3>
+                <p class="path">Folder: <code>week8/week8_2/</code></p>
+                <h4>Challenges <span class="n">(3)</span></h4>
+                <ul class="links">
+                  <li><a class="link" href="week8/week8_2/challenge_C1_username_validation.html"><span class="num">1</span><span class="label">Real-time username validation</span></a></li>
+                  <li><a class="link" href="week8/week8_2/challenge_C2_password_confirm.html"><span class="num">2</span><span class="label">Password confirmation with setCustomValidity()</span></a></li>
+                  <li><a class="link" href="week8/week8_2/challenge_C3_four_field_form.html"><span class="num">3</span><span class="label">Four-field form with disabled submit</span></a></li>
                 </ul>
               </div>
             </div>

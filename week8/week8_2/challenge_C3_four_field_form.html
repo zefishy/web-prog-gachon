@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 8 challenge by Ryan Wong: a four-field registration form whose Register button stays disabled until every field passes its check.">
+  <title>Week 8: Four-Field Form</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week8.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 8</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Four-Field Form</h1>
+        <p class="lead">Four fields, four live checks &mdash; student ID, email, password, and phone. The Register button stays disabled until every rule passes, then submits without a reload.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <form id="reg-form" novalidate>
+        <div class="field-group">
+          <label for="sid">Student ID</label>
+          <input type="text" id="sid" required inputmode="numeric" placeholder="202112345"
+                 aria-describedby="sid-err" aria-invalid="false">
+          <span id="sid-err" role="alert"></span>
+        </div>
+
+        <div class="field-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required placeholder="name@gachon.ac.kr"
+                 aria-describedby="email-err" aria-invalid="false">
+          <span id="email-err" role="alert"></span>
+        </div>
+
+        <div class="field-group">
+          <label for="pw">Password</label>
+          <input type="password" id="pw" required minlength="8" placeholder="At least 8 characters"
+                 aria-describedby="pw-err" aria-invalid="false">
+          <span id="pw-err" role="alert"></span>
+        </div>
+
+        <div class="field-group">
+          <label for="phone">Phone</label>
+          <input type="text" id="phone" required inputmode="tel" placeholder="010-1234-5678"
+                 aria-describedby="phone-err" aria-invalid="false">
+          <span id="phone-err" role="alert"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submit-btn">Register</button>
+      </form>
+      <p id="result" class="ok-msg" aria-live="polite"></p>
+
+      <noscript>
+        <p class="noscript">This demo needs JavaScript turned on &mdash; the validation runs in the browser.</p>
+      </noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 8 challenge by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript.</p>
+      <ul>
+        <li><a href="../../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script>
+    // Field references
+    const sid = document.getElementById('sid');
+    const email = document.getElementById('email');
+    const pw = document.getElementById('pw');
+    const phone = document.getElementById('phone');
+    const submitBtn = document.getElementById('submit-btn');
+
+    // Patterns
+    const SID_PATTERN = /^\d{9}$/;
+    const PHONE_PATTERN = /^\d{3}-\d{4}-\d{4}$/;
+
+    // Start disabled
+    submitBtn.disabled = true;
+
+    // Generic helper
+    function setErr(input, errId, msg) {
+        document.getElementById(errId).textContent = msg;
+        input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+        input.classList.toggle('valid-err', msg !== '');
+        input.classList.toggle('valid-ok', msg === '' && input.value !== '');
+    }
+
+    function validateSid() {
+        if (sid.validity.valueMissing) setErr(sid, 'sid-err', 'Required.');
+        else if (!SID_PATTERN.test(sid.value)) setErr(sid, 'sid-err', 'Exactly 9 digits.');
+        else setErr(sid, 'sid-err', '');
+    }
+
+    function validateEmail() {
+        if (email.validity.valueMissing) setErr(email, 'email-err', 'Required.');
+        else if (email.validity.typeMismatch) setErr(email, 'email-err', 'Valid email required.');
+        else setErr(email, 'email-err', '');
+    }
+
+    function validatePw() {
+        if (pw.validity.valueMissing) setErr(pw, 'pw-err', 'Required.');
+        else if (pw.validity.tooShort) setErr(pw, 'pw-err', 'Min. 8 characters.');
+        else setErr(pw, 'pw-err', '');
+    }
+
+    function validatePhone() {
+        if (!PHONE_PATTERN.test(phone.value)) setErr(phone, 'phone-err', 'Format: 010-1234-5678');
+        else setErr(phone, 'phone-err', '');
+    }
+
+    // Bonus: check all fields -> enable submit when everything is valid.
+    // (Checked straight from the values, so it is accurate even before a field has been touched.)
+    function updateSubmitState() {
+        const allValid = SID_PATTERN.test(sid.value)
+            && email.validity.valid
+            && pw.validity.valid
+            && PHONE_PATTERN.test(phone.value);
+        submitBtn.disabled = !allValid;
+    }
+
+    // Wire up events
+    [
+        [sid, validateSid],
+        [email, validateEmail],
+        [pw, validatePw],
+        [phone, validatePhone]
+    ].forEach(([el, fn]) => {
+        el.addEventListener('input', () => { fn(); updateSubmitState(); });
+    });
+
+    document.getElementById('reg-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        document.getElementById('result').textContent = '✓ Registration submitted!';
+    });
+  </script>
+</body>
+
+</html>

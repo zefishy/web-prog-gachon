@@ -10,6 +10,7 @@
      week6/week6_1/api_*      -> static/shared.css            (API demo panels, cards, tables)
      week6/week6_2/report     -> week6/week6_2/report.css     (stats, table, screenshots)
      week7/book_search.html   -> week7/week7.css              (book search form, cards)
+     week8/week8_1, week8_2   -> week8/week8.css              (demo column, forms, validation)
 
    Load order matters: shared.css first, the page layer second, so a page can
    override any shared value (the homepage widens .hero and tightens the
