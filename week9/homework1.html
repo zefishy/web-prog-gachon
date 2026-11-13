@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 9 homework 1 by Ryan Wong: a personal portfolio repo called portfolio — semantic HTML page, responsive CSS themed to match the course library, light/dark theme toggle, 9+ commits, pushed to GitHub.">
+  <title>Week 9: Homework 1 — Personal Portfolio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="week9.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 9</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Homework 1 — Personal portfolio</h1>
+        <p class="lead">The Week 9 homework: a personal portfolio repo on GitHub called <code>portfolio</code>, built week by week with semantic HTML, responsive CSS themed to match this course library, and a light/dark theme toggle that remembers your choice.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <div class="hw-grid">
+        <article class="hw-card">
+          <h3>The repo</h3>
+          <p class="repo">github.com/zefishy/wp-gachon-homework</p>
+          <p>A single-page portfolio for Ryan Wong, exchange student at Gachon University (K0126002 Web Programming · 2026 Fall · Dr. Toshpulatov). Branch <code>main</code>, clean history, pushed to the remote.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="https://github.com/zefishy/wp-gachon-homework" target="_blank" rel="noopener">Open portfolio repo</a>
+          </div>
+        </article>
+
+        <article class="hw-card">
+          <h3>What's on the page</h3>
+          <ul>
+            <li><b>Hero</b> — name, photo (placeholder avatar), role, and bio, all drawn from the profile file</li>
+            <li><b>Course projects</b> — three cards: Book Search App (week 7), Registration form with JS validation (week 8), and the Team 16 Gachon Wind proposal</li>
+            <li><b>Skills</b> — grouped chips: markup/styling/scripting, design &amp; layout, quality &amp; workflow</li>
+            <li><b>About</b> — role, field, focus, interests, and goal from the profile</li>
+          </ul>
+        </article>
+
+        <article class="hw-card">
+          <h3>The commits</h3>
+          <p>Eleven meaningful commits with lecture-style messages, so the history tells the build story:</p>
+          <ul style="margin-top: .5rem; font-size: .9375rem; color: var(--muted);">
+            <li>Initial commit: add README and .gitignore</li>
+            <li>Add semantic HTML page structure</li>
+            <li>Add hero section with photo and bio</li>
+            <li>Add project cards for course projects</li>
+            <li>Add skills section</li>
+            <li>Add about section with profile details</li>
+            <li>Style the page with the course library theme</li>
+            <li>Add dark mode toggle with saved preference</li>
+            <li>Fix layout on narrow screens and honor reduced motion</li>
+            <li>Fix favicon data URI encoding so the HTML validates</li>
+            <li>Document GitHub Pages deployment and the accessibility checklist</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="repo-card">
+        <h2>Theming — same as the course library</h2>
+        <p>Dark green default (<code>#092328</code> → <code>#8BBB92</code>) with a light theme behind the header switch. The switch cross-fades the colour tokens and saves the choice in <code>localStorage</code>. Narrow-phone rules stack the cards and stretch the buttons; reduced motion turns the transitions off.</p>
+        <p><i>Note: <code>img/avatar.svg</code> is a stand-in (green "RW" initials). Swap it for a real photo in the portfolio repo before submitting.</i></p>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Week 9 · Homework 1</p>
+        <p class="fine">Personal portfolio repo for Ryan Wong &middot; pushed to <a href="https://github.com/zefishy/wp-gachon-homework">github.com/zefishy/wp-gachon-homework</a></p>
+        <ul>
+          <li><a href="../../index.html">Back to the library</a></li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+  </body>
+</html>
