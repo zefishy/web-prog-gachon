@@ -10,7 +10,8 @@
    a fresh mid-green of its own, sitting between Weeks 2 and 3 on the same
    green ramp, with the dark ink on top for contrast. Week 8 takes the step
    just below Week 3 on that ramp, with white ink on top for contrast
-   (like Weeks 3 and 4).
+   (like Weeks 3 and 4). Week 9, the newest shelf entry, takes the palest
+   step yet, with dark ink on top (like Weeks 2 and 7).
 
    On the shelf itself these give way to a positional ramp (see below): every
    spine keeps one uniform fill, and each spine to the right is a step
@@ -22,6 +23,7 @@
   --wk6: var(--ink);  --on-wk6: var(--paper);
   --wk7: #57A773;  --on-wk7: #092328;
   --wk8: #1E6C57;  --on-wk8: #FFFFFF;
+  --wk9: #9CC5A2;  --on-wk9: #092328;
 }
 
 .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
@@ -30,6 +32,7 @@
 .wk6 { --wk: var(--wk6); --on-wk: var(--on-wk6); }
 .wk7 { --wk: var(--wk7); --on-wk: var(--on-wk7); }
 .wk8 { --wk: var(--wk8); --on-wk: var(--on-wk8); }
+.wk9 { --wk: var(--wk9); --on-wk: var(--on-wk9); }
 
 /* ---------- Header content ----------
    The sticky frame comes from shared.css. The homepage packs its nav a
@@ -74,7 +77,7 @@
 .pages-1 { --pages: 1; }
 /* The stepped shelf ramp, anchored on the palette greens (#12544F, #2A835F,
    #8BBB92) with even mixes between. White text on the three dark steps, ink
-   on the four light ones — every pair clears WCAG AA (4.5:1). */
+   on the five light ones — every pair clears WCAG AA (4.5:1). */
 .shelf li:nth-child(1) .spine { --wk: #12544F; --on-wk: #FFFFFF; }
 .shelf li:nth-child(2) .spine { --wk: #1E6C57; --on-wk: #FFFFFF; }
 .shelf li:nth-child(3) .spine { --wk: #2A835F; --on-wk: #FFFFFF; }
@@ -82,6 +85,7 @@
 .shelf li:nth-child(5) .spine { --wk: #6BA881; --on-wk: #092328; }
 .shelf li:nth-child(6) .spine { --wk: #7BB28A; --on-wk: #092328; }
 .shelf li:nth-child(7) .spine { --wk: #8BBB92; --on-wk: #092328; }
+.shelf li:nth-child(8) .spine { --wk: #9CC5A2; --on-wk: #092328; }
 .spine {
   width: 100%; min-height: 11rem;
   display: flex; flex-direction: column; justify-content: space-between;

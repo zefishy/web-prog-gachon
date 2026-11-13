@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="Ryan Wong">
+    <meta name="description" content="Week 9 Git homework report by Ryan Wong: the homework brief, every Git command used to build the portfolio repo, the eleven commits it produced, and how each requirement is covered.">
+    <title>Git Homework Report &mdash; Week 9</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="report.css">
+    <script src="../js/main.js"></script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Git homework report</span>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Git Homework Report</h1>
+          <p class="lead">
+            Week 9 homework: build a personal portfolio repo called
+            <code>portfolio</code> &mdash; one page carrying my name, photo,
+            bio, skills, and links to course projects &mdash; and tell its
+            story through meaningful Git commits. This report walks through
+            the exact commands used, the eleven commits the build produced,
+            and how each requirement in the brief is covered. The
+            <a href="../portfolio/index.html">portfolio page itself</a> lives
+            in its own repo; this page is the paperwork.
+          </p>
+
+          <div class="stats" role="list" aria-label="Repo facts at a glance">
+            <div class="stat" role="listitem">
+              <span class="page">branch main</span>
+              <span class="name">Commits</span>
+              <p class="figures">11</p>
+            </div>
+            <div class="stat" role="listitem">
+              <span class="page">html &middot; css &middot; js &middot; img</span>
+              <span class="name">Tracked files</span>
+              <p class="figures">6</p>
+            </div>
+            <div class="stat" role="listitem">
+              <span class="page">from the homework brief</span>
+              <span class="name">Requirements met</span>
+              <p class="figures">5 / 6</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="container layout">
+        <div class="report-column">
+          <section class="section" aria-labelledby="brief-title">
+            <h2 id="brief-title">The brief</h2>
+            <p>The homework, as given at the end of Monday's lecture:</p>
+            <blockquote class="brief">
+              <p>
+                Create a personal portfolio repo on GitHub called
+                &lsquo;portfolio&rsquo;. Add index.html with your name, photo,
+                bio, skills, and links to 2&ndash;3 course projects. Make at
+                least 5 meaningful commits with clear messages (e.g., &lsquo;Add
+                hero section&rsquo;, &lsquo;Add project cards&rsquo;, &lsquo;Fix
+                mobile layout&rsquo;). Submit your GitHub repo URL on
+                Cybercampus by Wednesday.
+              </p>
+              <cite>&mdash; Git.pdf, Week 9 &middot; Summary &amp; Homework</cite>
+            </blockquote>
+          </section>
+
+          <section class="section" aria-labelledby="start-title">
+            <h2 id="start-title">Starting the repo</h2>
+            <p>
+              The repo is a folder with a hidden <code>.git/</code> directory
+              inside it. <code>git init -b main</code> creates that folder and
+              names the first branch <code>main</code> in one step; the
+              homework's examples push to <code>main</code>, so starting there
+              saves a rename later.
+            </p>
+            <pre class="term"><code><span class="c"># create the project folder and start tracking it</span>
+<span class="p">$</span> mkdir portfolio &amp;&amp; cd portfolio
+<span class="p">$</span> git init -b main
+Initialized empty Git repository in &hellip;/web-prog-gachon/portfolio/.git/
+<span class="p">$</span> git status --short --branch
+## No commits yet on main</code></pre>
+          </section>
+
+          <section class="section" aria-labelledby="cycle-title">
+            <h2 id="cycle-title">The add &rarr; commit cycle</h2>
+            <p>
+              Every change went through the three states from the lecture:
+              the <strong>working directory</strong>, the
+              <strong>staging area</strong> (<code>git add</code> queues
+              exactly what the next commit should contain), and the
+              <strong>local repository</strong> (<code>git commit</code>
+              saves the snapshot). Nothing is online at this point &mdash;
+              commits are local until <code>git push</code>.
+            </p>
+            <p>
+              Each commit stages only the files for one feature, which is
+              what keeps every message honest:
+            </p>
+            <pre class="term"><code><span class="c"># 1 &mdash; one feature at a time: stage it, commit it</span>
+<span class="p">$</span> git add README.md .gitignore
+<span class="p">$</span> git commit -m "Initial commit: add README and .gitignore"
+
+<span class="c"># 2 &mdash; the page shell: header, nav, main, footer</span>
+<span class="p">$</span> git add index.html
+<span class="p">$</span> git commit -m "Add semantic HTML page structure"
+
+<span class="c"># 3 &mdash; name, photo, bio, and the two call-to-action buttons</span>
+<span class="p">$</span> git add index.html img/avatar.svg
+<span class="p">$</span> git commit -m "Add hero section with photo and bio"
+
+<span class="c"># 4 &mdash; Book Search App, registration form, Team 16 proposal</span>
+<span class="p">$</span> git add index.html
+<span class="p">$</span> git commit -m "Add project cards for course projects"
+
+<span class="c"># 5 &mdash; three grouped skill lists</span>
+<span class="p">$</span> git add index.html
+<span class="p">$</span> git commit -m "Add skills section"
+
+<span class="c"># 6 &mdash; the profile details table</span>
+<span class="p">$</span> git add index.html
+<span class="p">$</span> git commit -m "Add about section with profile details"
+
+<span class="c"># 7 &mdash; the design tokens and page styles, responsive</span>
+<span class="p">$</span> git add css/styles.css
+<span class="p">$</span> git commit -m "Style the page with the course library theme"
+
+<span class="c"># 8 &mdash; the light/dark switch, saved to localStorage</span>
+<span class="p">$</span> git add js/main.js
+<span class="p">$</span> git commit -m "Add dark mode toggle with saved preference"
+
+<span class="c"># 9 &mdash; narrow-screen fixes and reduced-motion support</span>
+<span class="p">$</span> git add css/styles.css
+<span class="p">$</span> git commit -m "Fix layout on narrow screens and honor reduced motion"
+
+<span class="c"># 10 &mdash; follow-up: the favicon URI failed HTML validation</span>
+<span class="p">$</span> git add index.html
+<span class="p">$</span> git commit -m "Fix favicon data URI encoding so the HTML validates"
+
+<span class="c"># 11 &mdash; follow-up: deployment notes and the accessibility checklist</span>
+<span class="p">$</span> git add README.md
+<span class="p">$</span> git commit -m "Document GitHub Pages deployment and the accessibility checklist"</code></pre>
+            <p>
+              Nine commits were made on build day (10 November); the last two
+              are follow-ups from 13 November, after re-checking the page and
+              its plans for GitHub Pages.
+            </p>
+          </section>
+
+          <section class="section" aria-labelledby="history-title">
+            <h2 id="history-title">The commit history</h2>
+            <p>
+              <code>git log --oneline</code> is the one-line view of the same
+              history &mdash; newest first &mdash; and
+              <code>git status --short</code> confirms nothing is left
+              uncommitted:
+            </p>
+            <pre class="term"><code><span class="p">$</span> git log --oneline
+0a5d9f3 Document GitHub Pages deployment and the accessibility checklist
+5a0a412 Fix favicon data URI encoding so the HTML validates
+a9c2d79 Fix layout on narrow screens and honor reduced motion
+8a258dd Add dark mode toggle with saved preference
+cc05b8f Style the page with the course library theme
+128f2d9 Add about section with profile details
+1875813 Add skills section
+f6c41b3 Add project cards for course projects
+a7a748c Add hero section with photo and bio
+1148361 Add semantic HTML page structure
+50b121d Initial commit: add README and .gitignore
+<span class="p">$</span> git status --short
+<span class="c"># (empty &mdash; the working tree is clean)</span></code></pre>
+
+            <div class="table-scroll">
+              <table class="repo-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Commit</th>
+                    <th scope="col">Message</th>
+                    <th scope="col">Files committed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row"><span class="hash">0a5d9f3</span><span class="when">Nov 13</span></th>
+                    <td>Document GitHub Pages deployment and the accessibility checklist</td>
+                    <td><span class="files">README.md</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><span class="hash">5a0a412</span><span class="when">Nov 13</span></th>
+                    <td>Fix favicon data URI encoding so the HTML validates</td>
+                    <td><span class="files">index.html</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><span class="hash">a9c2d79</span><span class="when">Nov 10</span></th>
+                    <td>Fix layout on narrow screens and honor reduced motion</td>
+                    <td><span class="files">css/styles.css</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><span class="hash">8a258dd</span><span class="when">Nov 10</span></th>
+                    <td>Add dark mode toggle with saved preference</td>
+                    <td><span class="files">js/main.js</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><span class="hash">cc05b8f</span><span class="when">Nov 10</span></th>
+                    <td>Style the page with the course library theme</td>
+                    <td><span class="files">css/styles.css</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><span class="hash">128f2d9</span><span class="when">Nov 10</span></th>
+                    <td>Add about section with profile details</td>
+                    <td><span class="files">index.html</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><span class="hash">1875813</span><span class="when">Nov 10</span></th>
+                    <td>Add skills section</td>
+                    <td><span class="files">index.html</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><span class="hash">f6c41b3</span><span class="when">Nov 10</span></th>
+                    <td>Add project cards for course projects</td>
+                    <td><span class="files">index.html</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><span class="hash">a7a748c</span><span class="when">Nov 10</span></th>
+                    <td>Add hero section with photo and bio</td>
+                    <td><span class="files">index.html, img/avatar.svg</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><span class="hash">1148361</span><span class="when">Nov 10</span></th>
+                    <td>Add semantic HTML page structure</td>
+                    <td><span class="files">index.html</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><span class="hash">50b121d</span><span class="when">Nov 10</span></th>
+                    <td>Initial commit: add README and .gitignore</td>
+                    <td><span class="files">README.md, .gitignore</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="checklist-title">
+            <h2 id="checklist-title">Requirements checklist</h2>
+            <p>How each requirement in the brief is covered so far:</p>
+            <div class="table-scroll">
+              <table class="repo-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Requirement</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">How it's covered</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Repo called <code>portfolio</code></th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>Initialised locally on branch <code>main</code>; the GitHub repo gets the same name when it is created.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">index.html with your name</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>Hero <code>&lt;h1&gt;</code> and the header owner line.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">&hellip; photo</th>
+                    <td><span class="badge badge-todo">placeholder</span></td>
+                    <td><code>img/avatar.svg</code> (initials on the palette green) stands in; a real photo drops into <code>img/</code> and the hero <code>img src</code> is updated, alt text already reads &ldquo;Portrait of Ryan Wong&rdquo;.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">&hellip; bio</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>Hero lead paragraph plus the About section, written from my profile.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">&hellip; skills</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>Skills section in three groups: markup/styling/scripting, design/layout, quality/workflow.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Links to 2&ndash;3 course projects</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>Three project cards: Book Search App (Week 7), registration form with JS validation (Week 8), Team 16 Gachon Wind proposal.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">At least 5 meaningful commits</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>11 commits; every message names the feature it added (see the history above).</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Submit repo URL on Cybercampus</th>
+                    <td><span class="badge badge-todo">pending</span></td>
+                    <td>Waiting on the GitHub push (below); the URL goes to Cybercampus right after.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="publish-title">
+            <h2 id="publish-title">What's left: publishing the repo</h2>
+            <p>
+              The history is complete but entirely local. Publishing is two
+              commands once the repo exists on GitHub &mdash; created with the
+              exact name <code>portfolio</code> and left
+              <strong>public</strong>, since private repos block GitHub Pages
+              on the free plan:
+            </p>
+            <pre class="term"><code><span class="c"># create the repo on GitHub named exactly "portfolio", then:</span>
+<span class="p">$</span> git remote add origin https://github.com/&lt;username&gt;/portfolio.git
+<span class="p">$</span> git push -u origin main</code></pre>
+            <p>
+              <code>git remote add</code> links the local repo to GitHub
+              under the nickname <code>origin</code>; <code>git push -u origin
+              main</code> uploads the commits and remembers the upstream, so
+              later pushes are a plain <code>git push</code>. After that, the
+              repo URL is what gets submitted on Cybercampus &mdash; and the
+              same repo is what the deployment homework (GitHub Pages +
+              Lighthouse) will build on.
+            </p>
+          </section>
+
+          <section class="section notes" aria-labelledby="learned-title">
+            <h2 id="learned-title">What the exercise taught</h2>
+            <ul>
+              <li>
+                Git and GitHub are different layers: eleven commits existed
+                and the history was already readable long before anything is
+                online &mdash; Git tracks locally, GitHub hosts remotely.
+              </li>
+              <li>
+                The staging area is what makes messages truthful: staging only
+                the files for one feature means <code>git commit -m</code> can
+                say exactly what that commit does.
+              </li>
+              <li>
+                Small, named commits read like a changelog &mdash; the
+                homework's own examples (&ldquo;Add hero section&rdquo;,
+                &ldquo;Fix mobile layout&rdquo;) turned out to be natural
+                commit boundaries.
+              </li>
+              <li>
+                <code>git log --oneline</code> plus
+                <code>git status --short</code> is the fastest way to answer
+                &ldquo;where am I, and what happened?&rdquo;.
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <aside class="facts" aria-labelledby="facts-title">
+          <h2 id="facts-title">At a glance</h2>
+          <dl>
+            <div>
+              <dt>Repository</dt>
+              <dd>portfolio (branch main)</dd>
+            </div>
+            <div>
+              <dt>Git version</dt>
+              <dd>2.56.0</dd>
+            </div>
+            <div>
+              <dt>Build day</dt>
+              <dd>10 November 2026</dd>
+            </div>
+            <div>
+              <dt>Follow-ups</dt>
+              <dd>13 November 2026</dd>
+            </div>
+            <div>
+              <dt>Commits</dt>
+              <dd>11 (9 + 2)</dd>
+            </div>
+            <div>
+              <dt>Tracked files</dt>
+              <dd>6</dd>
+            </div>
+            <div>
+              <dt>Remote</dt>
+              <dd>not added yet</dd>
+            </div>
+            <div>
+              <dt>Submit via</dt>
+              <dd>Cybercampus, Week 9</dd>
+            </div>
+          </dl>
+
+          <div class="see-also">
+            <h3>See also</h3>
+            <ul>
+              <li>
+                <a href="../portfolio/index.html">The portfolio page this report documents</a>
+              </li>
+              <li><a href="../index.html">Back to the library</a></li>
+              <li>
+                <a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a>
+              </li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Web Programming Library @ Gachon University</p>
+        <p class="fine">
+          2026 Ryan Wong. Built with semantic HTML, modern CSS, and JavaScript.
+        </p>
+        <ul>
+          <li><a href="../index.html">Back to the library</a></li>
+          <li>
+            <a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a>
+          </li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+  </body>
+</html>

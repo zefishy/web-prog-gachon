@@ -1,0 +1,289 @@
+/* ---------- report.css (Week 9 homework report) ----------
+   The Git homework report layer on top of css/shared.css: the repo stat
+   strip, the two-column layout with the facts sidebar, terminal blocks for
+   the command transcript, the commit-history and requirements tables, and
+   the brief blockquote. All colours come from the shared tokens, so the
+   whole page follows the theme cross-fade automatically. */
+
+h3 {
+  font-size: 1.125rem;
+}
+
+/* ---------- Repo stat strip ---------- */
+.stats {
+  display: grid;
+  gap: 1rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: grid;
+  gap: 0.3rem;
+  transition: border-color 0.18s ease;
+}
+
+.stat:hover {
+  border-color: var(--wk);
+}
+
+.stat .page {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.stat .name {
+  font-weight: 700;
+}
+
+.stat .figures {
+  margin-top: 0.4rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: var(--head);
+}
+
+/* ---------- Two-column layout: report + facts sidebar ---------- */
+.layout {
+  display: grid;
+  gap: 2.5rem;
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+}
+
+@media (min-width: 64rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .facts {
+    position: sticky;
+    top: calc(var(--header-h) + 1.5rem);
+  }
+}
+
+/* ---------- Report sections ---------- */
+.section + .section {
+  margin-top: 3rem;
+}
+
+.section h2 {
+  font-size: 1.5rem;
+  border-top: 0.375rem solid var(--wk);
+  padding-top: 1.25rem;
+}
+
+.section > p {
+  margin-top: 1rem;
+  max-width: 62ch;
+}
+
+.section p + p {
+  margin-top: 0.9rem;
+}
+
+/* ---------- The brief (homework quote) ---------- */
+.brief {
+  margin: 1.5rem 0 0;
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  border-left: 0.375rem solid var(--wk);
+  color: var(--ink);
+}
+
+.brief p {
+  margin: 0;
+  max-width: 62ch;
+}
+
+.brief cite {
+  display: block;
+  margin-top: 0.75rem;
+  font-style: normal;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+/* ---------- Terminal blocks ---------- */
+.term {
+  margin: 1.5rem 0 0;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.75;
+}
+
+.term .c {
+  color: var(--muted);
+}
+
+.term .p {
+  color: var(--head);
+  font-weight: 700;
+}
+
+.term + .term {
+  margin-top: 1rem;
+}
+
+/* ---------- Commit & requirements tables ---------- */
+.table-scroll {
+  margin-top: 1.5rem;
+  overflow-x: auto;
+}
+
+.repo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.repo-table th,
+.repo-table td {
+  text-align: left;
+  padding: 0.65rem 1rem 0.65rem 0;
+  border-top: 1px solid var(--rule);
+  vertical-align: top;
+}
+
+.repo-table thead th {
+  border-top: none;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.repo-table .hash {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.875em;
+  white-space: nowrap;
+}
+
+.repo-table .when {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.repo-table .files {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.repo-table ul {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.repo-table li {
+  font-size: 0.9375rem;
+}
+
+.badge {
+  display: inline-block;
+  min-width: 2.4rem;
+  text-align: center;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge-pass {
+  background: var(--wk);
+  color: var(--on-wk);
+}
+
+.badge-todo {
+  background: color-mix(in srgb, var(--muted) 30%, var(--surface));
+  color: var(--ink);
+}
+
+/* ---------- Notes ---------- */
+.notes ul {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.notes li {
+  padding-left: 1.1rem;
+  position: relative;
+  max-width: 62ch;
+}
+
+.notes li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--wk);
+}
+
+/* ---------- Facts sidebar ---------- */
+.facts {
+  border-top: 0.375rem solid var(--wk);
+  padding-top: 1.25rem;
+}
+
+.facts h2 {
+  font-size: 1.5rem;
+}
+
+.facts dl {
+  display: grid;
+  margin-top: 1rem;
+}
+
+.facts dl > div {
+  display: grid;
+  gap: 0.15rem;
+  padding-block: 0.85rem;
+  border-top: 1px solid var(--rule);
+}
+
+.facts dt {
+  font-weight: 700;
+}
+
+.facts dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+.facts .see-also {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.facts .see-also a {
+  text-underline-offset: 0.2em;
+}
+
+/* ---------- Motion & stat columns ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .stat {
+    transition: none;
+  }
+}
+
+@media (min-width: 40rem) {
+  .stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
