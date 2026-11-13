@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="Ryan Wong">
+    <meta name="description" content="Week 9 homework: Lighthouse performance and accessibility audits — before/after scores, optimizations applied, and fixes made.">
+    <title>Lighthouse Audits &mdash; Week 9</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="week9.css">
+    <script src="../js/main.js"></script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 9: Lighthouse audits</span>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Week 9 &mdash; Lighthouse Audits</h1>
+          <p class="lead">
+            This week is about measuring and fixing real site quality with
+            <strong>Google Lighthouse</strong>: a performance audit of my
+            personal site (compress images, lazy load, defer scripts, cache
+            assets) and an accessibility audit of my course project
+            (contrast, alt text, skip links, keyboard focus). For each audit I
+            screenshot the score before, apply the fixes, then screenshot the
+            score after &mdash; that&rsquo;s what gets submitted.
+          </p>
+        </div>
+      </section>
+
+      <div class="container layout layout-single">
+        <div class="report-column">
+          <section class="section" aria-labelledby="what-title">
+            <h2 id="what-title">What the slides cover</h2>
+            <p>
+              Week 9 brings together two lectures: <strong>Web Performance
+              Optimization</strong> and <strong>Web Accessibility (A11y)</strong>.
+              Both end with the same assignment shape: run Lighthouse,
+              screenshot, fix at least three things, re-run, screenshot again.
+            </p>
+            <div class="audit-grid">
+              <div class="audit-card">
+                <h3>Performance (Week 7 slides)</h3>
+                <p>
+                  Why performance matters (53% of mobile users leave after
+                  3 seconds), Lighthouse&rsquo;s five audit categories, Core Web
+                  Vitals (LCP, FID, CLS), image formats (WebP, SVG),
+                  <code>loading="lazy"</code>, minification,
+                  <code>defer</code>, CDNs, cache headers, and a
+                  <strong>10-point performance checklist</strong> &mdash; aim for
+                  Lighthouse Performance 90+.
+                </p>
+              </div>
+              <div class="audit-card">
+                <h3>Accessibility (A11y slides)</h3>
+                <p>
+                  WCAG 2.1 Level AA (target for this course), semantic HTML
+                  over div soup, <code>&lt;button&gt;</code> over
+                  <code>&lt;div onclick&gt;</code>, useful alt text
+                  (<code>alt=""</code> for decorative), ARIA used sparingly,
+                  keyboard navigation, color contrast 4.5:1 for body text,
+                  skip links, and a <strong>95/100 accessibility target</strong>.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="hw-perf-title">
+            <h2 id="hw-perf-title">Homework 1 &mdash; Performance audit</h2>
+            <p>
+              From the Performance slides&rsquo; <em>Summary &amp; Homework</em>:
+              optimize your personal site and post the result to your page.
+            </p>
+            <ol class="steps">
+              <li>Run Lighthouse (Performance only) and screenshot your Performance score.</li>
+              <li>Apply at least 3 optimizations from the lecture.</li>
+              <li>Re-run Lighthouse and screenshot the new score.</li>
+              <li>Post both screenshots with a 2-sentence description of what changed.</li>
+            </ol>
+            <div class="audit-card">
+              <h3>Before &rarr; After</h3>
+              <p class="audit-score">Performance score: <span id="perf-before">?</span> &rarr; <span id="perf-after">?</span></p>
+              <div class="placeholder">
+                <p><strong>Add your screenshots here.</strong></p>
+                <ul>
+                  <li>Run Chrome DevTools &rarr; Lighthouse &rarr; check &ldquo;Performance&rdquo; only &rarr; Analyze page load.</li>
+                  <li>Save the initial score as <code>week9/img/lighthouse-performance-before.png</code>.</li>
+                  <li>Apply &ge; 3 optimizations (WebP images, <code>loading="lazy"</code> below the fold, <code>width</code>+<code>height</code> on <code>img</code>, <code>defer</code> on scripts, minified CSS/JS, cache headers).</li>
+                  <li>Save the improved score as <code>week9/img/lighthouse-performance-after.png</code>.</li>
+                </ul>
+                <p>Example images go here once generated &mdash; I can&rsquo;t run Lighthouse here (no Chrome on this machine), so you&rsquo;ll drop the screenshots in yourself.</p>
+              </div>
+            </div>
+            <p>
+              <strong>Submission:</strong> both screenshots posted to your page with a 2-sentence description of what you changed.
+              Submission page:
+              <a href="https://kahlen2008.github.io/webprogramming/week%209/week%209_2/hw-lighthouse-performance.html">kahlen2008.github.io/webprogramming/week 9/week 9_2/hw-lighthouse-performance.html</a>
+            </p>
+          </section>
+
+          <section class="section" aria-labelledby="hw-a11y-title">
+            <h2 id="hw-a11y-title">Homework 2 &mdash; Accessibility audit</h2>
+            <p>
+              From the Accessibility slides&rsquo; <em>Summary &amp; Homework</em>.
+              Due Thursday before class &mdash; post to Discord / the weekly task page.
+            </p>
+            <ol class="steps">
+              <li>Run Lighthouse on your personal or team project site &mdash; Accessibility audit only.</li>
+              <li>Screenshot the initial Accessibility score (target 100).</li>
+              <li>Fix at least 3 failing audits from the report.</li>
+              <li>Re-run Lighthouse and screenshot the improved score.</li>
+              <li>Post both screenshots plus your list of 3 fixes to the weekly task page.</li>
+            </ol>
+            <div class="audit-card">
+              <h3>Before &rarr; After</h3>
+              <p class="audit-score">Accessibility score: <span id="a11y-before">?</span> &rarr; <span id="a11y-after">?</span></p>
+              <div class="placeholder">
+                <p><strong>Add your screenshots here.</strong></p>
+                <ul>
+                  <li>DevTools &rarr; Lighthouse &rarr; check &ldquo;Accessibility&rdquo; only &rarr; Analyze page load.</li>
+                  <li>Common failures: missing alt text, insufficient contrast, unlabeled form inputs, missing <code>lang="en"</code> on &lt;html&gt;.</li>
+                  <li>Save the initial score as <code>week9/img/lighthouse-accessibility-before.png</code>.</li>
+                  <li>Fix &ge; 3 audits (alt text, contrast 4.5:1, skip link, labels, landmark elements&hellip;).</li>
+                  <li>Save the improved score as <code>week9/img/lighthouse-accessibility-after.png</code>.</li>
+                  <li>List the 3 fixes alongside the screenshots when you post.</li>
+                </ul>
+                <p>Example images go here once generated &mdash; add them to <code>week9/img/</code> yourself.</p>
+              </div>
+            </div>
+            <p><strong>Submission:</strong> both screenshots + list of 3 fixes, posted to Discord / the weekly task page before Thursday&rsquo;s class.</p>
+          </section>
+
+          <section class="section" aria-labelledby="how-title">
+            <h2 id="how-title">How to run a Lighthouse audit</h2>
+            <ol class="steps">
+              <li>Open Chrome DevTools (F12).</li>
+              <li>Click the &ldquo;Lighthouse&rdquo; tab.</li>
+              <li>Check &ldquo;Accessibility&rdquo; only (or &ldquo;Performance&rdquo; only).</li>
+              <li>Click &ldquo;Analyze page load&rdquo;.</li>
+              <li>Read the score (0&ndash;100) and expand each failed audit.</li>
+              <li>Click &ldquo;Learn more&rdquo; on failures, fix them, and re-run to verify.</li>
+            </ol>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Web Programming Library @ Gachon University</p>
+        <p class="fine">Coursework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and a little JavaScript.</p>
+        <ul>
+          <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+
+    <button type="button" class="to-top" id="to-top" aria-label="Back to top" title="Back to top">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 19V5"/>
+        <path d="M5 12l7-7 7 7"/>
+      </svg>
+    </button>
+  </body>
+</html>
