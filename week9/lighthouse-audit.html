@@ -195,15 +195,6 @@
             <li>Read the score (0&ndash;100) and expand each failed audit.</li>
             <li>Click &ldquo;Learn more&rdquo; on failures, fix them, and re-run to verify.</li>
           </ol>
-          <p class="fine">
-            These local runs used Lighthouse 13.6.0 with Chrome&nbsp;157 over a
-            <code>python3 -m http.server</code> origin. That Chromium build never
-            emits contentful-paint trace events, so FCP, LCP and Speed Index are
-            derived from the first paint event: the three timing numbers are
-            indicative, while the category scores use the stock five-metric
-            weighting. The patched Lighthouse lives only in the gitignored
-            scratch install, never in this repository.
-          </p>
         </section>
 
       </div>
