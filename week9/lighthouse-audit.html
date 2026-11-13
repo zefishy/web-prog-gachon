@@ -105,15 +105,24 @@
             <div class="audit-card">
               <h3>Before &rarr; After</h3>
               <p class="audit-score">Performance score: <span id="perf-before">?</span> &rarr; <span id="perf-after">?</span></p>
+              <div class="audit-images">
+                <figure>
+                  <img src="img/lighthouse-perf-before.png" alt="Lighthouse performance score before optimizations">
+                  <figcaption>Before &mdash; run Lighthouse, Performance only</figcaption>
+                </figure>
+                <figure>
+                  <img src="img/lighthouse-perf-after.png" alt="Lighthouse performance score after optimizations">
+                  <figcaption>After &mdash; apply &ge; 3 optimizations, re-run Lighthouse</figcaption>
+                </figure>
+              </div>
               <div class="placeholder">
-                <p><strong>Add your screenshots here.</strong></p>
                 <ul>
                   <li>Run Chrome DevTools &rarr; Lighthouse &rarr; check &ldquo;Performance&rdquo; only &rarr; Analyze page load.</li>
-                  <li>Save the initial score as <code>week9/img/lighthouse-performance-before.png</code>.</li>
+                  <li>Save the initial score as <code>img/lighthouse-performance-before.png</code>.</li>
                   <li>Apply &ge; 3 optimizations (WebP images, <code>loading="lazy"</code> below the fold, <code>width</code>+<code>height</code> on <code>img</code>, <code>defer</code> on scripts, minified CSS/JS, cache headers).</li>
-                  <li>Save the improved score as <code>week9/img/lighthouse-performance-after.png</code>.</li>
+                  <li>Save the improved score as <code>img/lighthouse-performance-after.png</code>.</li>
                 </ul>
-                <p>Example images go here once generated &mdash; I can&rsquo;t run Lighthouse here (no Chrome on this machine), so you&rsquo;ll drop the screenshots in yourself.</p>
+                <p><em>Placeholder score cards are in place &mdash; replace them with your real Lighthouse screenshots once you&rsquo;ve run the audit.</em></p>
               </div>
             </div>
             <p>
@@ -139,17 +148,26 @@
             <div class="audit-card">
               <h3>Before &rarr; After</h3>
               <p class="audit-score">Accessibility score: <span id="a11y-before">?</span> &rarr; <span id="a11y-after">?</span></p>
+              <div class="audit-images">
+                <figure>
+                  <img src="img/lighthouse-a11y-before.png" alt="Lighthouse accessibility score before fixes">
+                  <figcaption>Before &mdash; run Lighthouse, Accessibility only</figcaption>
+                </figure>
+                <figure>
+                  <img src="img/lighthouse-a11y-after.png" alt="Lighthouse accessibility score after fixes">
+                  <figcaption>After &mdash; fix &ge; 3 audits, re-run Lighthouse</figcaption>
+                </figure>
+              </div>
               <div class="placeholder">
-                <p><strong>Add your screenshots here.</strong></p>
                 <ul>
                   <li>DevTools &rarr; Lighthouse &rarr; check &ldquo;Accessibility&rdquo; only &rarr; Analyze page load.</li>
                   <li>Common failures: missing alt text, insufficient contrast, unlabeled form inputs, missing <code>lang="en"</code> on &lt;html&gt;.</li>
-                  <li>Save the initial score as <code>week9/img/lighthouse-accessibility-before.png</code>.</li>
+                  <li>Save the initial score as <code>img/lighthouse-accessibility-before.png</code>.</li>
                   <li>Fix &ge; 3 audits (alt text, contrast 4.5:1, skip link, labels, landmark elements&hellip;).</li>
-                  <li>Save the improved score as <code>week9/img/lighthouse-accessibility-after.png</code>.</li>
+                  <li>Save the improved score as <code>img/lighthouse-accessibility-after.png</code>.</li>
                   <li>List the 3 fixes alongside the screenshots when you post.</li>
                 </ul>
-                <p>Example images go here once generated &mdash; add them to <code>week9/img/</code> yourself.</p>
+                <p><em>Placeholder score cards are in place &mdash; replace them with your real Lighthouse screenshots once you&rsquo;ve run the audit.</em></p>
               </div>
             </div>
             <p><strong>Submission:</strong> both screenshots + list of 3 fixes, posted to Discord / the weekly task page before Thursday&rsquo;s class.</p>

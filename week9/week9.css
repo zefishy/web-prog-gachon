@@ -43,6 +43,20 @@
   font-size: .9rem;
 }
 
+.audit-images {
+  display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap;
+}
+.audit-images figure {
+  flex: 1; min-width: 280px; border: 1px solid var(--rule);
+  border-radius: 8px; padding: .75rem; background: var(--surface);
+  margin: 0; display: flex; flex-direction: column; align-items: center;
+}
+.audit-images img { max-width: 100%; height: auto; border-radius: 4px; }
+.audit-images figcaption {
+  margin-top: .5rem; font-size: .875rem; color: var(--muted);
+  text-align: center;
+}
+
 .steps { counter-reset: step; margin: .5rem 0 0; padding-left: 1.25rem; }
 .steps li { counter-increment: step; margin-bottom: .6rem; padding-left: 1.75rem; position: relative; }
 .steps li::before {
