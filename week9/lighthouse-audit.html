@@ -7,6 +7,7 @@
     <meta name="author" content="Ryan Wong">
     <meta name="description" content="Week 9 homework: Lighthouse performance and accessibility audits — before/after scores, optimizations applied, and fixes made.">
     <title>Lighthouse Audits &mdash; Week 9</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Crect%20width='16'%20height='16'%20rx='3'%20fill='%23e8b04b'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="../css/shared.css">
     <link rel="stylesheet" href="week9.css">
     <script src="../js/main.js"></script>
@@ -37,156 +38,212 @@
       </div>
     </header>
 
-    <main id="main">
-      <section class="hero" aria-labelledby="page-title">
-        <div class="container">
-          <h1 id="page-title">Week 9 &mdash; Lighthouse Audits</h1>
-          <p class="lead">
-            This week is about measuring and fixing real site quality with
-            <strong>Google Lighthouse</strong>: a performance audit of my
-            personal site (compress images, lazy load, defer scripts, cache
-            assets) and an accessibility audit of my course project
-            (contrast, alt text, skip links, keyboard focus). For each audit I
-            screenshot the score before, apply the fixes, then screenshot the
-            score after &mdash; that&rsquo;s what gets submitted.
-          </p>
+  <main id="main">
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Week 9 &mdash; Lighthouse Audits</h1>
+        <p class="lead">
+          This week is about measuring and fixing real site quality with
+          <strong>Google Lighthouse</strong>: a performance audit of my
+          personal site (compress images, lazy load, defer scripts, cache
+          assets) and an accessibility audit of my course project
+          (contrast, alt text, skip links, keyboard focus). For each audit I
+          screenshot the score before, apply the fixes, then screenshot the
+          score after &mdash; that&rsquo;s what gets submitted.
+        </p>
+
+        <div class="stats" role="list" aria-label="Audit scores at a glance">
+          <div class="stat" role="listitem">
+            <span class="page">Homework 1</span>
+            <span class="name">Performance score</span>
+            <span class="figures">100 &rarr; 100</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="page">Homework 2</span>
+            <span class="name">Accessibility score</span>
+            <span class="figures">100 &rarr; 100</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="page">Lighthouse 13.6.0</span>
+            <span class="name">Categories at 100</span>
+            <span class="figures">5 / 5</span>
+          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <div class="container layout layout-single">
-        <div class="report-column">
-          <section class="section" aria-labelledby="what-title">
-            <h2 id="what-title">What the slides cover</h2>
-            <p>
-              Week 9 brings together two lectures: <strong>Web Performance
-              Optimization</strong> and <strong>Web Accessibility (A11y)</strong>.
-              Both end with the same assignment shape: run Lighthouse,
-              screenshot, fix at least three things, re-run, screenshot again.
-            </p>
-            <div class="audit-grid">
-              <div class="audit-card">
-                <h3>Performance (Week 7 slides)</h3>
-                <p>
-                  Why performance matters (53% of mobile users leave after
-                  3 seconds), Lighthouse&rsquo;s five audit categories, Core Web
-                  Vitals (LCP, FID, CLS), image formats (WebP, SVG),
-                  <code>loading="lazy"</code>, minification,
-                  <code>defer</code>, CDNs, cache headers, and a
-                  <strong>10-point performance checklist</strong> &mdash; aim for
-                  Lighthouse Performance 90+.
-                </p>
-              </div>
-              <div class="audit-card">
-                <h3>Accessibility (A11y slides)</h3>
-                <p>
-                  WCAG 2.1 Level AA (target for this course), semantic HTML
-                  over div soup, <code>&lt;button&gt;</code> over
-                  <code>&lt;div onclick&gt;</code>, useful alt text
-                  (<code>alt=""</code> for decorative), ARIA used sparingly,
-                  keyboard navigation, color contrast 4.5:1 for body text,
-                  skip links, and a <strong>95/100 accessibility target</strong>.
-                </p>
-              </div>
-            </div>
-          </section>
+    <div class="container layout">
+      <div class="report-column">
 
-          <section class="section" aria-labelledby="hw-perf-title">
-            <h2 id="hw-perf-title">Homework 1 &mdash; Performance audit</h2>
+        <section class="section" aria-labelledby="hw-perf-title">
+          <h2 id="hw-perf-title">Homework 1 &mdash; Performance audit</h2>
+          <blockquote class="brief">
             <p>
               From the Performance slides&rsquo; <em>Summary &amp; Homework</em>:
               optimize your personal site and post the result to your page.
             </p>
-            <ol class="steps">
-              <li>Run Lighthouse (Performance only) and screenshot your Performance score.</li>
-              <li>Apply at least 3 optimizations from the lecture.</li>
-              <li>Re-run Lighthouse and screenshot the new score.</li>
-              <li>Post both screenshots with a 2-sentence description of what changed.</li>
-            </ol>
-            <div class="audit-card">
-              <h3>Before &rarr; After</h3>
-              <p class="audit-score">Performance score: <span id="perf-before">?</span> &rarr; <span id="perf-after">?</span></p>
-              <div class="audit-images">
-                <figure>
-                  <img src="img/lighthouse-perf-before.png" alt="Lighthouse performance score before optimizations">
-                  <figcaption>Before &mdash; run Lighthouse, Performance only</figcaption>
-                </figure>
-                <figure>
-                  <img src="img/lighthouse-perf-after.png" alt="Lighthouse performance score after optimizations">
-                  <figcaption>After &mdash; apply &ge; 3 optimizations, re-run Lighthouse</figcaption>
-                </figure>
-              </div>
-              <div class="placeholder">
-                <ul>
-                  <li>Run Chrome DevTools &rarr; Lighthouse &rarr; check &ldquo;Performance&rdquo; only &rarr; Analyze page load.</li>
-                  <li>Save the initial score as <code>img/lighthouse-performance-before.png</code>.</li>
-                  <li>Apply &ge; 3 optimizations (WebP images, <code>loading="lazy"</code> below the fold, <code>width</code>+<code>height</code> on <code>img</code>, <code>defer</code> on scripts, minified CSS/JS, cache headers).</li>
-                  <li>Save the improved score as <code>img/lighthouse-performance-after.png</code>.</li>
-                </ul>
-                <p><em>Placeholder score cards are in place &mdash; replace them with your real Lighthouse screenshots once you&rsquo;ve run the audit.</em></p>
-              </div>
-            </div>
-            <p>
-              <strong>Submission:</strong> both screenshots posted to your page with a 2-sentence description of what you changed.
-              Submission page:
-              <a href="https://kahlen2008.github.io/webprogramming/week%209/week%209_2/hw-lighthouse-performance.html">kahlen2008.github.io/webprogramming/week 9/week 9_2/hw-lighthouse-performance.html</a>
-            </p>
-          </section>
+            <cite>Performance slides &mdash; Summary &amp; Homework</cite>
+          </blockquote>
+          <ol class="steps" role="list">
+            <li>Run Lighthouse (Performance only) and screenshot your Performance score.</li>
+            <li>Apply at least 3 optimizations from the lecture.</li>
+            <li>Re-run Lighthouse and screenshot the new score.</li>
+            <li>Post both screenshots with a 2-sentence description of what changed.</li>
+          </ol>
 
-          <section class="section" aria-labelledby="hw-a11y-title">
-            <h2 id="hw-a11y-title">Homework 2 &mdash; Accessibility audit</h2>
+          <div class="shots">
+            <figure class="audit-shot">
+              <picture>
+                <source srcset="img/lighthouse-perf-before.webp" type="image/webp">
+                <img src="img/lighthouse-perf-before.png" alt="Lighthouse report for the library homepage: performance 100, accessibility 100, best practices 100, SEO 100" width="560" height="437" loading="lazy">
+              </picture>
+              <figcaption>Before &mdash; baseline run, five categories all 100</figcaption>
+            </figure>
+            <figure class="audit-shot">
+              <picture>
+                <source srcset="img/lighthouse-perf-after.webp" type="image/webp">
+                <img src="img/lighthouse-perf-after.png" alt="Lighthouse report for the same page after the accessibility fixes: every category still 100" width="560" height="437" loading="lazy">
+              </picture>
+              <figcaption>After &mdash; re-run once the markup was fixed</figcaption>
+            </figure>
+          </div>
+
+          <div class="notes">
+            <p>
+              <strong>What the run measured.</strong> FCP 1.20&nbsp;s, LCP
+              1.20&nbsp;s, TBT 0&nbsp;ms, CLS&nbsp;0, Speed Index
+              1.20&nbsp;s. The page is 4 requests / 66&nbsp;KB of hand-written
+              HTML, CSS and JS, with no images and no third-party origins
+              &mdash; there is very little left for a performance budget to bite
+              on.
+            </p>
+            <p><strong>What the report still flags, and why.</strong></p>
+            <ul>
+              <li><code>cache-insight</code> &mdash; <code>python3 -m http.server</code> sends no <code>Cache-Control</code> header. GitHub Pages serves the same files with <code>max-age=600</code>, so this is a property of the host, not of the markup.</li>
+              <li><code>render-blocking-insight</code> &mdash; the two stylesheets and <code>js/main.js</code> sit in <code>&lt;head&gt;</code>. <code>main.js</code> has to stay parser-blocking: it applies the saved theme before the first paint, and deferring it is what produces a white flash in dark mode.</li>
+              <li><code>forced-reflow-insight</code> &mdash; 51.7&nbsp;ms in <code>js/main.js</code>, attributed to the back-to-top check: <code>update()</code> toggles <code>is-visible</code> and then reads <code>getBoundingClientRect()</code> on the next scroll frame, so the browser lays out twice. It is the only audit that differs between the two runs &mdash; it did not appear in the first one.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="hw-a11y-title">
+          <h2 id="hw-a11y-title">Homework 2 &mdash; Accessibility audit</h2>
+          <blockquote class="brief">
             <p>
               From the Accessibility slides&rsquo; <em>Summary &amp; Homework</em>.
-              Due Thursday before class &mdash; post to Discord / the weekly task page.
+              Due Thursday before class &mdash; post to Discord / the weekly task
+              page.
             </p>
-            <ol class="steps">
-              <li>Run Lighthouse on your personal or team project site &mdash; Accessibility audit only.</li>
-              <li>Screenshot the initial Accessibility score (target 100).</li>
-              <li>Fix at least 3 failing audits from the report.</li>
-              <li>Re-run Lighthouse and screenshot the improved score.</li>
-              <li>Post both screenshots plus your list of 3 fixes to the weekly task page.</li>
-            </ol>
-            <div class="audit-card">
-              <h3>Before &rarr; After</h3>
-              <p class="audit-score">Accessibility score: <span id="a11y-before">?</span> &rarr; <span id="a11y-after">?</span></p>
-              <div class="audit-images">
-                <figure>
-                  <img src="img/lighthouse-a11y-before.png" alt="Lighthouse accessibility score before fixes">
-                  <figcaption>Before &mdash; run Lighthouse, Accessibility only</figcaption>
-                </figure>
-                <figure>
-                  <img src="img/lighthouse-a11y-after.png" alt="Lighthouse accessibility score after fixes">
-                  <figcaption>After &mdash; fix &ge; 3 audits, re-run Lighthouse</figcaption>
-                </figure>
-              </div>
-              <div class="placeholder">
-                <ul>
-                  <li>DevTools &rarr; Lighthouse &rarr; check &ldquo;Accessibility&rdquo; only &rarr; Analyze page load.</li>
-                  <li>Common failures: missing alt text, insufficient contrast, unlabeled form inputs, missing <code>lang="en"</code> on &lt;html&gt;.</li>
-                  <li>Save the initial score as <code>img/lighthouse-accessibility-before.png</code>.</li>
-                  <li>Fix &ge; 3 audits (alt text, contrast 4.5:1, skip link, labels, landmark elements&hellip;).</li>
-                  <li>Save the improved score as <code>img/lighthouse-accessibility-after.png</code>.</li>
-                  <li>List the 3 fixes alongside the screenshots when you post.</li>
-                </ul>
-                <p><em>Placeholder score cards are in place &mdash; replace them with your real Lighthouse screenshots once you&rsquo;ve run the audit.</em></p>
-              </div>
-            </div>
-            <p><strong>Submission:</strong> both screenshots + list of 3 fixes, posted to Discord / the weekly task page before Thursday&rsquo;s class.</p>
-          </section>
+            <cite>Accessibility slides &mdash; Summary &amp; Homework</cite>
+          </blockquote>
+          <ol class="steps" role="list">
+            <li>Run Lighthouse on your personal or team project site &mdash; Accessibility audit only.</li>
+            <li>Screenshot the initial Accessibility score (target 100).</li>
+            <li>Fix at least 3 failing audits from the report.</li>
+            <li>Re-run Lighthouse and screenshot the improved score.</li>
+            <li>Post both screenshots plus your list of 3 fixes to the weekly task page.</li>
+          </ol>
 
-          <section class="section" aria-labelledby="how-title">
-            <h2 id="how-title">How to run a Lighthouse audit</h2>
-            <ol class="steps">
-              <li>Open Chrome DevTools (F12).</li>
-              <li>Click the &ldquo;Lighthouse&rdquo; tab.</li>
-              <li>Check &ldquo;Accessibility&rdquo; only (or &ldquo;Performance&rdquo; only).</li>
-              <li>Click &ldquo;Analyze page load&rdquo;.</li>
-              <li>Read the score (0&ndash;100) and expand each failed audit.</li>
-              <li>Click &ldquo;Learn more&rdquo; on failures, fix them, and re-run to verify.</li>
-            </ol>
-          </section>
-        </div>
+          <div class="shots">
+            <figure class="audit-shot">
+              <picture>
+                <source srcset="img/lighthouse-a11y-before.webp" type="image/webp">
+                <img src="img/lighthouse-a11y-before.png" alt="Lighthouse accessibility report scoring 100 but still listing label-content-name-mismatch as a failing audit" width="560" height="272" loading="lazy">
+              </picture>
+              <figcaption>Before &mdash; 100, with <code>label-content-name-mismatch</code> failing</figcaption>
+            </figure>
+            <figure class="audit-shot">
+              <picture>
+                <source srcset="img/lighthouse-a11y-after.webp" type="image/webp">
+                <img src="img/lighthouse-a11y-after.png" alt="Lighthouse accessibility report scoring 100 with no failing audits" width="560" height="272" loading="lazy">
+              </picture>
+              <figcaption>After &mdash; 100, zero failing audits</figcaption>
+            </figure>
+          </div>
+
+          <div class="notes">
+            <p>
+              <strong>The one real defect: label in name (WCAG&nbsp;2.5.3).</strong>
+              The nine shelf spines carried an <code>aria-label</code> that did
+              not contain their own visible text &mdash; one spine reads
+              &ldquo;JS&rdquo; while its label said &ldquo;JavaScript&rdquo;,
+              the project spine reads &ldquo;Team&nbsp;16 / Project&rdquo; while
+              its label said &ldquo;Project: Team&nbsp;16&rdquo;. Voice-control
+              users speak the label they can see, so a name that hides the
+              visible text breaks that. The redundant <code>aria-label</code>s
+              are gone and the accessible name now <em>is</em> the visible text;
+              the audit passes and the failure list is empty.
+            </p>
+            <p>
+              <strong>The rest of the category passes on both runs.</strong>
+              Colour contrast in both themes, landmark regions, heading order,
+              link names, image <code>alt</code> text, form labels, document
+              language and the skip link are all green &mdash; the score was
+              already 100, the audit list was not.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="how-title">
+          <h2 id="how-title">How to run a Lighthouse audit</h2>
+          <ol class="steps" role="list">
+            <li>Open Chrome DevTools (F12).</li>
+            <li>Click the &ldquo;Lighthouse&rdquo; tab.</li>
+            <li>Check &ldquo;Accessibility&rdquo; only (or &ldquo;Performance&rdquo; only).</li>
+            <li>Click &ldquo;Analyze page load&rdquo;.</li>
+            <li>Read the score (0&ndash;100) and expand each failed audit.</li>
+            <li>Click &ldquo;Learn more&rdquo; on failures, fix them, and re-run to verify.</li>
+          </ol>
+          <p class="fine">
+            These local runs used Lighthouse 13.6.0 with Chrome&nbsp;157 over a
+            <code>python3 -m http.server</code> origin. That Chromium build never
+            emits contentful-paint trace events, so FCP, LCP and Speed Index are
+            derived from the first paint event: the three timing numbers are
+            indicative, while the category scores use the stock five-metric
+            weighting. The patched Lighthouse lives only in the gitignored
+            scratch install, never in this repository.
+          </p>
+        </section>
+
       </div>
-    </main>
+
+      <aside class="facts" aria-labelledby="facts-title">
+        <h2 id="facts-title">Report facts</h2>
+        <dl>
+          <div>
+            <dt>Audits</dt>
+            <dd>2 &mdash; performance, accessibility</dd>
+          </div>
+          <div>
+            <dt>Tool</dt>
+            <dd>Lighthouse 13.6.0</dd>
+          </div>
+          <div>
+            <dt>Browser</dt>
+            <dd>Chrome&nbsp;157, headless</dd>
+          </div>
+          <div>
+            <dt>Categories</dt>
+            <dd>5, all at 100</dd>
+          </div>
+          <div>
+            <dt>Failing audits</dt>
+            <dd>1 &rarr; 0</dd>
+          </div>
+          <div>
+            <dt>Screenshots</dt>
+            <dd>4 &mdash; before and after per audit</dd>
+          </div>
+        </dl>
+        <div class="see-also">
+          <h3>See also</h3>
+          <p><a href="../index.html#week-9">Week 9 in the library</a></p>
+          <p><a href="../portfolio/index.html">The site that was audited</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
 
     <footer class="site-footer">
       <div class="container">
@@ -199,12 +256,5 @@
         <p class="fine">&copy; 2026 Ryan Wong</p>
       </div>
     </footer>
-
-    <button type="button" class="to-top" id="to-top" aria-label="Back to top" title="Back to top">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M12 19V5"/>
-        <path d="M5 12l7-7 7 7"/>
-      </svg>
-    </button>
   </body>
 </html>

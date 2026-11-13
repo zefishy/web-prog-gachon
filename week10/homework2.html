@@ -234,7 +234,7 @@ branch &#39;main&#39; set up to track &#39;origin/main&#39;.</code></pre>
             </div>
           </section>
 
-          <section class="section" aria-labelledby="result-title">
+          <section class="section notes" aria-labelledby="result-title">
             <h2 id="result-title">Result: the graded audit</h2>
             <p>
               The audit ran against the live URL &mdash;
@@ -249,24 +249,48 @@ branch &#39;main&#39; set up to track &#39;origin/main&#39;.</code></pre>
                 alt="Lighthouse accessibility report for the live portfolio, showing a circular gauge with a score of 100 out of 100">
               <figcaption>
                 The Lighthouse report for the live portfolio &mdash;
-                Accessibility 100/100. This is the screenshot
-                submitted with the URL on Cybercampus.
+                Accessibility 100/100.
               </figcaption>
             </figure>
             <p>
-              All 24 applicable checks passed and none failed: the theme switch and
-              every link carry an accessible name, the palette clears
-              colour-contrast, the avatar has alt text, the document has a
-              language and a title, headings step in order, the landmark
-              structure is sound, the skip link works, and tap targets are
-              big enough. Ten more checks are manual (keyboard focus, tab order,
-              focus trapping &mdash; worth a quick pass by hand) and 42 were
-              not applicable &mdash; a one-page portfolio has no forms,
-              videos, or data tables. The homework target was 90.
+              All 24 applicable automated checks passed, and none failed. The
+              rest either need a human or simply do not apply to a one-page
+              portfolio:
             </p>
+            <div class="stats" role="list" aria-label="Accessibility check counts">
+              <div class="stat" role="listitem">
+                <span class="page">automated checks</span>
+                <span class="name">Passed</span>
+                <p class="figures">24</p>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="page">need a human pass</span>
+                <span class="name">Manual</span>
+                <p class="figures">10</p>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="page">no forms, video, or data tables</span>
+                <span class="name">Not applicable</span>
+                <p class="figures">42</p>
+              </div>
+            </div>
+            <p>What the automated pass confirmed:</p>
+            <ul>
+              <li>Accessible names on the theme switch and on every link.</li>
+              <li>Colour contrast clears WCAG AA across the palette.</li>
+              <li>
+                Alt text on the avatar, plus <code>lang</code> and
+                <code>title</code> on the document.
+              </li>
+              <li>Heading levels step in order and the landmarks are sound.</li>
+              <li>The skip link moves focus into the main content.</li>
+              <li>Tap targets are big enough for touch.</li>
+            </ul>
             <p>
-              Submit: the live URL plus this screenshot on Cybercampus
-              &mdash; due Sunday, 15 November.
+              The ten manual checks &mdash; keyboard focus, tab order, and focus
+              trapping &mdash; are the ones Lighthouse cannot judge by itself,
+              so they are worth a quick pass by hand. The homework target was
+              90.
             </p>
           </section>
         </div>

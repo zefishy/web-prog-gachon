@@ -268,87 +268,6 @@ a7a748c Add hero section with photo and bio
             </div>
           </section>
 
-          <section class="section" aria-labelledby="checklist-title">
-            <h2 id="checklist-title">Requirements checklist</h2>
-            <p>How each requirement in the brief is covered so far:</p>
-            <div class="table-scroll">
-              <table class="repo-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Requirement</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">How it's covered</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">Repo called <code>portfolio</code></th>
-                    <td><span class="badge badge-pass">done</span></td>
-                    <td>Initialised locally on branch <code>main</code>; the GitHub repo gets the same name when it is created.</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">index.html with your name</th>
-                    <td><span class="badge badge-pass">done</span></td>
-                    <td>Hero <code>&lt;h1&gt;</code> and the header owner line.</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">&hellip; photo</th>
-                    <td><span class="badge badge-todo">placeholder</span></td>
-                    <td><code>img/avatar.svg</code> (initials on the palette green) stands in; a real photo drops into <code>img/</code> and the hero <code>img src</code> is updated, alt text already reads &ldquo;Portrait of Ryan Wong&rdquo;.</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">&hellip; bio</th>
-                    <td><span class="badge badge-pass">done</span></td>
-                    <td>Hero lead paragraph plus the About section, written from my profile.</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">&hellip; skills</th>
-                    <td><span class="badge badge-pass">done</span></td>
-                    <td>Skills section in three groups: markup/styling/scripting, design/layout, quality/workflow.</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Links to 2&ndash;3 course projects</th>
-                    <td><span class="badge badge-pass">done</span></td>
-                    <td>Three project cards: Book Search App (Week 7), registration form with JS validation (Week 8), Team 16 Gachon Wind proposal.</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">At least 5 meaningful commits</th>
-                    <td><span class="badge badge-pass">done</span></td>
-                    <td>11 commits; every message names the feature it added (see the history above).</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Submit repo URL on Cybercampus</th>
-                    <td><span class="badge badge-todo">pending</span></td>
-                    <td>Waiting on the GitHub push (below); the URL goes to Cybercampus right after.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <section class="section" aria-labelledby="publish-title">
-            <h2 id="publish-title">What's left: publishing the repo</h2>
-            <p>
-              The history is complete but entirely local. Publishing is two
-              commands once the repo exists on GitHub &mdash; created with the
-              exact name <code>portfolio</code> and left
-              <strong>public</strong>, since private repos block GitHub Pages
-              on the free plan:
-            </p>
-            <pre class="term"><code><span class="c"># create the repo on GitHub named exactly "portfolio", then:</span>
-<span class="p">$</span> git remote add origin https://github.com/&lt;username&gt;/portfolio.git
-<span class="p">$</span> git push -u origin main</code></pre>
-            <p>
-              <code>git remote add</code> links the local repo to GitHub
-              under the nickname <code>origin</code>; <code>git push -u origin
-              main</code> uploads the commits and remembers the upstream, so
-              later pushes are a plain <code>git push</code>. After that, the
-              repo URL is what gets submitted on Cybercampus &mdash; and the
-              same repo is what the deployment homework (GitHub Pages +
-              Lighthouse) will build on.
-            </p>
-          </section>
-
           <section class="section notes" aria-labelledby="learned-title">
             <h2 id="learned-title">What the exercise taught</h2>
             <ul>
@@ -385,18 +304,6 @@ a7a748c Add hero section with photo and bio
               <dd>portfolio (branch main)</dd>
             </div>
             <div>
-              <dt>Git version</dt>
-              <dd>2.56.0</dd>
-            </div>
-            <div>
-              <dt>Build day</dt>
-              <dd>10 November 2026</dd>
-            </div>
-            <div>
-              <dt>Follow-ups</dt>
-              <dd>13 November 2026</dd>
-            </div>
-            <div>
               <dt>Commits</dt>
               <dd>11 (9 + 2)</dd>
             </div>
@@ -406,26 +313,9 @@ a7a748c Add hero section with photo and bio
             </div>
             <div>
               <dt>Remote</dt>
-              <dd>not added yet</dd>
-            </div>
-            <div>
-              <dt>Submit via</dt>
-              <dd>Cybercampus, Week 10</dd>
+              <dd><a href="https://github.com/zefishy/wp-gachon-portfolio">https://github.com/zefishy/wp-gachon-portfolio</a></dd>
             </div>
           </dl>
-
-          <div class="see-also">
-            <h3>See also</h3>
-            <ul>
-              <li>
-                <a href="../portfolio/index.html">The portfolio page this report documents</a>
-              </li>
-              <li><a href="../index.html">Back to the library</a></li>
-              <li>
-                <a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a>
-              </li>
-            </ul>
-          </div>
         </aside>
       </div>
     </main>

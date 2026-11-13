@@ -1,68 +1,260 @@
 /* ---------- week9.css ----------
-   Week 9 layer: Lighthouse audit pages (performance + accessibility).
-   Loads after css/shared.css, before ../js/main.js. */
+   Week 9 layer: the Lighthouse audit report.
+   Loads after css/shared.css and before ../js/main.js, so every colour, type
+   size and motion value comes from the shared tokens — nothing here names a
+   colour, which is what lets the theme switch cross-fade the whole page.
+   This file owns only the report's shape: the score strip under the hero, one
+   report column beside a facts rail, and the vertical rhythm that keeps two
+   audits plus a how-to on one page from reading as a single long list. */
 
-.audit-grid {
+/* ---------- Hero: the two scores at a glance ---------- */
+.stats {
   display: grid;
-  gap: 1.5rem;
-}
-@media (min-width: 56rem) {
-  .audit-grid { grid-template-columns: 1fr 1fr; }
+  gap: 1rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
 }
 
-.audit-card {
-  border: 1px solid var(--rule);
-  border-radius: 10px;
-  padding: 1.25rem;
+.stat {
   background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: grid;
+  gap: .3rem;
+  transition: border-color .18s var(--ease-out);
 }
-.audit-card h3 {
-  margin: 0 0 .75rem;
-  font-size: 1.25rem;
+
+.stat:hover { border-color: var(--wk); }
+
+.stat .page {
+  color: var(--muted);
+  font-size: .875rem;
+}
+
+.stat .name { font-weight: 700; }
+
+.stat .figures {
+  margin-top: .4rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
   color: var(--head);
 }
-.audit-score {
+
+@media (min-width: 40rem) {
+  .stats { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ---------- Report frame: one column, plus a facts rail on wide screens ---------- */
+.layout {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+}
+
+.report-column {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 64rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .facts {
+    position: sticky;
+    top: calc(var(--header-h) + 1.5rem);
+  }
+}
+
+/* ---------- Sections ---------- */
+.section + .section {
+  margin-top: 3rem;
+}
+
+.section h2 {
   font-size: 1.5rem;
-  font-weight: 700;
+  border-top: .375rem solid var(--wk);
+  padding-top: 1.25rem;
 }
 
-.placeholder {
-  border: 1px dashed var(--rule);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--muted) 12%, var(--surface));
-  padding: 1rem;
-  margin: 1rem 0;
-}
-.placeholder p { margin: 0 0 .5rem; color: var(--muted); }
-.placeholder ul { margin: .5rem 0 0; padding-left: 1.25rem; color: var(--muted); }
-.placeholder li { margin-bottom: .35rem; }
-.placeholder code {
-  background: var(--paper);
-  padding: .15rem .4rem;
-  border-radius: 4px;
-  font-size: .9rem;
+.section > p {
+  margin-top: 1rem;
+  max-width: 62ch;
 }
 
-.audit-images {
-  display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap;
-}
-.audit-images figure {
-  flex: 1; min-width: 280px; border: 1px solid var(--rule);
-  border-radius: 8px; padding: .75rem; background: var(--surface);
-  margin: 0; display: flex; flex-direction: column; align-items: center;
-}
-.audit-images img { max-width: 100%; height: auto; border-radius: 4px; }
-.audit-images figcaption {
-  margin-top: .5rem; font-size: .875rem; color: var(--muted);
-  text-align: center;
+.section p + p { margin-top: .9rem; }
+
+/* ---------- The brief: the assignment, quoted from the slides ---------- */
+.brief {
+  margin: 1.5rem 0 0;
+  padding: .25rem 0 .25rem 1.25rem;
+  border-left: .375rem solid var(--wk);
 }
 
-.steps { counter-reset: step; margin: .5rem 0 0; padding-left: 1.25rem; }
-.steps li { counter-increment: step; margin-bottom: .6rem; padding-left: 1.75rem; position: relative; }
+.brief p { max-width: 62ch; }
+
+.brief cite {
+  display: block;
+  margin-top: .75rem;
+  font-style: normal;
+  font-size: .9375rem;
+  color: var(--muted);
+}
+
+/* ---------- Steps: the assignment checklist, numbered ---------- */
+.steps {
+  counter-reset: step;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 3rem;
+  min-height: 2.25rem;
+  max-width: 62ch;
+}
+
 .steps li::before {
   content: counter(step);
-  position: absolute; left: 0; top: .1rem;
-  width: 1.25rem; height: 1.25rem; border-radius: 50%;
-  background: var(--wk); color: var(--on-wk);
-  font-weight: 700; font-size: .9rem; display: grid; place-items: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--wk) 22%, var(--surface));
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Before / after screenshots ---------- */
+.shots {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.shots .audit-shot { margin: 0; }
+
+.audit-shot img {
+  display: block;
+  width: 100%;
+  max-width: 35rem;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+.audit-shot figcaption {
+  margin-top: .6rem;
+  max-width: 62ch;
+  font-size: .875rem;
+  color: var(--muted);
+}
+
+/* ---------- Notes: the verdict under each pair of screenshots ---------- */
+.notes {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  max-width: 62ch;
+}
+
+.notes ul {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: .6rem;
+}
+
+.notes li {
+  position: relative;
+  padding-left: 1.1rem;
+  max-width: 62ch;
+}
+
+.notes li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .65em;
+  width: .5rem;
+  height: .5rem;
+  border-radius: 50%;
+  background: var(--wk);
+}
+
+.notes code,
+.fine code {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: .15rem .4rem;
+  font-size: .875em;
+}
+
+/* ---------- Facts rail ---------- */
+.facts {
+  border-top: .375rem solid var(--wk);
+  padding-top: 1.25rem;
+}
+
+.facts h2 { font-size: 1.5rem; }
+
+.facts dl {
+  display: grid;
+  margin: 1rem 0 0;
+}
+
+.facts dl > div {
+  display: grid;
+  gap: .15rem;
+  padding-block: .85rem;
+  border-top: 1px solid var(--rule);
+}
+
+.facts dt { font-weight: 700; }
+
+.facts dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+.facts .see-also {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: .5rem;
+}
+
+.facts .see-also h3 {
+  font-size: .8125rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+
+.facts .see-also a { text-underline-offset: .2em; }
+
+/* ---------- Fine print ---------- */
+.section > .fine {
+  margin-top: 1.5rem;
+  max-width: 62ch;
+}
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .stat { transition: none; }
 }
