@@ -75,6 +75,7 @@
 .pages-18 { --pages: 18; }
 .pages-5 { --pages: 5; }
 .pages-1 { --pages: 1; }
+.pages-2 { --pages: 2; }
 /* The stepped shelf ramp, anchored on the palette greens (#12544F, #2A835F,
    #8BBB92) with even mixes between. White text on the three dark steps, ink
    on the five light ones — every pair clears WCAG AA (4.5:1). */

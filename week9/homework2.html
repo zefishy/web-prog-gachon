@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="Ryan Wong">
+    <meta name="description" content="Week 9 deployment homework report by Ryan Wong: putting the portfolio on GitHub Pages, the homework requirements checklist, the deployment steps, and the Lighthouse accessibility audit of the live site.">
+    <title>GitHub Pages Deployment Report &mdash; Week 9</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="report.css">
+    <script src="../js/main.js"></script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Deployment homework report</span>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">GitHub Pages Deployment Report</h1>
+          <p class="lead">
+            Homework 2 takes the portfolio built in Homework 1 and makes it
+            public: GitHub Pages turns the repo into a live website, and a
+            Lighthouse accessibility audit has to score at least 90 on the
+            result. The repo was pushed, the Pages switch was flipped, and
+            the portfolio now lives at
+            <a href="https://zefishy.github.io/wp-gachon-portfolio/"
+              >zefishy.github.io/wp-gachon-portfolio</a
+            >. This report records the deployment and the audit.
+          </p>
+
+          <div class="stats" role="list" aria-label="Deployment facts at a glance">
+            <div class="stat" role="listitem">
+              <span class="page">branch main &middot; origin</span>
+              <span class="name">Commits pushed</span>
+              <p class="figures">12</p>
+            </div>
+            <div class="stat" role="listitem">
+              <span class="page">zefishy.github.io/wp-gachon-portfolio</span>
+              <span class="name">GitHub Pages URL</span>
+              <p class="figures">live</p>
+            </div>
+            <div class="stat" role="listitem">
+              <span class="page">of the homework checklist</span>
+              <span class="name">Items ready</span>
+              <p class="figures">6 / 6</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="container layout layout-single">
+        <div class="report-column">
+          <section class="section" aria-labelledby="model-title">
+            <h2 id="model-title">From commits to a live site</h2>
+            <p>
+              The deployment model from the lecture is a pipeline:
+              <strong>your laptop &rarr; GitHub &rarr; GitHub Pages builds
+              &rarr; live on the internet</strong>. A plain <code>git push</code>
+              hands the code to GitHub, Pages converts the repo into a
+              website, and anyone can visit the URL. The site redeploys on
+              every push in one to three minutes, serves over HTTPS by
+              default, and costs nothing for a public repo.
+            </p>
+            <p>
+              Pages is a <strong>static</strong> host: plain HTML, CSS, and
+              JavaScript, images, JSON, and client-side <code>fetch()</code>
+              all work; PHP, Python, Node.js, and databases do not. The
+              portfolio is pure static files, so nothing about it needs to
+              change &mdash; the only prerequisite is that
+              <code>index.html</code> sits at the <strong>root</strong> of the
+              deployed branch, which it does.
+            </p>
+            <p>The push that put the repo on GitHub:</p>
+            <pre class="term"><code><span class="c"># the local repo was connected to the (empty) GitHub repo and pushed</span>
+<span class="p">$</span> git remote set-url origin git@github.com:zefishy/wp-gachon-portfolio.git
+<span class="p">$</span> git push -u origin main
+To github.com:zefishy/wp-gachon-portfolio.git
+ * [new branch]      main -&gt; main
+branch &#39;main&#39; set up to track &#39;origin/main&#39;.</code></pre>
+            <p>
+              Twelve commits on <code>main</code> now, working tree clean
+              &mdash; the eleven from the
+              <a href="report.html">Homework 1 report</a>, plus a follow-up
+              that points the portfolio's course-project links at this
+              library's own live deployment.
+            </p>
+          </section>
+
+          <section class="section" aria-labelledby="enable-title">
+            <h2 id="enable-title">Enabling GitHub Pages</h2>
+            <p>
+              With the code up, Pages was switched on in the browser &mdash;
+              straight from the lecture:
+            </p>
+            <div class="steps">
+              <div class="step">
+                <span class="step-num" aria-hidden="true">1</span>
+                <div>
+                  <h3>Open the repo</h3>
+                  <p><code>github.com/zefishy/wp-gachon-portfolio</code> &mdash; the repository page.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-num" aria-hidden="true">2</span>
+                <div>
+                  <h3>Click <strong>Settings</strong></h3>
+                  <p>Top navigation: Code, Issues, Pull requests &hellip; Settings.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-num" aria-hidden="true">3</span>
+                <div>
+                  <h3>Scroll to <strong>Pages</strong></h3>
+                  <p>Left sidebar, under the &ldquo;Code and automation&rdquo; section.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-num" aria-hidden="true">4</span>
+                <div>
+                  <h3>Set the source</h3>
+                  <p>Under &ldquo;Build and deployment&rdquo;: Source &rarr; <strong>Deploy from a branch</strong>, Branch &rarr; <strong>main</strong>, folder &rarr; <strong>/ (root)</strong>.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-num" aria-hidden="true">5</span>
+                <div>
+                  <h3>Save and wait</h3>
+                  <p>The build starts at once and takes about two minutes; refresh the page until the green &ldquo;Your site is live at&hellip;&rdquo; URL appears.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-num" aria-hidden="true">6</span>
+                <div>
+                  <h3>Test the live site</h3>
+                  <p>Open the URL in a browser, try the theme toggle, and open it on a phone &mdash; the homework is a public page now.</p>
+                </div>
+              </div>
+            </div>
+            <p>
+              Two failure modes the lecture warns about, both already ruled
+              out here: a 404 comes from <code>index.html</code> being missing
+              from the branch root (ours is at the root), and a greyed-out
+              Pages section means the repo is private &mdash; it has to be
+              <strong>public</strong> for Pages on the free plan. If a fresh
+              push seems not to appear, it is the one-to-three-minute cache:
+              hard-refresh with <code>Ctrl+Shift+R</code>.
+            </p>
+            <p>
+              The switch went on the same day as the push. The build finished
+              in under two minutes, the green &ldquo;Your site is live
+              at&hellip;&rdquo; banner appeared, and
+              <a href="https://zefishy.github.io/wp-gachon-portfolio/">the
+              URL</a> has been serving the portfolio over HTTPS since &mdash;
+              confirmed with a browser visit (theme toggle and mobile layout
+              checked) and an HTTP 200.
+            </p>
+          </section>
+
+          <section class="section" aria-labelledby="checklist-title">
+            <h2 id="checklist-title">Requirements checklist</h2>
+            <p>
+              The six checklist items, and how the build covers them &mdash;
+              five were designed in from the first commit, and the audit
+              confirmed the sixth on the live site:
+            </p>
+            <div class="table-scroll">
+              <table class="repo-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Requirement</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">How it's covered</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">&#9312; Semantic HTML</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td><code>&lt;header&gt;</code> (owner, section nav, theme switch), <code>&lt;nav aria-label&gt;</code>, <code>&lt;main&gt;</code> wrapping four <code>&lt;section&gt;</code>s, <code>&lt;footer&gt;</code> &mdash; plus a skip link.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">&#9313; Responsive CSS</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>Mobile-first grid; the narrow-screen pass stacks the hero, stretches the buttons full-width, and drops the cards to one column; verified in a narrow render.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">&#9314; At least 1 JS interaction</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>Light/dark toggle in <code>js/main.js</code> &mdash; the lecture's own example &mdash; cross-fading the colour tokens and saving the choice to <code>localStorage</code>.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">&#9315; Lighthouse Accessibility &ge; 90 (screenshot)</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>Scored <strong>100/100</strong> on the live URL with Lighthouse 13.6.0 &mdash; the report screenshot is in the <a href="#result">result section</a> below.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">&#9316; Meaningful alt text on all images</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>The one content image (the avatar) carries <code>alt="Portrait of Ryan Wong"</code>; the theme-switch icons are decorative SVGs inside a labelled button.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">&#9317; Color contrast passes WCAG AA</th>
+                    <td><span class="badge badge-pass">done</span></td>
+                    <td>Palette inherited from the course library ramp, where every text pair clears 4.5:1 &mdash; the audit's contrast checks on the live site all pass.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="result-title">
+            <h2 id="result-title">Result: the graded audit</h2>
+            <p>
+              The audit ran against the live URL &mdash;
+              <a href="https://zefishy.github.io/wp-gachon-portfolio/"
+                >zefishy.github.io/wp-gachon-portfolio</a
+              > &mdash; with Lighthouse 13.6.0, Accessibility category
+              only, on emulated mobile: <strong>Accessibility
+              100/100</strong>.
+            </p>
+            <figure class="audit-shot">
+              <img src="lighthouse-homework2.png"
+                alt="Lighthouse accessibility report for the live portfolio, showing a circular gauge with a score of 100 out of 100">
+              <figcaption>
+                The Lighthouse report for the live portfolio &mdash;
+                Accessibility 100/100. This is the screenshot
+                submitted with the URL on Cybercampus.
+              </figcaption>
+            </figure>
+            <p>
+              All 24 applicable checks passed and none failed: the theme switch and
+              every link carry an accessible name, the palette clears
+              colour-contrast, the avatar has alt text, the document has a
+              language and a title, headings step in order, the landmark
+              structure is sound, the skip link works, and tap targets are
+              big enough. Ten more checks are manual (keyboard focus, tab order,
+              focus trapping &mdash; worth a quick pass by hand) and 42 were
+              not applicable &mdash; a one-page portfolio has no forms,
+              videos, or data tables. The homework target was 90.
+            </p>
+            <p>
+              Submit: the live URL plus this screenshot on Cybercampus
+              &mdash; due Sunday, 15 November.
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Web Programming Library @ Gachon University</p>
+        <p class="fine">
+          2026 Ryan Wong. Built with semantic HTML, modern CSS, and JavaScript.
+        </p>
+        <ul>
+          <li><a href="../index.html">Back to the library</a></li>
+          <li>
+            <a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a>
+          </li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+  </body>
+</html>
