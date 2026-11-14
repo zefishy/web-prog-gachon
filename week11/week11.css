@@ -1,0 +1,489 @@
+/* ---------- week11.css ----------
+   Week 11 layer: the React props exercises.
+   Loads after css/shared.css and before ../js/main.js, so every colour, type
+   size and motion value still comes from the shared tokens — nothing here
+   names a colour, which is what lets the theme switch cross-fade the page.
+   This file owns two shapes: the page furniture (one column of prose beside
+   a facts rail), and the two components the week teaches — ProductCard and
+   the portfolio gallery — whose markup React generates at runtime.
+   Because React writes that markup into the DOM, the class names below are a
+   contract between week11's JSX and this file: rename one and rename the
+   other. */
+
+/* ---------- Page frame: one column, plus a facts rail on wide screens ---------- */
+.layout {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+}
+
+.report-column {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 64rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .facts {
+    position: sticky;
+    top: calc(var(--header-h) + 1.5rem);
+  }
+}
+
+/* ---------- Sections ---------- */
+.section + .section {
+  margin-top: 3rem;
+}
+
+/* Direct children only: the same heading levels also appear inside the
+   React-rendered cards below, and those must not inherit the section rule. */
+.section > h2 {
+  font-size: 1.5rem;
+  border-top: .375rem solid var(--wk);
+  padding-top: 1.25rem;
+}
+
+.section > h3 {
+  margin-top: 2rem;
+  font-size: 1.125rem;
+}
+
+.section > p {
+  margin-top: 1rem;
+  max-width: 62ch;
+}
+
+.section p + p { margin-top: .9rem; }
+
+.section > .fine {
+  margin-top: 1.5rem;
+  max-width: 62ch;
+}
+
+/* ---------- The brief: the assignment, quoted from the slides ---------- */
+.brief {
+  margin: 1.5rem 0 0;
+  padding: .25rem 0 .25rem 1.25rem;
+  border-left: .375rem solid var(--wk);
+}
+
+.brief p { max-width: 62ch; }
+
+.brief cite {
+  display: block;
+  margin-top: .75rem;
+  font-style: normal;
+  font-size: .9375rem;
+  color: var(--muted);
+}
+
+/* ---------- Code ---------- */
+.code-block { margin-top: 1.5rem; }
+
+.code-label {
+  font-size: .8125rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Prose stops at 62ch for readability, but code gets the whole column:
+   a fixed measure here only forces a scrollbar on lines that would fit. */
+pre.code {
+  margin-top: .4rem;
+  padding: 1rem 1.25rem;
+  max-width: 100%;
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  font-size: .875rem;
+  line-height: 1.55;
+  tab-size: 2;
+}
+
+pre.code code {
+  font: inherit;
+  white-space: pre;
+}
+
+:root :not(pre) > code {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: .15rem .4rem;
+  font-size: .875em;
+}
+
+/* ---------- The stats strip under the hero ---------- */
+.stats {
+  display: grid;
+  gap: 1rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: grid;
+  gap: .3rem;
+  transition: border-color .18s var(--ease-out);
+}
+
+.stat:hover { border-color: var(--wk); }
+
+.stat .page { color: var(--muted); font-size: .875rem; }
+.stat .name { font-weight: 700; }
+
+.stat .figures {
+  margin-top: .4rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--head);
+}
+
+@media (min-width: 40rem) {
+  .stats { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ---------- Props table ---------- */
+.table-scroll {
+  margin-top: 1.5rem;
+  overflow-x: auto;
+}
+
+.props-table {
+  width: 100%;
+  max-width: 62ch;
+  border-collapse: collapse;
+  font-size: .9375rem;
+}
+
+.props-table th,
+.props-table td {
+  padding: .7rem .85rem;
+  border-top: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.props-table th {
+  font-size: .8125rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-top: 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.props-table td:first-child {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .875rem;
+  white-space: nowrap;
+}
+
+.props-table .req { color: var(--muted); white-space: nowrap; }
+
+/* ---------- ProductCard (rendered by React) ---------- */
+.product-grid {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  transition: border-color .18s var(--ease-out), transform .18s var(--ease-out);
+}
+
+.product-card:hover {
+  border-color: var(--wk);
+  transform: translateY(-2px);
+}
+
+.product-card__name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--head);
+}
+
+.product-card__price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.product-card__rating {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  color: var(--muted);
+  font-size: .9375rem;
+}
+
+.product-card__stars {
+  color: var(--wk);
+  letter-spacing: .06em;
+  font-size: 1.0625rem;
+}
+
+.product-card__stock {
+  margin-top: .35rem;
+  align-self: flex-start;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  font-size: .8125rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--wk) 22%, var(--surface));
+  color: var(--ink);
+}
+
+.product-card__stock.is-out {
+  background: color-mix(in srgb, var(--danger) 20%, var(--surface));
+  color: var(--ink);
+}
+
+/* ---------- FilterBar (rendered by React) ---------- */
+.gallery {
+  margin-top: 1.5rem;
+  padding: clamp(.85rem, 3vw, 1.25rem);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+}
+
+.gallery__header {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.gallery__title { font-size: 1.25rem; color: var(--head); }
+
+.gallery__lead {
+  margin-top: .35rem;
+  max-width: 62ch;
+  font-size: .9375rem;
+  color: var(--muted);
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+}
+
+.filter-bar__label {
+  margin-right: .25rem;
+  font-size: .875rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.filter-bar__btn {
+  min-height: 2.5rem;
+  padding: .4rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: .9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color .18s var(--ease-out), border-color .18s var(--ease-out);
+}
+
+.filter-bar__btn:hover { border-color: var(--wk); }
+
+.filter-bar__btn[aria-pressed="true"] {
+  background: var(--wk);
+  border-color: var(--wk);
+  color: var(--on-wk);
+}
+
+.gallery__count {
+  margin-top: .85rem;
+  font-size: .875rem;
+  color: var(--muted);
+}
+
+/* ---------- ProjectCard (rendered by React) ---------- */
+.project-grid {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.project-grid > li {
+  display: flex;
+  min-width: 0;
+}
+
+.project-grid > li > .project-card { flex: 1; }
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  padding: 1.25rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+.project-card__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--head);
+}
+
+.project-card__desc {
+  font-size: .9375rem;
+  color: var(--muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: .15rem .55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--wk) 20%, var(--surface));
+  font-size: .8125rem;
+  font-weight: 700;
+}
+
+.project-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  margin-top: auto;
+  padding-top: .35rem;
+  font-size: .9375rem;
+  font-weight: 700;
+}
+
+.project-card__links a { text-underline-offset: .2em; }
+
+.gallery__empty {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+  border: 1px dashed var(--rule);
+  border-radius: 10px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- Lists that read as notes, not bullets ---------- */
+.notes {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  max-width: 62ch;
+}
+
+.notes ul {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: .6rem;
+}
+
+.notes li {
+  position: relative;
+  padding-left: 1.1rem;
+  max-width: 62ch;
+}
+
+.notes li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .65em;
+  width: .5rem;
+  height: .5rem;
+  border-radius: 50%;
+  background: var(--wk);
+}
+
+/* ---------- Facts rail ---------- */
+.facts {
+  border-top: .375rem solid var(--wk);
+  padding-top: 1.25rem;
+}
+
+.facts h2 { font-size: 1.5rem; }
+
+.facts dl {
+  display: grid;
+  margin: 1rem 0 0;
+}
+
+.facts dl > div {
+  display: grid;
+  gap: .15rem;
+  padding-block: .85rem;
+  border-top: 1px solid var(--rule);
+}
+
+.facts dt { font-weight: 700; }
+
+.facts dd { margin: 0; color: var(--muted); }
+
+.facts .see-also {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: .5rem;
+}
+
+.facts .see-also h3 {
+  font-size: .8125rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+
+.facts .see-also a { text-underline-offset: .2em; }
+
+/* ---------- The no-JavaScript fallback ---------- */
+.no-js {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  max-width: 62ch;
+  border: 1px dashed var(--rule);
+  border-radius: 10px;
+  color: var(--muted);
+}
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .stat,
+  .product-card,
+  .filter-bar__btn { transition: none; }
+  .product-card:hover { transform: none; }
+}

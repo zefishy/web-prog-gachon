@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="Ryan Wong">
+    <meta name="description" content="Week 11 homework: a Portfolio Gallery built from four React components — App, FilterBar, ProjectList and ProjectCard — where the filter bar narrows a list of projects by technology.">
+    <title>Portfolio Gallery &mdash; Week 11</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Crect%20width='16'%20height='16'%20rx='3'%20fill='%2361dafb'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="week11.css">
+    <script src="../js/main.js"></script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 11: React props</span>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Week 11 &mdash; Portfolio Gallery</h1>
+          <p class="lead">
+            The graded homework: four small components that compose into one
+            screen. <code>App</code> owns the selected technology,
+            <code>FilterBar</code> reports a click, <code>ProjectList</code>
+            maps the matching projects to <code>ProjectCard</code>s, and each
+            card receives its title, description, tech stack and links as
+            props. Filter the gallery below &mdash; that is the whole
+            assignment, running.
+          </p>
+
+          <div class="stats" role="list" aria-label="Gallery facts at a glance">
+            <div class="stat" role="listitem">
+              <span class="page">App &middot; FilterBar &middot; ProjectList &middot; ProjectCard</span>
+              <span class="name">Components</span>
+              <p class="figures">4</p>
+            </div>
+            <div class="stat" role="listitem">
+              <span class="page">3+ required</span>
+              <span class="name">Project cards</span>
+              <p class="figures">5</p>
+            </div>
+            <div class="stat" role="listitem">
+              <span class="page">All &middot; JavaScript &middot; CSS &middot; HTML</span>
+              <span class="name">Technology filters</span>
+              <p class="figures">4</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="container layout">
+        <div class="report-column">
+
+          <section class="section" aria-labelledby="brief-title">
+            <h2 id="brief-title">The homework</h2>
+            <blockquote class="brief">
+              <p>
+                Create a React project with
+                <code>npx create-react-app portfolio-gallery</code>. Build a
+                <code>ProjectCard</code> component (title, description, tech
+                stack, GitHub link, demo link). Build a
+                <code>ProjectList</code> that renders an array of 3+
+                <code>ProjectCard</code>s. Add a <code>FilterBar</code>
+                component that filters cards by technology. Submit your GitHub
+                repo URL on Cybercampus before next class.
+              </p>
+              <cite>React Props slides &mdash; Homework: Portfolio Gallery Component</cite>
+            </blockquote>
+          </section>
+
+          <section class="section" aria-labelledby="gallery-title">
+            <h2 id="gallery-title">The gallery, live</h2>
+            <p>
+              This is the whole app, rendered by React from the same source
+              that ships in <code>week11/portfolio-gallery/</code>. Select a
+              technology to narrow the list; <em>All</em> brings every project
+              back. The count is announced politely, so a screen reader hears
+              it change without losing its place.
+            </p>
+            <p>
+              The source below is the standalone project, reproduced verbatim.
+              The only difference in the live demo is heading depth: the
+              standalone app has one <code>h1</code> and cards at
+              <code>h2</code>, while this page already spends its
+              <code>h1</code> on the page title, so the gallery drops to
+              <code>h2</code> and the cards to <code>h3</code>.
+            </p>
+            <div id="gallery-demo"></div>
+            <noscript>
+              <p class="no-js">
+                The gallery is rendered by React, so it needs JavaScript. The
+                full component source is printed further down this page.
+              </p>
+            </noscript>
+          </section>
+
+          <section class="section" aria-labelledby="requirements-title">
+            <h2 id="requirements-title">The brief, item by item</h2>
+            <p>
+              Every line of the homework maps to one part of the component
+              tree. This table is the checklist used to build it.
+            </p>
+            <div class="table-scroll">
+              <table class="props-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Requirement</th>
+                    <th scope="col">Where it lives</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>React project</td>
+                    <td><code>week11/portfolio-gallery/</code> &mdash; CRA-shaped, <code>npm start</code> runs it.</td>
+                  </tr>
+                  <tr>
+                    <td>ProjectCard</td>
+                    <td>Title, description, tech stack, GitHub link and demo link, all props.</td>
+                  </tr>
+                  <tr>
+                    <td>ProjectList</td>
+                    <td>Maps the filtered array to cards, each with a stable <code>key</code>.</td>
+                  </tr>
+                  <tr>
+                    <td>FilterBar</td>
+                    <td>One button per technology plus <em>All</em>; the parent decides what is shown.</td>
+                  </tr>
+                  <tr>
+                    <td>3+ projects</td>
+                    <td>Five, in <code>src/data/projects.js</code>.</td>
+                  </tr>
+                  <tr>
+                    <td>Submit</td>
+                    <td>The GitHub repo URL, on Cybercampus, before next class.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="source-title">
+            <h2 id="source-title">The four components</h2>
+            <p>
+              The rule from the slides: one component, one responsibility. The
+              screen is one box; each box in the mockup is one component; and
+              each component is small enough to read in a single glance.
+            </p>
+
+            <h3>App &mdash; the parent that owns the filter</h3>
+            <p>
+              <code>App</code> is the only component with state. The filter is
+              a string, <code>useState</code> keeps it, and every render
+              derives the visible projects from the full list. Nothing else in
+              the tree needs to know the filter exists &mdash; only
+              <code>FilterBar</code> changes it and <code>ProjectList</code>
+              renders the result.
+            </p>
+            <div class="code-block">
+              <p class="code-label">src/App.js</p>
+<pre class="code"><code>import { useState } from 'react';
+import FilterBar from './components/FilterBar';
+import ProjectList from './components/ProjectList';
+import { projects } from './data/projects';
+import './App.css';
+
+const FILTERS = ['All', 'JavaScript', 'CSS', 'HTML'];
+
+export default function App() {
+  const [filter, setFilter] = useState('All');
+
+  const visible =
+    filter === 'All'
+      ? projects
+      : projects.filter((project) =&gt; project.tech.includes(filter));
+
+  return (
+    &lt;div className="gallery"&gt;
+      &lt;header className="gallery__header"&gt;
+        &lt;h1 className="gallery__title"&gt;Ryan's projects&lt;/h1&gt;
+        &lt;p className="gallery__lead"&gt;
+          Coursework from the Web Programming Library, filtered by the
+          technology each project uses.
+        &lt;/p&gt;
+      &lt;/header&gt;
+
+      &lt;FilterBar filters={FILTERS} active={filter} onChange={setFilter} /&gt;
+
+      &lt;p className="gallery__count" aria-live="polite"&gt;
+        {visible.length} of {projects.length} projects
+      &lt;/p&gt;
+
+      &lt;ProjectList projects={visible} /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+            </div>
+
+            <h3>FilterBar &mdash; a row of buttons, no memory</h3>
+            <p>
+              <code>FilterBar</code> receives the list of filters, the active
+              one, and a function to call when one is chosen. It holds no
+              state of its own: it draws what it is given and reports clicks.
+              <code>aria-pressed</code> tells assistive technology which
+              button is selected without inventing a custom widget.
+            </p>
+            <div class="code-block">
+              <p class="code-label">src/components/FilterBar.js</p>
+<pre class="code"><code>export default function FilterBar({ filters, active, onChange }) {
+  return (
+    &lt;div
+      className="filter-bar"
+      role="group"
+      aria-label="Filter projects by technology"
+    &gt;
+      &lt;span className="filter-bar__label" aria-hidden="true"&gt;
+        Technology
+      &lt;/span&gt;
+      {filters.map((filter) =&gt; (
+        &lt;button
+          key={filter}
+          type="button"
+          className="filter-bar__btn"
+          data-filter={filter}
+          aria-pressed={filter === active}
+          onClick={() =&gt; onChange(filter)}
+        &gt;
+          {filter}
+        &lt;/button&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</code></pre>
+            </div>
+
+            <h3>ProjectList &mdash; array in, elements out</h3>
+            <p>
+              <code>ProjectList</code> is a thin map. The <code>key</code>
+              comes from the data&rsquo;s <code>id</code>, never the array
+              index, so React can match a card before and after a filter
+              change. When the filter matches nothing it returns a message
+              instead of an empty grid.
+            </p>
+            <div class="code-block">
+              <p class="code-label">src/components/ProjectList.js</p>
+<pre class="code"><code>import ProjectCard from './ProjectCard';
+
+export default function ProjectList({ projects }) {
+  if (projects.length === 0) {
+    return &lt;p className="gallery__empty"&gt;No projects use that technology yet.&lt;/p&gt;;
+  }
+
+  return (
+    &lt;ul className="project-grid"&gt;
+      {projects.map((project) =&gt; (
+        &lt;li key={project.id}&gt;
+          &lt;ProjectCard {...project} /&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}</code></pre>
+            </div>
+
+            <h3>ProjectCard &mdash; everything comes from props</h3>
+            <p>
+              The card knows nothing about projects in general. It receives
+              one object&rsquo;s fields, prints them, and links out. The links
+              are rendered conditionally, so a project without a demo link
+              still renders a valid card.
+            </p>
+            <div class="code-block">
+              <p class="code-label">src/components/ProjectCard.js</p>
+<pre class="code"><code>export default function ProjectCard({
+  title,
+  description,
+  tech,
+  github,
+  demo,
+}) {
+  return (
+    &lt;article className="project-card"&gt;
+      &lt;h2 className="project-card__title"&gt;{title}&lt;/h2&gt;
+      &lt;p className="project-card__desc"&gt;{description}&lt;/p&gt;
+
+      &lt;ul className="chips" aria-label="Tech stack"&gt;
+        {tech.map((item) =&gt; (
+          &lt;li key={item}&gt;{item}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+
+      &lt;p className="project-card__links"&gt;
+        {github &amp;&amp; (
+          &lt;a href={github} rel="noopener noreferrer"&gt;
+            GitHub
+          &lt;/a&gt;
+        )}
+        {demo &amp;&amp; (
+          &lt;a href={demo} rel="noopener noreferrer"&gt;
+            Live demo
+          &lt;/a&gt;
+        )}
+      &lt;/p&gt;
+    &lt;/article&gt;
+  );
+}</code></pre>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="data-title">
+            <h2 id="data-title">The data</h2>
+            <p>
+              The five projects are plain objects in one array &mdash; no
+              JSX, no imports of components. Every field a card prints is a
+              field here, which is why adding a sixth project is one more
+              object and nothing else.
+            </p>
+            <div class="code-block">
+              <p class="code-label">src/data/projects.js</p>
+<pre class="code"><code>export const projects = [
+  {
+    id: 'book-search',
+    title: 'Book Search App',
+    description:
+      'Week 7: filter a book list as you type, with a live result count.',
+    tech: ['JavaScript'],
+    github:
+      'https://github.com/zefishy/web-prog-gachon/blob/main/week7/book_search.html',
+    demo: 'https://zefishy.github.io/web-prog-gachon/week7/book_search.html',
+  },
+  {
+    id: 'registration',
+    title: 'Registration Form Validation',
+    description:
+      'Week 8: inline checks for username, email and matching passwords.',
+    tech: ['JavaScript'],
+    github:
+      'https://github.com/zefishy/web-prog-gachon/blob/main/week8/week8_1/homework_registration_js_validation.html',
+    demo: 'https://zefishy.github.io/web-prog-gachon/week8/week8_1/homework_registration_js_validation.html',
+  },
+  {
+    id: 'portfolio',
+    title: 'Portfolio Website',
+    description:
+      'Homework 1, deployed on GitHub Pages and audited with Lighthouse.',
+    tech: ['CSS'],
+    github: 'https://github.com/zefishy/web-prog-gachon',
+    demo: 'https://zefishy.github.io/wp-gachon-portfolio/',
+  },
+  {
+    id: 'wind',
+    title: 'Team 16 Club Proposal',
+    description:
+      'The Gachon Wind baseball club website proposal: problems, plan, team.',
+    tech: ['HTML'],
+    github:
+      'https://github.com/zefishy/web-prog-gachon/blob/main/assignment/project.html',
+    demo: 'https://zefishy.github.io/web-prog-gachon/assignment/project.html',
+  },
+  {
+    id: 'library',
+    title: 'Web Programming Library',
+    description: 'The shelf you are reading: 111 pages organised by week.',
+    tech: ['CSS', 'JavaScript'],
+    github: 'https://github.com/zefishy/web-prog-gachon',
+    demo: 'https://zefishy.github.io/web-prog-gachon/',
+  },
+];</code></pre>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="filtering-title">
+            <h2 id="filtering-title">How the filtering works</h2>
+            <div class="notes">
+              <ul>
+                <li>
+                  <strong>State lives at the top.</strong> <code>App</code>
+                  remembers one string, the selected technology. The homework
+                  slides introduce <code>useState</code> next week; filtering
+                  needs one piece of state, so this is the one hook the gallery
+                  uses.
+                </li>
+                <li>
+                  <strong>Derived, not stored.</strong> The visible list is
+                  computed from <code>projects</code> and <code>filter</code>
+                  on every render. There is no second array to keep in sync
+                  &mdash; the filter cannot drift away from what is on screen.
+                </li>
+                <li>
+                  <strong>Callbacks go down, data comes back up.</strong>
+                  <code>FilterBar</code> calls <code>onChange(filter)</code>.
+                  That is the setter from <code>App</code>. React re-renders
+                  <code>App</code>, which re-renders both children with new
+                  props. No component beneath <code>App</code> ever edits
+                  another component&rsquo;s data.
+                </li>
+                <li>
+                  <strong>A stable key keeps card identity.</strong> Filtering
+                  removes cards; the <code>id</code> lets React remove exactly
+                  the right ones. An index key would re-number the survivors
+                  and can leave stale DOM behind.
+                </li>
+                <li>
+                  <strong>All of it is one screen built from small parts.</strong>
+                  <code>App</code> could be inlined into one long function, but
+                  then the filter logic, the buttons, the list and the card
+                  would all be tangled together. Four components keep each job
+                  testable on its own.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="submit-title">
+            <h2 id="submit-title">Running and submitting</h2>
+            <p>
+              The source beside this page is CRA-shaped: it has
+              <code>public/index.html</code>, <code>src/index.js</code> and
+              one file per component, so it runs unchanged after the two
+              commands below. It is not built or committed here &mdash; the
+              submission is the repo URL itself.
+            </p>
+            <div class="code-block">
+              <p class="code-label">In the project folder</p>
+<pre class="code"><code>cd week11/portfolio-gallery
+npm install
+npm start        # http://localhost:3000</code></pre>
+            </div>
+            <p class="fine">
+              Submit the GitHub repository URL on Cybercampus before next
+              class. The three props rules from the slides still
+              apply: props flow one way, every list item needs a unique stable
+              <code>key</code>, and small components compose into bigger ones.
+            </p>
+          </section>
+
+        </div>
+
+        <aside class="facts" aria-labelledby="facts-title">
+          <h2 id="facts-title">Homework facts</h2>
+          <dl>
+            <div>
+              <dt>Task</dt>
+              <dd>Portfolio Gallery component</dd>
+            </div>
+            <div>
+              <dt>Components</dt>
+              <dd>4 &mdash; App, FilterBar, ProjectList, ProjectCard</dd>
+            </div>
+            <div>
+              <dt>Cards</dt>
+              <dd>5, from one array</dd>
+            </div>
+            <div>
+              <dt>State</dt>
+              <dd>Selected technology, in <code>App</code></dd>
+            </div>
+            <div>
+              <dt>Source</dt>
+              <dd><code>week11/portfolio-gallery/</code></dd>
+            </div>
+            <div>
+              <dt>Submit</dt>
+              <dd>GitHub repo URL on Cybercampus</dd>
+            </div>
+          </dl>
+          <div class="see-also">
+            <h3>See also</h3>
+            <p><a href="product-card.html">The code challenge: ProductCard</a></p>
+            <p><a href="../index.html#week-11">Week 11 in the library</a></p>
+            <p><a href="https://react.dev/learn/thinking-in-react" rel="noopener">React: Thinking in React</a></p>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Web Programming Library @ Gachon University</p>
+        <p class="fine">Coursework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and a little JavaScript.</p>
+        <ul>
+          <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+    <script type="text/babel" data-presets="react">
+      const { useState } = React;
+
+      const FILTERS = ['All', 'JavaScript', 'CSS', 'HTML'];
+
+      const projects = [
+        {
+          id: 'book-search',
+          title: 'Book Search App',
+          description:
+            'Week 7: filter a book list as you type, with a live result count.',
+          tech: ['JavaScript'],
+          github: 'https://github.com/zefishy/web-prog-gachon/blob/main/week7/book_search.html',
+          demo: 'https://zefishy.github.io/web-prog-gachon/week7/book_search.html',
+        },
+        {
+          id: 'registration',
+          title: 'Registration Form Validation',
+          description:
+            'Week 8: inline checks for username, email and matching passwords.',
+          tech: ['JavaScript'],
+          github: 'https://github.com/zefishy/web-prog-gachon/blob/main/week8/week8_1/homework_registration_js_validation.html',
+          demo: 'https://zefishy.github.io/web-prog-gachon/week8/week8_1/homework_registration_js_validation.html',
+        },
+        {
+          id: 'portfolio',
+          title: 'Portfolio Website',
+          description:
+            'Homework 1, deployed on GitHub Pages and audited with Lighthouse.',
+          tech: ['CSS'],
+          github: 'https://github.com/zefishy/web-prog-gachon',
+          demo: 'https://zefishy.github.io/wp-gachon-portfolio/',
+        },
+        {
+          id: 'wind',
+          title: 'Team 16 Club Proposal',
+          description:
+            'The Gachon Wind baseball club website proposal: problems, plan, team.',
+          tech: ['HTML'],
+          github: 'https://github.com/zefishy/web-prog-gachon/blob/main/assignment/project.html',
+          demo: 'https://zefishy.github.io/web-prog-gachon/assignment/project.html',
+        },
+        {
+          id: 'library',
+          title: 'Web Programming Library',
+          description:
+            'The shelf you are reading: 111 pages organised by week.',
+          tech: ['CSS', 'JavaScript'],
+          github: 'https://github.com/zefishy/web-prog-gachon',
+          demo: 'https://zefishy.github.io/web-prog-gachon/',
+        },
+      ];
+
+      function ProjectCard({ title, description, tech, github, demo }) {
+        return (
+          <article className="project-card">
+            <h3 className="project-card__title">{title}</h3>
+            <p className="project-card__desc">{description}</p>
+
+            <ul className="chips" aria-label="Tech stack">
+              {tech.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+
+            <p className="project-card__links">
+              {github && (
+                <a href={github} rel="noopener noreferrer">GitHub</a>
+              )}
+              {demo && (
+                <a href={demo} rel="noopener noreferrer">Live demo</a>
+              )}
+            </p>
+          </article>
+        );
+      }
+
+      function ProjectList({ projects }) {
+        if (projects.length === 0) {
+          return (
+            <p className="gallery__empty">
+              No projects use that technology yet.
+            </p>
+          );
+        }
+
+        return (
+          <ul className="project-grid">
+            {projects.map((project) => (
+              <li key={project.id}>
+                <ProjectCard {...project} />
+              </li>
+            ))}
+          </ul>
+        );
+      }
+
+      function FilterBar({ filters, active, onChange }) {
+        return (
+          <div className="filter-bar" role="group" aria-label="Filter projects by technology">
+            <span className="filter-bar__label" aria-hidden="true">Technology</span>
+            {filters.map((filter) => (
+              <button
+                key={filter}
+                type="button"
+                className="filter-bar__btn"
+                data-filter={filter}
+                aria-pressed={filter === active}
+                onClick={() => onChange(filter)}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
+        );
+      }
+
+      function App() {
+        const [filter, setFilter] = useState('All');
+
+        const visible =
+          filter === 'All'
+            ? projects
+            : projects.filter((project) => project.tech.includes(filter));
+
+        return (
+          <div className="gallery">
+            <header className="gallery__header">
+              <h2 className="gallery__title">Ryan's projects</h2>
+              <p className="gallery__lead">
+                Coursework from the Web Programming Library, filtered by the
+                technology each project uses.
+              </p>
+            </header>
+
+            <FilterBar
+              filters={FILTERS}
+              active={filter}
+              onChange={setFilter}
+            />
+
+            <p className="gallery__count" aria-live="polite">
+              {visible.length} of {projects.length} projects
+            </p>
+
+            <ProjectList projects={visible} />
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById('gallery-demo')).render(<App />);
+    </script>
+  </body>
+</html>

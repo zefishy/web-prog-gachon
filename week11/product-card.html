@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="Ryan Wong">
+    <meta name="description" content="Week 11 code challenge: a ProductCard React component that takes name, price, rating and inStock as props and renders a product card, three times over.">
+    <title>ProductCard &mdash; Week 11</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Crect%20width='16'%20height='16'%20rx='3'%20fill='%2361dafb'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="week11.css">
+    <script src="../js/main.js"></script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 11: React props</span>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+  <main id="main">
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Week 11 &mdash; ProductCard</h1>
+        <p class="lead">
+          The in-class code challenge: one component, four props, and a card
+          that changes completely when the props change. Nothing inside
+          <code>ProductCard</code> knows what product it is showing &mdash; the
+          parent passes <code>name</code>, <code>price</code>,
+          <code>rating</code> and <code>inStock</code> in, and the component
+          renders whatever it is given. That is the whole idea of props.
+        </p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <div class="report-column">
+
+        <section class="section" aria-labelledby="challenge-title">
+          <h2 id="challenge-title">The code challenge</h2>
+          <blockquote class="brief">
+            <p>
+              From the React Props slides&rsquo; <em>Code Challenge</em>.
+              Build a <code>ProductCard</code> component that accepts
+              <code>name</code> (string), <code>price</code> (number, KRW),
+              <code>rating</code> (0&ndash;5) and <code>inStock</code>
+              (boolean) as props, and renders a product card from them. Render
+              it with different props more than once.
+            </p>
+            <cite>React Props slides &mdash; Code Challenge</cite>
+          </blockquote>
+          <div class="code-block">
+            <p class="code-label">The required call</p>
+<pre class="code"><code>&lt;ProductCard
+  name="Wireless Earbuds"
+  price={89000}
+  rating={4.5}
+  inStock={true}
+/&gt;</code></pre>
+          </div>
+
+          <h3>The card, live</h3>
+          <p>
+            Three instances of the same component below, from the same array of
+            plain objects. Only the props differ &mdash; there is no per-product
+            markup anywhere. The third product has
+            <code>inStock: false</code>, which is what turns its badge into
+            &ldquo;Out of Stock&rdquo;.
+          </p>
+          <div id="product-card-demo" class="product-grid"></div>
+          <noscript>
+            <p class="no-js">
+              These cards are rendered by React, so they need JavaScript. The
+              component source is printed further down this page.
+            </p>
+          </noscript>
+        </section>
+
+        <section class="section" aria-labelledby="props-title">
+          <h2 id="props-title">The four props</h2>
+          <p>
+            Every prop is a name and a value. In JSX the value sits between
+            braces when it is JavaScript &mdash; <code>price={89000}</code>
+            &mdash; and in quotes when it is a string &mdash;
+            <code>name="Wireless Earbuds"</code>. Both arrive as the same kind
+            of thing on the other side: an entry on the props object.
+          </p>
+          <div class="table-scroll">
+            <table class="props-table">
+              <thead>
+                <tr>
+                  <th scope="col">Prop</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Renders as</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>name</td>
+                  <td>string</td>
+                  <td>The product name, in the card&rsquo;s heading.</td>
+                </tr>
+                <tr>
+                  <td>price</td>
+                  <td>number, KRW</td>
+                  <td><code>89,000 KRW</code> &mdash; grouped with <code>toLocaleString</code>, not built by hand.</td>
+                </tr>
+                <tr>
+                  <td>rating</td>
+                  <td>number, 0&ndash;5</td>
+                  <td><code>4.5 / 5 stars</code> plus a row of star glyphs.</td>
+                </tr>
+                <tr>
+                  <td>inStock</td>
+                  <td>boolean</td>
+                  <td><code>In Stock</code>, or <code>Out of Stock</code> when false.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="source-title">
+          <h2 id="source-title">The component</h2>
+          <p>
+            This is the exact code running above, transcribed out of the page.
+            The only unusual line is the badge: a ternary picks the label, and
+            the class name is built with a string concatenation so the
+            &ldquo;out&rdquo; variant can be styled differently.
+          </p>
+          <div class="code-block">
+            <p class="code-label">ProductCard.js</p>
+<pre class="code"><code>function Stars({ rating }) {
+  const full = Math.floor(rating);
+  const half = rating - full &gt;= 0.5;
+  const empty = 5 - full - (half ? 1 : 0);
+  return (
+    &lt;span className="product-card__stars" aria-hidden="true"&gt;
+      {'★'.repeat(full)}{half ? '½' : ''}{'☆'.repeat(empty)}
+    &lt;/span&gt;
+  );
+}
+
+function ProductCard({ name, price, rating, inStock }) {
+  return (
+    &lt;article className="product-card"&gt;
+      &lt;h3 className="product-card__name"&gt;{name}&lt;/h3&gt;
+      &lt;p className="product-card__price"&gt;
+        {price.toLocaleString('ko-KR')} KRW
+      &lt;/p&gt;
+      &lt;p className="product-card__rating"&gt;
+        &lt;Stars rating={rating} /&gt;
+        &lt;span&gt;{rating} / 5 stars&lt;/span&gt;
+      &lt;/p&gt;
+      &lt;p className={'product-card__stock' + (inStock ? '' : ' is-out')}&gt;
+        {inStock ? 'In Stock' : 'Out of Stock'}
+      &lt;/p&gt;
+    &lt;/article&gt;
+  );
+}
+
+const products = [
+  { name: 'Wireless Earbuds',    price: 89000,  rating: 4.5, inStock: true  },
+  { name: 'Mechanical Keyboard', price: 129000, rating: 4.8, inStock: true  },
+  { name: 'USB-C Hub',           price: 45000,  rating: 3.5, inStock: false },
+];
+
+ReactDOM.createRoot(document.getElementById('product-card-demo')).render(
+  products.map((product) =&gt; (
+    &lt;ProductCard key={product.name} {...product} /&gt;
+  ))
+);</code></pre>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="why-title">
+          <h2 id="why-title">What the code is actually doing</h2>
+          <div class="notes">
+            <ul>
+              <li>
+                <strong>JSX is not HTML.</strong> <code>&lt;article&gt;</code>
+                inside a <code>.js</code> file is a syntax error until something
+                rewrites it into <code>React.createElement('article', …)</code>.
+                The submitted project does that at build time with Babel; this
+                page loads Babel in the browser to do it live, which is why it
+                is slower to first paint and only suitable for a demo.
+              </li>
+              <li>
+                <strong>Props move one way.</strong> A component receives props
+                and renders them; it never writes back to them. If the parent
+                re-renders with a different <code>rating</code>, the card
+                updates. If the card wants to change something, it asks the
+                parent to re-render.
+              </li>
+              <li>
+                <strong>Braces mean JavaScript.</strong> <code>price={89000}</code>
+                passes the number <code>89000</code>, so
+                <code>toLocaleString()</code> and arithmetic both work.
+                <code>price="89000"</code> passes a string, and
+                <code>price + 1</code> quietly becomes
+                <code>"890001"</code>.
+              </li>
+              <li>
+                <strong>Conditional rendering returns something renderable.</strong>
+                The badge returns a string, a missing field returns
+                <code>null</code>, and <code>false</code> renders nothing. All
+                three are fine; <code>undefined</code> is too, which is why a
+                forgotten prop shows up as a blank card rather than a crash.
+              </li>
+              <li>
+                <strong>The key is not a prop.</strong> <code>key</code> is used
+                by React to match the list before and after a re-render, and it
+                never reaches <code>ProductCard</code>. Use a stable value from
+                the data &mdash; the name here, or better an
+                <code>id</code> &mdash; never the array index.
+              </li>
+            </ul>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="facts" aria-labelledby="facts-title">
+        <h2 id="facts-title">Challenge facts</h2>
+        <dl>
+          <div>
+            <dt>Component</dt>
+            <dd>ProductCard</dd>
+          </div>
+          <div>
+            <dt>Props</dt>
+            <dd>4 &mdash; name, price, rating, inStock</dd>
+          </div>
+          <div>
+            <dt>Instances</dt>
+            <dd>3, one component</dd>
+          </div>
+          <div>
+            <dt>Extra</dt>
+            <dd><code>Stars</code>, a child component</dd>
+          </div>
+          <div>
+            <dt>Runtime</dt>
+            <dd>React 18.3.1, Babel standalone</dd>
+          </div>
+          <div>
+            <dt>Build</dt>
+            <dd>None here &mdash; CRA in <code>portfolio-gallery/</code></dd>
+          </div>
+        </dl>
+        <div class="see-also">
+          <h3>See also</h3>
+          <p><a href="portfolio-gallery.html">The homework: Portfolio Gallery</a></p>
+          <p><a href="../index.html#week-11">Week 11 in the library</a></p>
+          <p><a href="https://react.dev/learn/passing-props-to-a-component" rel="noopener">React: Passing props to a component</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Web Programming Library @ Gachon University</p>
+        <p class="fine">Coursework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and a little JavaScript.</p>
+        <ul>
+          <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+    <script type="text/babel" data-presets="react">
+      function Stars({ rating }) {
+        const full = Math.floor(rating);
+        const half = rating - full >= 0.5;
+        const empty = 5 - full - (half ? 1 : 0);
+        return (
+          <span className="product-card__stars" aria-hidden="true">
+            {'★'.repeat(full)}{half ? '½' : ''}{'☆'.repeat(empty)}
+          </span>
+        );
+      }
+
+      function ProductCard({ name, price, rating, inStock }) {
+        return (
+          <article className="product-card">
+            <h3 className="product-card__name">{name}</h3>
+            <p className="product-card__price">
+              {price.toLocaleString('ko-KR')} KRW
+            </p>
+            <p className="product-card__rating">
+              <Stars rating={rating} />
+              <span>{rating} / 5 stars</span>
+            </p>
+            <p className={'product-card__stock' + (inStock ? '' : ' is-out')}>
+              {inStock ? 'In Stock' : 'Out of Stock'}
+            </p>
+          </article>
+        );
+      }
+
+      const products = [
+        { name: 'Wireless Earbuds',    price: 89000,  rating: 4.5, inStock: true  },
+        { name: 'Mechanical Keyboard', price: 129000, rating: 4.8, inStock: true  },
+        { name: 'USB-C Hub',           price: 45000,  rating: 3.5, inStock: false },
+      ];
+
+      ReactDOM.createRoot(document.getElementById('product-card-demo')).render(
+        products.map((product) => (
+          <ProductCard key={product.name} {...product} />
+        ))
+      );
+    </script>
+  </body>
+</html>

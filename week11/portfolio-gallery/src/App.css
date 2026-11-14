@@ -1,0 +1,145 @@
+.gallery {
+  padding: clamp(0.85rem, 3vw, 1.25rem);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+}
+
+.gallery__header {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.gallery__title {
+  font-size: 1.5rem;
+  color: var(--head);
+}
+
+.gallery__lead {
+  margin-top: 0.35rem;
+  max-width: 62ch;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-bar__label {
+  margin-right: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.filter-bar__btn {
+  min-height: 2.5rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.filter-bar__btn:hover {
+  border-color: var(--wk);
+}
+
+.filter-bar__btn[aria-pressed='true'] {
+  background: var(--wk);
+  border-color: var(--wk);
+  color: var(--on-wk);
+}
+
+.gallery__count {
+  margin-top: 0.85rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.project-grid {
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.project-grid > li {
+  display: flex;
+  min-width: 0;
+}
+
+.project-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.25rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+.project-card__title {
+  font-size: 1.125rem;
+  color: var(--head);
+}
+
+.project-card__desc {
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--wk) 20%, var(--surface));
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.project-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: auto;
+  padding-top: 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.gallery__empty {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+  border: 1px dashed var(--rule);
+  border-radius: 10px;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-bar__btn {
+    transition: none;
+  }
+}

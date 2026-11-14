@@ -48,7 +48,7 @@
 
           <div class="browse">
             <h2>Browse by week</h2>
-            <p>109 pages across nine weeks and a project. Each spine is as wide as its section has pages. Select one to jump to it.</p>
+            <p>111 pages across ten weeks and a project. Each spine is as wide as its section has pages. Select one to jump to it.</p>
             <nav aria-label="Sections on the shelf">
               <ul class="shelf">
                 <li class="pages-16"><a class="spine wk2" href="#week-2">
@@ -83,6 +83,10 @@
                     <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">10</span></span>
                     <span class="spine-bottom"><span class="spine-topic">Git &amp; deploy</span><span class="spine-count">2 pages</span></span>
                 </a></li>
+                <li class="pages-2"><a class="spine wk11" href="#week-11">
+                    <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">11</span></span>
+                    <span class="spine-bottom"><span class="spine-topic">React props</span><span class="spine-count">2 pages</span></span>
+                </a></li>
                 <li class="pages-1"><a class="spine wk4" href="#project">
                     <span class="spine-top"><span class="spine-week">Team</span><span class="spine-num">16</span></span>
                     <span class="spine-bottom"><span class="spine-topic">Project</span><span class="spine-count">1 page</span></span>
@@ -96,7 +100,7 @@
       <!--
       TO ADD A NEW WEEK
       1. Copy a whole <section class="week wk7" ...> block below and change the number, id, and links.
-      Use class wk2, wk3, wk4, wk6, wk7, wk8, wk9, or wk10 to pick a color, or add a new --wkN token and .wkN class in css/styles.css.
+      Use class wk2, wk3, wk4, wk6, wk7, wk8, wk9, wk10, or wk11 to pick a color, or add a new --wkN token and .wkN class in css/styles.css.
       2. Copy one <li> in the .shelf list above and update its link and text. Give it a class
       like pages-1, where the number is how many pages the week has, and add a matching
       .pages-N rule in css/styles.css. That number sets the spine width. Spine colours are
@@ -419,6 +423,35 @@
                 <ul class="links">
                   <li><a class="link" href="week10/report.html"><span class="num">1</span><span class="label">Git homework report <span class="note">Homework 1 &middot; commands, commits, checklist</span></span></a></li>
                   <li><a class="link" href="week10/homework2.html"><span class="num">2</span><span class="label">Deployment report <span class="note">Homework 2 &middot; GitHub Pages &amp; Lighthouse</span></span></a></li>
+                </ul>
+              </div>
+            </div>
+        </div></div>
+      </section>
+
+      <section class="week wk11" id="week-11" aria-labelledby="week-11-title">
+        <div class="container"><div class="week-layout">
+            <header class="week-head">
+              <h2 id="week-11-title">Week 11</h2>
+              <p class="week-topic">React components &amp; props</p>
+              <p class="week-desc">Components as functions that return JSX, props passing data one way from parent to child, small components composed into bigger ones, lists with keys, and conditional UI.</p>
+              <p class="week-count">2 pages</p>
+            </header>
+            <div class="week-body">
+              <div class="group">
+                <h3>Code challenge</h3>
+                <p class="path">Folder: <code>week11/</code></p>
+                <h4>ProductCard <span class="n">(1)</span></h4>
+                <ul class="links">
+                  <li><a class="link" href="week11/product-card.html"><span class="num">1</span><span class="label">ProductCard component <span class="note">name, price, rating, inStock &middot; three instances</span></span></a></li>
+                </ul>
+              </div>
+              <div class="group">
+                <h3>Homework</h3>
+                <p class="path">Folder: <code>week11/portfolio-gallery/</code></p>
+                <h4>Portfolio Gallery <span class="n">(1)</span></h4>
+                <ul class="links">
+                  <li><a class="link" href="week11/portfolio-gallery.html"><span class="num">1</span><span class="label">Portfolio Gallery component <span class="note">FilterBar &amp; ProjectList &middot; React source included</span></span></a></li>
                 </ul>
               </div>
             </div>

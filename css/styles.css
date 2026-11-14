@@ -11,8 +11,9 @@
    green ramp, with the dark ink on top for contrast. Week 8 takes the step
    just below Week 3 on that ramp, with white ink on top for contrast
    (like Weeks 3 and 4). Week 9 is a placeholder for now and keeps the pale
-   sage of the old Week 9 spine. Week 10, the newest shelf entry, takes the
-   palest step yet, with dark ink on top (like Weeks 2 and 7).
+   sage of the old Week 9 spine. Week 10 takes a paler step, with dark ink
+   on top (like Weeks 2 and 7), and Week 11 closes the ramp with the palest
+   sage of all.
 
    On the shelf itself these give way to a positional ramp (see below): every
    spine keeps one uniform fill, and each spine to the right is a step
@@ -26,6 +27,7 @@
   --wk8: #1E6C57;  --on-wk8: #FFFFFF;
   --wk9: #9CC5A2;  --on-wk9: #092328;
   --wk10: #ABD4B2;  --on-wk10: #092328;
+  --wk11: #BFDDC4;  --on-wk11: #092328;
 }
 
 .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
@@ -36,6 +38,7 @@
 .wk8 { --wk: var(--wk8); --on-wk: var(--on-wk8); }
 .wk9 { --wk: var(--wk9); --on-wk: var(--on-wk9); }
 .wk10 { --wk: var(--wk10); --on-wk: var(--on-wk10); }
+.wk11 { --wk: var(--wk11); --on-wk: var(--on-wk11); }
 
 /* ---------- Header content ----------
    The sticky frame comes from shared.css. The homepage packs its nav a
@@ -82,7 +85,7 @@
 .pages-0 { --pages: 0; }
 /* The stepped shelf ramp, anchored on the palette greens (#12544F, #2A835F,
    #8BBB92) with even mixes between. White text on the three dark steps, ink
-   on the six light ones — every pair clears WCAG AA (4.5:1). */
+   on the seven light ones — every pair clears WCAG AA (4.5:1). */
 .shelf li:nth-child(1) .spine { --wk: #12544F; --on-wk: #FFFFFF; }
 .shelf li:nth-child(2) .spine { --wk: #1E6C57; --on-wk: #FFFFFF; }
 .shelf li:nth-child(3) .spine { --wk: #2A835F; --on-wk: #FFFFFF; }
@@ -92,6 +95,7 @@
 .shelf li:nth-child(7) .spine { --wk: #8BBB92; --on-wk: #092328; }
 .shelf li:nth-child(8) .spine { --wk: #9CC5A2; --on-wk: #092328; }
 .shelf li:nth-child(9) .spine { --wk: #ABD4B2; --on-wk: #092328; }
+.shelf li:nth-child(10) .spine { --wk: #C6E3CB; --on-wk: #092328; }
 .spine {
   width: 100%; min-height: 11rem;
   display: flex; flex-direction: column; justify-content: space-between;
