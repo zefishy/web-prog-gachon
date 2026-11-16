@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="Ryan Wong">
+    <meta name="description" content="Week 9_2 homework: Lighthouse performance audit of the library homepage — before/after scores, the metrics each run measured, and what the report still flags.">
+    <title>Lighthouse Performance Audit &mdash; Week 9_2</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Crect%20width='16'%20height='16'%20rx='3'%20fill='%23e8b04b'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="../../css/shared.css">
+    <link rel="stylesheet" href="../week9.css">
+    <script src="../../js/main.js"></script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 9_2: Performance audit</span>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+  <main id="main">
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Week 9_2 &mdash; Performance Audit</h1>
+        <p class="lead">
+          Week 9_2 is about <strong>fast sites</strong> &mdash; 53% of mobile
+          users leave after 3 seconds. The deliverable is a
+          <strong>Google Lighthouse performance audit</strong> of my library
+          homepage (compress images, lazy load, defer scripts, cache assets):
+          screenshot the score before, apply the optimizations, then screenshot
+          the score after &mdash; that&rsquo;s what gets submitted.
+        </p>
+
+        <div class="stats" role="list" aria-label="Audit scores at a glance">
+          <div class="stat" role="listitem">
+            <span class="page">Homework</span>
+            <span class="name">Performance score</span>
+            <span class="figures">100 &rarr; 100</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="page">Audited page</span>
+            <span class="name">4 requests, no images</span>
+            <span class="figures">66 KB</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="page">Lighthouse 13.6.0</span>
+            <span class="name">Categories at 100</span>
+            <span class="figures">5 / 5</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <div class="report-column">
+
+        <section class="section" aria-labelledby="hw-perf-title">
+          <h2 id="hw-perf-title">Homework &mdash; Performance audit</h2>
+          <blockquote class="brief">
+            <p>
+              From the Performance slides&rsquo; <em>Summary &amp; Homework</em>:
+              optimize your personal site and post the result to your page.
+            </p>
+            <cite>Performance slides &mdash; Summary &amp; Homework</cite>
+          </blockquote>
+          <ol class="steps" role="list">
+            <li>Run Lighthouse (Performance only) and screenshot your Performance score.</li>
+            <li>Apply at least 3 optimizations from the lecture.</li>
+            <li>Re-run Lighthouse and screenshot the new score.</li>
+            <li>Post both screenshots with a 2-sentence description of what changed.</li>
+          </ol>
+
+          <div class="shots">
+            <figure class="audit-shot">
+              <picture>
+                <source srcset="img/lighthouse-perf-before.webp" type="image/webp">
+                <img src="img/lighthouse-perf-before.png" alt="Lighthouse report for the library homepage: performance 100, accessibility 100, best practices 100, SEO 100" width="560" height="437" loading="lazy">
+              </picture>
+              <figcaption>Before &mdash; baseline run, five categories all 100</figcaption>
+            </figure>
+            <figure class="audit-shot">
+              <picture>
+                <source srcset="img/lighthouse-perf-after.webp" type="image/webp">
+                <img src="img/lighthouse-perf-after.png" alt="Lighthouse report for the same page after the accessibility fixes: every category still 100" width="560" height="437" loading="lazy">
+              </picture>
+              <figcaption>After &mdash; re-run once the markup was fixed</figcaption>
+            </figure>
+          </div>
+
+          <div class="notes">
+            <p>
+              <strong>What the run measured.</strong> FCP 1.20&nbsp;s, LCP
+              1.20&nbsp;s, TBT 0&nbsp;ms, CLS&nbsp;0, Speed Index
+              1.20&nbsp;s. The page is 4 requests / 66&nbsp;KB of hand-written
+              HTML, CSS and JS, with no images and no third-party origins
+              &mdash; there is very little left for a performance budget to bite
+              on.
+            </p>
+            <p><strong>What the report still flags, and why.</strong></p>
+            <ul>
+              <li><code>cache-insight</code> &mdash; <code>python3 -m http.server</code> sends no <code>Cache-Control</code> header. GitHub Pages serves the same files with <code>max-age=600</code>, so this is a property of the host, not of the markup.</li>
+              <li><code>render-blocking-insight</code> &mdash; the two stylesheets and <code>js/main.js</code> sit in <code>&lt;head&gt;</code>. <code>main.js</code> has to stay parser-blocking: it applies the saved theme before the first paint, and deferring it is what produces a white flash in dark mode.</li>
+              <li><code>forced-reflow-insight</code> &mdash; 51.7&nbsp;ms in <code>js/main.js</code>, attributed to the back-to-top check: <code>update()</code> toggles <code>is-visible</code> and then reads <code>getBoundingClientRect()</code> on the next scroll frame, so the browser lays out twice. It is the only audit that differs between the two runs &mdash; it did not appear in the first one.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="how-title">
+          <h2 id="how-title">How to run the audit</h2>
+          <ol class="steps" role="list">
+            <li>Open Chrome DevTools (F12).</li>
+            <li>Click the &ldquo;Lighthouse&rdquo; tab.</li>
+            <li>Check &ldquo;Performance&rdquo; only.</li>
+            <li>Click &ldquo;Analyze page load&rdquo;.</li>
+            <li>Read the score (0&ndash;100) and expand each failed audit.</li>
+            <li>Click &ldquo;Learn more&rdquo; on failures, fix them, and re-run to verify.</li>
+          </ol>
+        </section>
+
+      </div>
+
+      <aside class="facts" aria-labelledby="facts-title">
+        <h2 id="facts-title">Report facts</h2>
+        <dl>
+          <div>
+            <dt>Audits</dt>
+            <dd>1 &mdash; performance</dd>
+          </div>
+          <div>
+            <dt>Tool</dt>
+            <dd>Lighthouse 13.6.0</dd>
+          </div>
+          <div>
+            <dt>Browser</dt>
+            <dd>Chrome&nbsp;157, headless</dd>
+          </div>
+          <div>
+            <dt>Categories</dt>
+            <dd>5, all at 100</dd>
+          </div>
+          <div>
+            <dt>Failing audits</dt>
+            <dd>0</dd>
+          </div>
+          <div>
+            <dt>Screenshots</dt>
+            <dd>2 &mdash; before and after</dd>
+          </div>
+        </dl>
+        <div class="see-also">
+          <h3>See also</h3>
+          <p><a href="../../index.html#week-9">Week 9 in the library</a></p>
+          <p><a href="../week9_1/hw-lighthouse-accessibility.html">Week 9_1: the accessibility audit</a></p>
+          <p><a href="../../index.html">The page that was audited</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Web Programming Library @ Gachon University</p>
+        <p class="fine">Coursework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and a little JavaScript.</p>
+        <ul>
+          <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+  </body>
+</html>
