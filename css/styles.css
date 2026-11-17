@@ -31,6 +31,21 @@
   --wk9: #9CC5A2;  --on-wk9: #092328;
   --wk10: #ABD4B2;  --on-wk10: #092328;
   --wk11: #BFDDC4;  --on-wk11: #092328;
+
+  /* The shelf ramp itself, one token per spine position from left to right
+     (11 steps). The shelf spines and the numbered section badges share this
+     ramp as a single source of truth. All pairs clear WCAG AA (>= 4.5:1). */
+  --spine-1:  #12544F;  --on-spine-1:  #FFFFFF; /* Week 2:  8.73:1 */
+  --spine-2:  #1E6C57;  --on-spine-2:  #FFFFFF; /* Week 3:  6.29:1 */
+  --spine-3:  #24775B;  --on-spine-3:  #FFFFFF; /* Week 4:  5.43:1 */
+  --spine-4:  #2A835F;  --on-spine-4:  #FFFFFF; /* Week 5:  4.66:1 */
+  --spine-5:  #4D9A73;  --on-spine-5:  #092328; /* Week 6:  4.82:1 */
+  --spine-6:  #6BA881;  --on-spine-6:  #092328; /* Week 7:  5.88:1 */
+  --spine-7:  #7BB28A;  --on-spine-7:  #092328; /* Week 8:  6.69:1 */
+  --spine-8:  #8BBB92;  --on-spine-8:  #092328; /* Week 9:  7.50:1 */
+  --spine-9:  #9CC5A2;  --on-spine-9:  #092328; /* Week 10: 8.51:1 */
+  --spine-10: #ABD4B2;  --on-spine-10: #092328; /* Week 11: 9.97:1 */
+  --spine-11: #C6E3CB;  --on-spine-11: #092328; /* Project: 11.89:1 */
 }
 
 .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
@@ -64,51 +79,45 @@
 .browse h2 { font-size: 1.5rem; }
 .browse p { margin-top: .35rem; color: var(--muted); }
 
-/* The shelf: each spine is as wide as the week has pages, and one uniform
-   shade lighter than the spine before it — a stepped walk down the palette
-   from deep green to pale sage. The ramp is positional rather than per-week,
-   so the stairs stay even whichever weeks sit on the shelf. */
+/* The shelf: equal-width spines, each one uniform shade lighter than the
+   spine before it — a stepped walk down the palette from deep green to pale
+   sage. The ramp is positional rather than per-week, so the stairs stay even
+   whichever weeks sit on the shelf. */
 .shelf {
   display: flex; align-items: stretch; gap: .6rem;
   margin-top: 1.5rem;
   border-bottom: .5rem solid var(--ink);
 }
-/* Every spine stretches to the full height of the shelf row, so all weekly
-   buttons are exactly the same height no matter how much text they hold. */
-.shelf li { flex: var(--pages) 1 5.5rem; display: flex; align-items: stretch; }
-.pages-16 { --pages: 16; }
-.pages-55 { --pages: 55; }
-.pages-4 { --pages: 4; }
-.pages-7 { --pages: 7; }
-.pages-12 { --pages: 12; }
-.pages-13 { --pages: 13; }
-.pages-18 { --pages: 18; }
-.pages-5 { --pages: 5; }
-.pages-1 { --pages: 1; }
-.pages-2 { --pages: 2; }
-.pages-0 { --pages: 0; }
+/* Every spine gets an equal share of the shelf (flex-basis 0) and stretches
+   to the full height of the row, so all weekly buttons are the same size no
+   matter how much text they hold. min-width: 0 lets the spines shrink to fit,
+   so the row always ends exactly at the shelf rule instead of spilling past it. */
+.shelf li { flex: 1 1 0; min-width: 0; display: flex; align-items: stretch; }
+
 /* The stepped shelf ramp, anchored on the palette greens (#12544F, #2A835F,
    #8BBB92) with even mixes between. Week 5's arrival split the second gap
    in half (#24775B), so the ramp now runs eleven steps; the flip from
    white to ink stays a single wide hop between #2A835F and #4D9A73, since
    the middle of that gap cannot clear 4.5:1 against either ink. White text
    on the four dark steps, ink on the seven light ones — every pair clears
-   WCAG AA (4.5:1). */
-.shelf li:nth-child(1) .spine { --wk: #12544F; --on-wk: #FFFFFF; }
-.shelf li:nth-child(2) .spine { --wk: #1E6C57; --on-wk: #FFFFFF; }
-.shelf li:nth-child(3) .spine { --wk: #24775B; --on-wk: #FFFFFF; }
-.shelf li:nth-child(4) .spine { --wk: #2A835F; --on-wk: #FFFFFF; }
-.shelf li:nth-child(5) .spine { --wk: #4D9A73; --on-wk: #092328; }
-.shelf li:nth-child(6) .spine { --wk: #6BA881; --on-wk: #092328; }
-.shelf li:nth-child(7) .spine { --wk: #7BB28A; --on-wk: #092328; }
-.shelf li:nth-child(8) .spine { --wk: #8BBB92; --on-wk: #092328; }
-.shelf li:nth-child(9) .spine { --wk: #9CC5A2; --on-wk: #092328; }
-.shelf li:nth-child(10) .spine { --wk: #ABD4B2; --on-wk: #092328; }
-.shelf li:nth-child(11) .spine { --wk: #C6E3CB; --on-wk: #092328; }
+   WCAG AA (4.5:1). The colours are the --spine-1…11 tokens so the badges
+   can share them. */
+.shelf li:nth-child(1) .spine  { --wk: var(--spine-1);  --on-wk: var(--on-spine-1); }
+.shelf li:nth-child(2) .spine  { --wk: var(--spine-2);  --on-wk: var(--on-spine-2); }
+.shelf li:nth-child(3) .spine  { --wk: var(--spine-3);  --on-wk: var(--on-spine-3); }
+.shelf li:nth-child(4) .spine  { --wk: var(--spine-4);  --on-wk: var(--on-spine-4); }
+.shelf li:nth-child(5) .spine  { --wk: var(--spine-5);  --on-wk: var(--on-spine-5); }
+.shelf li:nth-child(6) .spine  { --wk: var(--spine-6);  --on-wk: var(--on-spine-6); }
+.shelf li:nth-child(7) .spine  { --wk: var(--spine-7);  --on-wk: var(--on-spine-7); }
+.shelf li:nth-child(8) .spine  { --wk: var(--spine-8);  --on-wk: var(--on-spine-8); }
+.shelf li:nth-child(9) .spine  { --wk: var(--spine-9);  --on-wk: var(--on-spine-9); }
+.shelf li:nth-child(10) .spine { --wk: var(--spine-10); --on-wk: var(--on-spine-10); }
+.shelf li:nth-child(11) .spine { --wk: var(--spine-11); --on-wk: var(--on-spine-11); }
+
 .spine {
   width: 100%; min-height: 11rem;
   display: flex; flex-direction: column; justify-content: space-between;
-  padding: .9rem 1rem 1rem;
+  padding: .9rem .7rem 1rem;
   background: var(--wk); color: var(--on-wk);
   box-shadow: inset 0 0 0 1px var(--edge);
   border-radius: 8px 8px 0 0;
@@ -119,8 +128,8 @@
 .spine-top, .spine-bottom { display: flex; flex-direction: column; }
 .spine-week { font-size: .9375rem; }
 .spine-num { font-weight: 700; font-size: 3.5rem; line-height: 1; }
-.spine-topic { font-weight: 700; font-size: 1.25rem; line-height: 1.2; }
-.spine-count { font-size: .9375rem; white-space: nowrap; }
+.spine-topic { font-weight: 700; font-size: 1rem; line-height: 1.2; hyphens: auto; overflow-wrap: break-word; }
+.spine-count { font-size: .9375rem; }
 
 /* ---------- Week sections ---------- */
 .week { padding-block: clamp(2rem, 5vw, 3.5rem); }
@@ -162,10 +171,29 @@ h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
   flex: none; min-width: 2.25rem; height: 2.25rem; padding-inline: .3rem;
   display: grid; place-items: center;
   border-radius: 6px;
-  background: color-mix(in srgb, var(--wk) 22%, var(--surface));
-  color: var(--ink);
+  background: var(--spine, color-mix(in srgb, var(--wk) 22%, var(--surface)));
+  color: var(--on-spine, var(--ink));
+  box-shadow: inset 0 0 0 1px var(--edge);
   font-weight: 700; font-variant-numeric: tabular-nums;
 }
+
+/* Each section's numbered badges wear the exact colour of that section's
+   spine on the shelf (the --spine-1…11 ramp), with the spine's own ink
+   riding along — white on the four dark steps, dark ink on the seven light
+   ones. The Project section carries the wk4 class but sits at ramp position
+   11, so it gets its own rule. Every pair clears WCAG AA at badge size
+   (4.66:1 on Week 5 is the tightest; range 4.66–11.89:1). */
+.wk2  .num { --spine: var(--spine-1);  --on-spine: var(--on-spine-1); }
+.wk3  .num { --spine: var(--spine-2);  --on-spine: var(--on-spine-2); }
+.wk4  .num { --spine: var(--spine-3);  --on-spine: var(--on-spine-3); }
+.wk5  .num { --spine: var(--spine-4);  --on-spine: var(--on-spine-4); }
+.wk6  .num { --spine: var(--spine-5);  --on-spine: var(--on-spine-5); }
+.wk7  .num { --spine: var(--spine-6);  --on-spine: var(--on-spine-6); }
+.wk8  .num { --spine: var(--spine-7);  --on-spine: var(--on-spine-7); }
+.wk9  .num { --spine: var(--spine-8);  --on-spine: var(--on-spine-8); }
+.wk10 .num { --spine: var(--spine-9);  --on-spine: var(--on-spine-9); }
+.wk11 .num { --spine: var(--spine-10); --on-spine: var(--on-spine-10); }
+#project .num { --spine: var(--spine-11); --on-spine: var(--on-spine-11); }
 .label { line-height: 1.3; }
 .note { display: block; font-size: .8125rem; line-height: 1.3; color: var(--muted); }
 
@@ -257,6 +285,12 @@ h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
   .spine:hover { transform: none; }
 }
 
+/* Below 64rem the eleven columns get too skinny to hold their labels with
+   dignity, so the shelf reflows into roomier spines laid out over a few
+   rows. */
+@media (max-width: 64rem) {
+  .shelf { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr)); }
+}
 @media (max-width: 36rem) {
   .owner { display: none; }
   .header-end { width: 100%; }
@@ -267,20 +301,9 @@ h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
   .site-nav ul { gap: 0; }
 
   .shelf { gap: .5rem; }
-  .shelf li { min-width: 0; }
   .spine { padding: .75rem .8rem .9rem; }
-  .spine-count { white-space: normal; }
   .links { grid-template-columns: 1fr; }
 }
 @media (max-width: 24rem) {
   .site-nav a { padding-inline: .25rem; }
-}
-/* On narrow phones the shelf spines are allowed to shrink so all eleven fit
-   side by side. */
-@media (max-width: 30rem) {
-  .shelf { gap: .4rem; }
-  .spine { padding: .7rem .6rem .8rem; }
-  .spine-num { font-size: 3rem; }
-  .spine-topic { font-size: 1.0625rem; }
-  .spine-count { font-size: .875rem; }
 }
