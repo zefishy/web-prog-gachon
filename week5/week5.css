@@ -1,0 +1,554 @@
+/* ---------- week5.css (Week 5: JavaScript conditions, loops & mini-apps) ----------
+   The Week 5 layer on top of css/shared.css, shared by the four submittable
+   pages built on the lecturer's template (counter, grade-evaluator, loops,
+   colour-palette): the reading column, code cards with copy buttons, the
+   mock DevTools console, and the live demo frames — counter, grade slider
+   with its evaluation trace, the two loop visualizers, and the colour
+   palette with its localStorage persistence. Tokens, the theme cross-fade,
+   the header frame, buttons, and the footer all come from shared.css.
+
+   One token override: this week takes its own green from the homepage
+   shelf ramp — the step between Weeks 4 and 6 — with dark ink on top for
+   contrast (like Weeks 2, 7, 9, 10, and 11). */
+
+:root {
+  --wk: #4D9A73;  --on-wk: #092328;
+}
+
+/* ---------- Layout: a reading column ----------
+   Every block keeps a readable measure instead of stretching across the
+   full shelf width, its left edge aligned with the hero above (like week7,
+   week8, and the report pages). Demos may run a little wider than prose. */
+.layout {
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+}
+
+.layout > * { max-width: 56rem; }
+
+/* ---------- Where the exercise came from ---------- */
+.source {
+  margin-top: 1.25rem;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  max-width: 62ch;
+}
+
+/* ---------- Sections ---------- */
+.section + .section {
+  margin-top: 3rem;
+}
+
+.section h2 {
+  font-size: 1.5rem;
+  border-top: 0.375rem solid var(--wk);
+  padding-top: 1.25rem;
+}
+
+.section > p {
+  margin-top: 1rem;
+  max-width: 62ch;
+}
+
+.section p + p {
+  margin-top: 0.9rem;
+}
+
+.section h3 {
+  font-size: 1.125rem;
+  margin-top: 2rem;
+}
+
+/* ---------- Bulleted notes ---------- */
+.bullets {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.bullets li {
+  position: relative;
+  padding-left: 1.1rem;
+  max-width: 62ch;
+}
+
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--wk);
+}
+
+/* ---------- Code cards: the snippet, copyable ---------- */
+.codecard {
+  margin: 1.5rem 0 0;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.codecard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.75rem 0.5rem 1.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.code-name {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.copy-btn {
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 0.25rem 0.7rem;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: color-mix(in srgb, var(--ink) 10%, var(--surface));
+}
+
+.copy-btn.is-copied {
+  border-color: var(--wk);
+  color: var(--wk);
+}
+
+/* The snippet itself reuses the terminal block */
+.codecard .term {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+/* ---------- Terminal blocks ---------- */
+.term {
+  margin: 1.5rem 0 0;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.75;
+}
+
+.term .c {
+  color: var(--muted);
+}
+
+.term .p {
+  color: var(--head);
+  font-weight: 700;
+}
+
+.term + .term {
+  margin-top: 1rem;
+}
+
+/* ---------- Mock DevTools console ---------- */
+.console {
+  margin-top: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: color-mix(in srgb, var(--footer-bg) 55%, var(--surface));
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  line-height: 1.9;
+  min-height: 3.25rem;
+  max-height: 14rem;
+  overflow-y: auto;
+}
+
+.console .line {
+  display: block;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.console .line::before {
+  content: "> ";
+  color: var(--head);
+  font-weight: 700;
+}
+
+.console .line.is-note {
+  color: var(--muted);
+}
+
+/* ---------- Demo frames ---------- */
+.demo {
+  margin-top: 1.5rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+.demo > h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.0625rem;
+}
+
+.demo .demo-hint {
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* Smaller buttons for the demo controls (shared .btn is page-scale) */
+.btn-sm {
+  min-height: 2.25rem;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.9375rem;
+  border-width: 1.5px;
+}
+
+.demo-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+/* Inline number/text field used by the loop and palette demos */
+.field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.field input {
+  font: inherit;
+  font-family: var(--mono);
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  width: 4.5rem;
+}
+
+.field.wide input {
+  width: 9.5rem;
+}
+
+.field input:focus-visible {
+  outline: 2px solid var(--wk);
+  outline-offset: 1px;
+}
+
+.field .field-error {
+  color: var(--danger);
+  font-size: 0.8125rem;
+}
+
+/* Running status line, read by screen readers */
+.demo-status {
+  margin-top: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+  min-height: 1.2rem;
+}
+
+/* ---------- Counter demo ---------- */
+.counter-display {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.counter-display .count-label {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.count-num {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--head);
+}
+
+/* ---------- Grade evaluator: slider, grade, trace ---------- */
+.slider-row {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+  max-width: 34rem;
+}
+
+.slider-row label {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.slider-row output {
+  font-family: var(--mono);
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+input[type="range"] {
+  accent-color: var(--wk);
+  width: 100%;
+}
+
+.grade-display {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.grade-display .grade-num {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--head);
+  font-variant-numeric: tabular-nums;
+}
+
+.grade-display .grade-label {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+/* The evaluation trace: one row per condition, fired row highlighted */
+.trace {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+}
+
+.trace-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--muted);
+}
+
+.trace-row .verdict {
+  font-weight: 700;
+}
+
+.trace-row.is-fired {
+  background: color-mix(in srgb, var(--wk) 16%, var(--surface));
+  border-color: var(--wk);
+  color: var(--ink);
+}
+
+.trace-row.is-fired .verdict {
+  color: var(--wk);
+}
+
+/* ---------- Loops ---------- */
+.steps-grid {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: 0.5rem;
+}
+
+.step-chip {
+  padding: 0.5rem 0.4rem;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+  animation: chip-in 0.18s var(--ease-out) both;
+}
+
+.step-chip strong {
+  color: var(--head);
+}
+
+@keyframes chip-in {
+  from { opacity: 0; transform: translateY(3px); }
+}
+
+/* Fruit loop: the array in memory, with the cursor on one element */
+.array-view {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+}
+
+.chip {
+  padding: 0.35rem 0.8rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.chip.is-current {
+  background: var(--wk);
+  border-color: var(--wk);
+  color: var(--on-wk);
+  font-weight: 700;
+}
+
+.var-line {
+  margin-top: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.var-line strong {
+  color: var(--ink);
+}
+
+/* ---------- Colour palette (Exercise 5) ---------- */
+.palette {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: 0.75rem;
+}
+
+.swatch-wrap {
+  position: relative;
+}
+
+.swatch {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
+}
+
+.swatch:hover {
+  transform: translateY(-2px);
+}
+
+/* Clicked: the box expands a touch and reveals its hex code */
+.swatch-wrap.is-open .swatch {
+  transform: scale(1.05);
+  box-shadow: 0 0.5rem 1.5rem color-mix(in srgb, var(--footer-bg) 45%, transparent);
+  position: relative;
+  z-index: 1;
+}
+
+.swatch .hex {
+  position: absolute;
+  left: 50%;
+  bottom: 0.6rem;
+  transform: translateX(-50%) translateY(0.3rem);
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.swatch-wrap.is-open .hex {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Remove affordance: visible when open, so removal is keyboard-reachable */
+.swatch-wrap .remove {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  z-index: 2;
+  display: none;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.swatch-wrap.is-open .remove {
+  display: grid;
+}
+
+.swatch-wrap .remove:hover {
+  background: var(--danger);
+  color: var(--on-danger);
+  border-color: var(--danger);
+}
+
+.addrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+
+/* ---------- Warning callout ---------- */
+.warn {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--danger) 55%, var(--rule));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+}
+
+.warn p {
+  margin: 0;
+  max-width: 62ch;
+}
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .step-chip { animation: none; }
+  .swatch,
+  .swatch .hex,
+  .chip,
+  .swatch-wrap .remove { transition: none; }
+}

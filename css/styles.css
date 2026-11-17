@@ -8,8 +8,10 @@
    Each week of the shelf gets its own colour from the palette. Week 6 flips
    with the theme: deep green-black in light, pale mint in dark. Week 7 gets
    a fresh mid-green of its own, sitting between Weeks 2 and 3 on the same
-   green ramp, with the dark ink on top for contrast. Week 8 takes the step
-   just below Week 3 on that ramp, with white ink on top for contrast
+   green ramp, with the dark ink on top for contrast. Week 5 (Git, GitHub
+   and Pages) takes the #4D9A73 step from the shelf ramp — between Weeks 4
+   and 6 — with the dark ink on top (like Weeks 2 and 7). Week 8 takes the
+   step just below Week 3 on that ramp, with white ink on top for contrast
    (like Weeks 3 and 4). Week 9 is a placeholder for now and keeps the pale
    sage of the old Week 9 spine. Week 10 takes a paler step, with dark ink
    on top (like Weeks 2 and 7), and Week 11 closes the ramp with the palest
@@ -22,6 +24,7 @@
   --wk2: #8BBB92;  --on-wk2: #092328;
   --wk3: #2A835F;  --on-wk3: #FFFFFF;
   --wk4: #12544F;  --on-wk4: #FFFFFF;
+  --wk5: #4D9A73;  --on-wk5: #092328;
   --wk6: var(--ink);  --on-wk6: var(--paper);
   --wk7: #57A773;  --on-wk7: #092328;
   --wk8: #1E6C57;  --on-wk8: #FFFFFF;
@@ -33,6 +36,7 @@
 .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
 .wk3 { --wk: var(--wk3); --on-wk: var(--on-wk3); }
 .wk4 { --wk: var(--wk4); --on-wk: var(--on-wk4); }
+.wk5 { --wk: var(--wk5); --on-wk: var(--on-wk5); }
 .wk6 { --wk: var(--wk6); --on-wk: var(--on-wk6); }
 .wk7 { --wk: var(--wk7); --on-wk: var(--on-wk7); }
 .wk8 { --wk: var(--wk8); --on-wk: var(--on-wk8); }
@@ -84,18 +88,23 @@
 .pages-2 { --pages: 2; }
 .pages-0 { --pages: 0; }
 /* The stepped shelf ramp, anchored on the palette greens (#12544F, #2A835F,
-   #8BBB92) with even mixes between. White text on the three dark steps, ink
-   on the seven light ones — every pair clears WCAG AA (4.5:1). */
+   #8BBB92) with even mixes between. Week 5's arrival split the second gap
+   in half (#24775B), so the ramp now runs eleven steps; the flip from
+   white to ink stays a single wide hop between #2A835F and #4D9A73, since
+   the middle of that gap cannot clear 4.5:1 against either ink. White text
+   on the four dark steps, ink on the seven light ones — every pair clears
+   WCAG AA (4.5:1). */
 .shelf li:nth-child(1) .spine { --wk: #12544F; --on-wk: #FFFFFF; }
 .shelf li:nth-child(2) .spine { --wk: #1E6C57; --on-wk: #FFFFFF; }
-.shelf li:nth-child(3) .spine { --wk: #2A835F; --on-wk: #FFFFFF; }
-.shelf li:nth-child(4) .spine { --wk: #4D9A73; --on-wk: #092328; }
-.shelf li:nth-child(5) .spine { --wk: #6BA881; --on-wk: #092328; }
-.shelf li:nth-child(6) .spine { --wk: #7BB28A; --on-wk: #092328; }
-.shelf li:nth-child(7) .spine { --wk: #8BBB92; --on-wk: #092328; }
-.shelf li:nth-child(8) .spine { --wk: #9CC5A2; --on-wk: #092328; }
-.shelf li:nth-child(9) .spine { --wk: #ABD4B2; --on-wk: #092328; }
-.shelf li:nth-child(10) .spine { --wk: #C6E3CB; --on-wk: #092328; }
+.shelf li:nth-child(3) .spine { --wk: #24775B; --on-wk: #FFFFFF; }
+.shelf li:nth-child(4) .spine { --wk: #2A835F; --on-wk: #FFFFFF; }
+.shelf li:nth-child(5) .spine { --wk: #4D9A73; --on-wk: #092328; }
+.shelf li:nth-child(6) .spine { --wk: #6BA881; --on-wk: #092328; }
+.shelf li:nth-child(7) .spine { --wk: #7BB28A; --on-wk: #092328; }
+.shelf li:nth-child(8) .spine { --wk: #8BBB92; --on-wk: #092328; }
+.shelf li:nth-child(9) .spine { --wk: #9CC5A2; --on-wk: #092328; }
+.shelf li:nth-child(10) .spine { --wk: #ABD4B2; --on-wk: #092328; }
+.shelf li:nth-child(11) .spine { --wk: #C6E3CB; --on-wk: #092328; }
 .spine {
   width: 100%; min-height: 11rem;
   display: flex; flex-direction: column; justify-content: space-between;
@@ -266,7 +275,7 @@ h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
 @media (max-width: 24rem) {
   .site-nav a { padding-inline: .25rem; }
 }
-/* On narrow phones the shelf spines are allowed to shrink so all seven fit
+/* On narrow phones the shelf spines are allowed to shrink so all eleven fit
    side by side. */
 @media (max-width: 30rem) {
   .shelf { gap: .4rem; }

@@ -48,7 +48,7 @@
 
           <div class="browse">
             <h2>Browse by week</h2>
-            <p>111 pages across ten weeks and a project. Each spine is as wide as its section has pages. Select one to jump to it.</p>
+            <p>116 pages across eleven weeks and a project. Each spine is as wide as its section has pages. Select one to jump to it.</p>
             <nav aria-label="Sections on the shelf">
               <ul class="shelf">
                 <li class="pages-16"><a class="spine wk2" href="#week-2">
@@ -62,6 +62,10 @@
                 <li class="pages-4"><a class="spine wk4" href="#week-4">
                     <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">4</span></span>
                     <span class="spine-bottom"><span class="spine-topic">JS</span><span class="spine-count">4 pages</span></span>
+                </a></li>
+                <li class="pages-4"><a class="spine wk5" href="#week-5">
+                    <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">5</span></span>
+                    <span class="spine-bottom"><span class="spine-topic">Conditions &amp; loops</span><span class="spine-count">4 pages</span></span>
                 </a></li>
                 <li class="pages-18"><a class="spine wk6" href="#week-6">
                     <span class="spine-top"><span class="spine-week">Week</span><span class="spine-num">6</span></span>
@@ -100,7 +104,7 @@
       <!--
       TO ADD A NEW WEEK
       1. Copy a whole <section class="week wk7" ...> block below and change the number, id, and links.
-      Use class wk2, wk3, wk4, wk6, wk7, wk8, wk9, wk10, or wk11 to pick a color, or add a new --wkN token and .wkN class in css/styles.css.
+      Use class wk2, wk3, wk4, wk5, wk6, wk7, wk8, wk9, wk10, or wk11 to pick a color, or add a new --wkN token and .wkN class in css/styles.css.
       2. Copy one <li> in the .shelf list above and update its link and text. Give it a class
       like pages-1, where the number is how many pages the week has, and add a matching
       .pages-N rule in css/styles.css. That number sets the spine width. Spine colours are
@@ -257,6 +261,30 @@
                   <li><a class="link" href="week4/ex2.html"><span class="num">2</span><span class="label">Dark mode toggle</span></a></li>
                   <li><a class="link" href="week4/ex3.html"><span class="num">3</span><span class="label">To-do list</span></a></li>
                   <li><a class="link" href="week4/ex4.html"><span class="num">4</span><span class="label">Student search</span></a></li>
+                </ul>
+              </div>
+            </div>
+        </div></div>
+      </section>
+
+      <section class="week wk5" id="week-5" aria-labelledby="week-5-title">
+        <div class="container"><div class="week-layout">
+            <header class="week-head">
+              <h2 id="week-5-title">Week 5</h2>
+              <p class="week-topic">JavaScript</p>
+              <p class="week-desc">Conditions and loops from the class notes: an if / else-if grade evaluator, the counted step loop and the for-of fruit loop, the counter mini-app, and an interactive colour palette that persists with localStorage &mdash; every snippet paired with a live demo.</p>
+              <p class="week-count">4 pages</p>
+            </header>
+            <div class="week-body">
+              <div class="group">
+                <h3>Snippets &amp; live demos</h3>
+                <p class="path">Folder: <code>week5/</code></p>
+                <h4>Demos <span class="n">(4)</span></h4>
+                <ul class="links">
+                  <li><a class="link" href="week5/counter.html"><span class="num">1</span><span class="label">Counter mini-app <span class="note">state &middot; click events &middot; DOM updates</span></span></a></li>
+                  <li><a class="link" href="week5/grade-evaluator.html"><span class="num">2</span><span class="label">Grade evaluator <span class="note">if / else &middot; slider &middot; evaluation trace</span></span></a></li>
+                  <li><a class="link" href="week5/loops.html"><span class="num">3</span><span class="label">Step loop &amp; fruit loop <span class="note">for &middot; for-of &middot; visualizers</span></span></a></li>
+                  <li><a class="link" href="week5/colour-palette.html"><span class="num">4</span><span class="label">Interactive colour palette <span class="note">exercise 5 &middot; localStorage &middot; PNG export</span></span></a></li>
                 </ul>
               </div>
             </div>
