@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,16 +11,17 @@
 
     <link rel="stylesheet" href="css/shared.css">
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="js/main.js"></script>
   </head>
 
   <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
     <header class="site-header">
       <div class="container">
         <a class="owner" href="#top">Ryan Wong<small>Gachon University</small></a>
         <div class="header-end">
-          <nav class="site-nav">
+          <nav class="site-nav" aria-label="Jump to a section">
             <ul>
               <li><a href="#project">Project</a></li>
               <li><a href="#about">About</a></li>
@@ -44,12 +45,10 @@
         <div class="container">
           <h1 id="page-title"><span class="h1-line">Web Programming Library</span> <span class="h1-line">@&nbsp;Gachon University</span></h1>
           <p class="lead">Hi, I'm Ryan Wong, an exchange student at Gachon University studying web programming and front-end web design. This library collects my coursework by week, so you can open any exercise or topic demo and see how HTML, CSS, and JavaScript fit together.</p>
-          <p style="color: #cccccc;">Low contrast decorative text that is hard to read.</p>
 
           <div class="browse">
             <h2>Browse by week</h2>
             <p>116 pages across eleven weeks and a project. Select one to jump to it.</p>
-            <img src="css/shared.css">
             <nav aria-label="Sections on the shelf">
               <ul class="shelf">
                 <li><a class="spine wk2" href="#week-2">
