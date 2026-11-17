@@ -138,13 +138,6 @@
    new page's content fades in over the paper instead of popping. Under a
    running View Transition the two simply compose — the old page crossfades
    out while the new page's content settles in beneath it. */
-@media (prefers-reduced-motion: no-preference) {
-  body { animation: page-in .4s var(--ease-out) both; }
-}
-
-@keyframes page-in {
-  from { opacity: 0; }
-}
 
 @media print {
   body { animation: none; }

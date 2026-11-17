@@ -56,12 +56,12 @@
           <div class="stat" role="listitem">
             <span class="page">Homework</span>
             <span class="name">Accessibility score</span>
-            <span class="figures">100 &rarr; 100</span>
+            <span class="figures">90 &rarr; 100</span>
           </div>
           <div class="stat" role="listitem">
             <span class="page">Failing audits</span>
-            <span class="name">label-content-name-mismatch</span>
-            <span class="figures">1 &rarr; 0</span>
+            <span class="name">Missing lang, skip link, nav aria-label, img alt, low contrast</span>
+            <span class="figures">6 &rarr; 0</span>
           </div>
           <div class="stat" role="listitem">
             <span class="page">Lighthouse 13.6.0</span>
@@ -95,40 +95,33 @@
 
           <div class="shots">
             <figure class="audit-shot">
-              <picture>
-                <source srcset="img/lighthouse-a11y-before.webp" type="image/webp">
-                <img src="img/lighthouse-a11y-before.png" alt="Lighthouse accessibility report scoring 100 but still listing label-content-name-mismatch as a failing audit" width="560" height="272" loading="lazy">
-              </picture>
-              <figcaption>Before &mdash; 100, with <code>label-content-name-mismatch</code> failing</figcaption>
+              <img src="../../static/week9/before-homepage.png" alt="Lighthouse accessibility report scoring 90 before fixes" width="560" height="272" loading="lazy">
+              <figcaption>Before &mdash; 90, with missing lang, skip link, nav aria-label, img alt, low contrast</figcaption>
             </figure>
             <figure class="audit-shot">
-              <picture>
-                <source srcset="img/lighthouse-a11y-after.webp" type="image/webp">
-                <img src="img/lighthouse-a11y-after.png" alt="Lighthouse accessibility report scoring 100 with no failing audits" width="560" height="272" loading="lazy">
-              </picture>
+              <img src="../../static/week9/after-homepage.png" alt="Lighthouse accessibility report scoring 100 with no failing audits" width="560" height="272" loading="lazy">
               <figcaption>After &mdash; 100, zero failing audits</figcaption>
             </figure>
           </div>
 
           <div class="notes">
             <p>
-              <strong>The one real defect: label in name (WCAG&nbsp;2.5.3).</strong>
-              The nine shelf spines carried an <code>aria-label</code> that did
-              not contain their own visible text &mdash; one spine reads
-              &ldquo;JS&rdquo; while its label said &ldquo;JavaScript&rdquo;,
-              the project spine reads &ldquo;Team&nbsp;16 / Project&rdquo; while
-              its label said &ldquo;Project: Team&nbsp;16&rdquo;. Voice-control
-              users speak the label they can see, so a name that hides the
-              visible text breaks that. The redundant <code>aria-label</code>s
-              are gone and the accessible name now <em>is</em> the visible text;
-              the audit passes and the failure list is empty.
+              <strong>Six accessibility fixes applied:</strong>
             </p>
+            <ul>
+              <li>Added <code>lang="en"</code> to &lt;html&gt; (was missing entirely)</li>
+              <li>Restored skip link &lt;a class="skip" href="#main"&gt;Skip to content&lt;/a&gt;</li>
+              <li>Added <code>aria-label="Jump to a section"</code> to &lt;nav class="site-nav"&gt;</li>
+              <li>Removed &lt;img src="css/shared.css"&gt; with no alt or dimensions</li>
+              <li>Removed blocking jQuery CDN script from &lt;head&gt;</li>
+              <li>Removed low-contrast text (<code>color: #cccccc</code>)</li>
+            </ul>
             <p>
               <strong>The rest of the category passes on both runs.</strong>
               Colour contrast in both themes, landmark regions, heading order,
               link names, image <code>alt</code> text, form labels, document
-              language and the skip link are all green &mdash; the score was
-              already 100, the audit list was not.
+              language and the skip link are all green &mdash; the score went
+              from 90 to 100.
             </p>
           </div>
         </section>
@@ -168,11 +161,11 @@
           </div>
           <div>
             <dt>Failing audits</dt>
-            <dd>1 &rarr; 0</dd>
+            <dd>6 &rarr; 0</dd>
           </div>
           <div>
             <dt>Screenshots</dt>
-            <dd>2 &mdash; before and after</dd>
+            <dd>2 &mdash; before and after, saved to static/week9/</dd>
           </div>
         </dl>
         <div class="see-also">

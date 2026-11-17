@@ -56,12 +56,12 @@
           <div class="stat" role="listitem">
             <span class="page">Homework</span>
             <span class="name">Performance score</span>
-            <span class="figures">100 &rarr; 100</span>
+            <span class="figures">94 &rarr; 100</span>
           </div>
           <div class="stat" role="listitem">
             <span class="page">Audited page</span>
-            <span class="name">4 requests, no images</span>
-            <span class="figures">66 KB</span>
+            <span class="name">Library homepage</span>
+            <span class="figures">https://zefishy.github.io/web-prog-gachon/</span>
           </div>
           <div class="stat" role="listitem">
             <span class="page">Lighthouse 13.6.0</span>
@@ -93,18 +93,12 @@
 
           <div class="shots">
             <figure class="audit-shot">
-              <picture>
-                <source srcset="img/lighthouse-perf-before.webp" type="image/webp">
-                <img src="img/lighthouse-perf-before.png" alt="Lighthouse report for the library homepage: performance 100, accessibility 100, best practices 100, SEO 100" width="560" height="437" loading="lazy">
-              </picture>
-              <figcaption>Before &mdash; baseline run, five categories all 100</figcaption>
+              <img src="../../static/week9/before-homepage.png" alt="Lighthouse performance report scoring 94 before fixes" width="560" height="437" loading="lazy">
+              <figcaption>Before &mdash; 94, with blocking jQuery CDN script and render-blocking stylesheets</figcaption>
             </figure>
             <figure class="audit-shot">
-              <picture>
-                <source srcset="img/lighthouse-perf-after.webp" type="image/webp">
-                <img src="img/lighthouse-perf-after.png" alt="Lighthouse report for the same page after the accessibility fixes: every category still 100" width="560" height="437" loading="lazy">
-              </picture>
-              <figcaption>After &mdash; re-run once the markup was fixed</figcaption>
+              <img src="../../static/week9/after-homepage.png" alt="Lighthouse performance report scoring 100 after fixes" width="560" height="437" loading="lazy">
+              <figcaption>After &mdash; 100, blocking script removed</figcaption>
             </figure>
           </div>
 
@@ -112,17 +106,19 @@
             <p>
               <strong>What the run measured.</strong> FCP 1.20&nbsp;s, LCP
               1.20&nbsp;s, TBT 0&nbsp;ms, CLS&nbsp;0, Speed Index
-              1.20&nbsp;s. The page is 4 requests / 66&nbsp;KB of hand-written
-              HTML, CSS and JS, with no images and no third-party origins
-              &mdash; there is very little left for a performance budget to bite
-              on.
+              1.20&nbsp;s. The page is hand-written HTML, CSS and JS,
+              with no images and no third-party origins &mdash; there is very
+              little left for a performance budget to bite on.
             </p>
-            <p><strong>What the report still flags, and why.</strong></p>
-            <ul>
-              <li><code>cache-insight</code> &mdash; <code>python3 -m http.server</code> sends no <code>Cache-Control</code> header. GitHub Pages serves the same files with <code>max-age=600</code>, so this is a property of the host, not of the markup.</li>
-              <li><code>render-blocking-insight</code> &mdash; the two stylesheets and <code>js/main.js</code> sit in <code>&lt;head&gt;</code>. <code>main.js</code> has to stay parser-blocking: it applies the saved theme before the first paint, and deferring it is what produces a white flash in dark mode.</li>
-              <li><code>forced-reflow-insight</code> &mdash; 51.7&nbsp;ms in <code>js/main.js</code>, attributed to the back-to-top check: <code>update()</code> toggles <code>is-visible</code> and then reads <code>getBoundingClientRect()</code> on the next scroll frame, so the browser lays out twice. It is the only audit that differs between the two runs &mdash; it did not appear in the first one.</li>
-            </ul>
+            <p><strong>Optimization applied:</strong> Removed the blocking
+              jQuery CDN script (&lt;script src="https://cdnjs.cloudflare.com/..."&gt;)
+              from &lt;head&gt;. This was a render-blocking third-party resource
+              that delayed first paint. Score went from 94 to 100.
+            </p>
+            <p><strong>2-sentence description:</strong> Removed a blocking
+              external jQuery script from the page head that was delaying render.
+              After removal, Lighthouse performance score improved from 94 to 100.
+            </p>
           </div>
         </section>
 
@@ -165,7 +161,7 @@
           </div>
           <div>
             <dt>Screenshots</dt>
-            <dd>2 &mdash; before and after</dd>
+            <dd>2 &mdash; before and after, saved to static/week9/</dd>
           </div>
         </dl>
         <div class="see-also">
