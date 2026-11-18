@@ -362,6 +362,15 @@ pre.code code {
   color: var(--muted);
 }
 
+.project-card__shot {
+  width: 100%;
+  height: auto;
+  max-height: 14rem;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: .6rem;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;

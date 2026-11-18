@@ -307,3 +307,6 @@ h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
 @media (max-width: 24rem) {
   .site-nav a { padding-inline: .25rem; }
 }
+
+/* ---------- Utilities ---------- */
+.hidden { display: none; }
