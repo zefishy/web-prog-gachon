@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="author" content="Ryan Wong" />
+    <meta name="description" content="Week 9 exercise 1: Run a Lighthouse performance audit and read the results &mdash; FCP, LCP, TBT, CLS, Speed Index." />
+    <title>E1: Run Lighthouse &amp; Read Results &mdash; Week 9_2</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="../../css/shared.css" />
+    <link rel="stylesheet" href="../week9.css" />
+    <script src="../../js/main.js"></script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 9_2 &middot; Exercise 1</span>
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Switch to light mode"
+            title="Switch to light mode"
+          >
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5" />
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Week 9_2 &mdash; Exercise 1</h1>
+          <p class="lead">
+            Run a Lighthouse performance audit and read the results &mdash;
+            First Contentful Paint, Largest Contentful Paint, Total Blocking
+            Time, Cumulative Layout Shift, and Speed Index.
+          </p>
+        </div>
+      </section>
+
+      <div class="container layout">
+        <div class="report-column">
+          <section class="section" aria-labelledby="ex1-title">
+            <h2 id="ex1-title">Exercise 1 &mdash; Read the Lighthouse Results</h2>
+            <p>
+              Lighthouse measures performance with scores from 0&ndash;100. A
+              score of 90+ means &ldquo;Good&rdquo; &mdash; it does not guarantee
+              sub-1-second load time. The Core Web Vitals below are what the
+              score is based on.
+            </p>
+
+            <div class="stats" role="list" aria-label="Core Web Vitals at a glance">
+              <div class="stat" role="listitem">
+                <span class="page">Metric</span>
+                <span class="name">First Contentful Paint</span>
+                <span class="figures">FCP</span>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="page">Metric</span>
+                <span class="name">Largest Contentful Paint</span>
+                <span class="figures">LCP</span>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="page">Metric</span>
+                <span class="name">Total Blocking Time</span>
+                <span class="figures">TBT</span>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="page">Metric</span>
+                <span class="name">Cumulative Layout Shift</span>
+                <span class="figures">CLS</span>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="page">Metric</span>
+                <span class="name">Speed Index</span>
+                <span class="figures">SI</span>
+              </div>
+            </div>
+
+            <div class="stats" role="list" aria-label="Target values">
+              <div class="stat" role="listitem">
+                <span class="page">Good (&gt;90)</span>
+                <span class="name">FCP &le; 1.8s</span>
+                <span class="figures">&le; 1.8s</span>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="page">Good (&gt;90)</span>
+                <span class="name">LCP &le; 2.5s</span>
+                <span class="figures">&le; 2.5s</span>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="page">Good (&gt;90)</span>
+                <span class="name">TBT &le; 200ms</span>
+                <span class="figures">&le; 200ms</span>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="page">Good (&gt;90)</span>
+                <span class="name">CLS &le; 0.1</span>
+                <span class="figures">&le; 0.1</span>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="page">Good (&gt;90)</span>
+                <span class="name">SI &le; 3.4s</span>
+                <span class="figures">&le; 3.4s</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="ex1-why-title">
+            <h2 id="ex1-why-title">Why these metrics matter</h2>
+            <ul>
+              <li>
+                <strong>FCP</strong> &mdash; When the first text or image is
+                painted. Users need to see something happening immediately.
+              </li>
+              <li>
+                <strong>LCP</strong> &mdash; When the largest visible element
+                (usually the hero image or heading) finishes loading. This is
+                the main &ldquo;is it useful yet?&rdquo; signal.
+              </li>
+              <li>
+                <strong>TBT</strong> &mdash; How long the main thread is blocked
+                by scripts between FCP and TTI. High TBT means the page feels
+                unresponsive to clicks.
+              </li>
+              <li>
+                <strong>CLS</strong> &mdash; How much the page layout jumps
+                around as images and ads load. Set width/height on images to
+                reserve space.
+              </li>
+              <li>
+                <strong>SI</strong> &mdash; How quickly the visible parts of the
+                page are populated. Lower is better.
+              </li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <ul>
+          <li><a href="../../index.html">Week 9_2 &mdash; Performance</a></li>
+          <li><a href="../../index.html">Back to the library</a></li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>

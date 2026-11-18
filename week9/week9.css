@@ -254,6 +254,69 @@
   max-width: 62ch;
 }
 
+/* ---------- Exercise panels ---------- */
+.panel {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+.panel h3 {
+  margin-top: 0;
+  margin-bottom: .75rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.panel p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: .9375rem;
+  color: var(--muted);
+}
+.button-row {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* ---------- Code blocks ---------- */
+.code-block {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--surface-alt);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+.code-block pre {
+  margin: 0;
+  font-size: .875rem;
+  line-height: 1.5;
+}
+.code-block code {
+  font-size: .875rem;
+}
+
+/* ---------- Details / disclosure ---------- */
+details.what-changed {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+details.what-changed > summary {
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+  margin-bottom: 1rem;
+}
+details.what-changed > div {
+  margin-top: 1rem;
+}
+
 /* ---------- Motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .stat { transition: none; }
