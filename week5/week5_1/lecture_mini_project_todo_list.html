@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 5_1 Lecture Mini Project: Minimal Todo List demo.">
+  <title>Mini Project: Todo List &mdash; Week 5</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week5.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 5_1 &#183; Mini Project</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Mini Project: To-Do List</h1>
+        <p class="lead">Week 5_1 &#183; Lecture Mini-Project: Minimalist DOM manipulation demo &mdash; appending elements on click and removing elements on click.</p>
+      </div>
+    </section>
+
+    <div class="container layout" style="max-width: 440px; margin: 0 auto;">
+      <style>
+        .mini-card {
+          padding: 24px; border-radius: 12px;
+          border: 1px solid var(--rule); background: var(--surface);
+        }
+        .input-row { display: flex; gap: 8px; margin-bottom: 14px; }
+        .input-row input {
+          flex: 1; padding: 10px 14px; border: 2px solid var(--rule);
+          border-radius: 8px; font-size: 15px; background: var(--paper); color: var(--ink);
+        }
+        .input-row button {
+          padding: 10px 18px; border: none; border-radius: 8px;
+          background: #1a56db; color: white; font-weight: bold; cursor: pointer;
+        }
+        #list { list-style: none; padding: 0; margin: 0; }
+        #list li {
+          padding: 10px 14px; margin-bottom: 6px; background: var(--paper);
+          border-radius: 8px; border: 1px solid var(--rule); cursor: pointer;
+          color: var(--ink);
+        }
+        #list li:hover { background: color-mix(in srgb, #dc2626 15%, var(--paper)); }
+      </style>
+
+      <div class="mini-card">
+        <div class="input-row">
+          <input id="inp" placeholder="New task..." />
+          <button id="addBtn" type="button">Add</button>
+        </div>
+        <ul id="list"></ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Ryan Wong &#183; Web Programming &#183; Gachon University</p>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('#addBtn');
+    const inp = document.querySelector('#inp');
+    const list = document.querySelector('#list');
+
+    btn.addEventListener('click', () => {
+      if (!inp.value.trim()) return; // guard empty
+
+      const li = document.createElement('li');
+      li.textContent = inp.value;
+      li.addEventListener('click', () => li.remove()); // click to delete
+
+      list.appendChild(li);
+      inp.value = ''; // clear input
+    });
+  </script>
+</body>
+</html>

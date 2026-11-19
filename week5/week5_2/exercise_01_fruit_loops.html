@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 5_2 Exercise 1: Fruit Loops — JavaScript counted loops (for) and array loops (for..of).">
+  <title>Exercise 1: Fruit Loops &mdash; Week 5</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week5.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 5_2 &#183; Exercise 1</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Fruit Loops</h1>
+        <p class="lead">Week 5_2 &#183; Exercise 1: JavaScript loops in action &mdash; a counted loop generating 5 steps, and a <code>for..of</code> loop iterating over dynamic arrays.</p>
+      </div>
+    </section>
+
+    <div class="container layout" style="max-width: 480px; margin: 0 auto;">
+      <style>
+        .loop-card {
+          background: var(--surface); padding: 28px;
+          border-radius: 12px; border: 1px solid var(--rule);
+        }
+        .loop-card h2 { font-size: 1.15rem; margin: 20px 0 10px; color: var(--head); }
+        .loop-card h2:first-of-type { margin-top: 0; }
+        .row { display: flex; gap: 8px; margin-bottom: 12px; }
+        .row input {
+          flex: 1; padding: 10px; font-size: 16px;
+          border: 2px solid var(--rule); border-radius: 8px;
+          background: var(--paper); color: var(--ink);
+        }
+        .row input:focus { outline: none; border-color: #e07a2e; }
+        .btn-loop {
+          padding: 10px 16px; font-size: 16px; border: none;
+          border-radius: 8px; background: #e07a2e; color: #fff; cursor: pointer; font-weight: bold;
+        }
+        .btn-loop:hover { background: #c4651f; }
+        .btn-loop.secondary { background: #888; }
+        .btn-loop.secondary:hover { background: #666; }
+        .loop-card ul { list-style: none; padding: 0; margin: 0; }
+        .loop-card li {
+          padding: 10px 14px; margin-bottom: 6px; border-radius: 8px;
+          background: color-mix(in srgb, #e07a2e 15%, var(--surface)); font-size: 16px; color: var(--ink);
+          border: 1px solid var(--rule);
+        }
+        .loop-card li.step {
+          background: color-mix(in srgb, #3b82f6 15%, var(--surface));
+        }
+      </style>
+
+      <div class="loop-card">
+        <h2>1. Repeat 5 times</h2>
+        <ul id="steps"></ul>
+
+        <h2>2. Loop through an array</h2>
+        <div class="row">
+          <input type="text" id="newFruit" placeholder="Add a fruit, e.g. mango">
+          <button class="btn-loop" type="button" onclick="addFruit()">Add</button>
+        </div>
+        <ul id="fruitList"></ul>
+        <button class="btn-loop secondary" type="button" onclick="resetFruits()" style="margin-top: 10px; width: 100%;">Reset</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Ryan Wong &#183; Web Programming &#183; Gachon University</p>
+    </div>
+  </footer>
+
+  <script>
+    // Repeat 5 times
+    let stepList = document.getElementById('steps');
+    for (let i = 1; i <= 5; i++) {
+      console.log('Step ' + i);
+      let item = document.createElement('li');
+      item.className = 'step';
+      item.textContent = 'Step ' + i;
+      stepList.appendChild(item);
+    }
+
+    // Loop through an array
+    let fruits = ['apple', 'banana', 'cherry'];
+
+    function showFruits() {
+      let list = document.getElementById('fruitList');
+      list.innerHTML = '';
+      for (let fruit of fruits) {
+        console.log(fruit);
+        let item = document.createElement('li');
+        item.textContent = fruit;
+        list.appendChild(item);
+      }
+    }
+
+    function addFruit() {
+      let input = document.getElementById('newFruit');
+      let fruit = input.value.trim();
+      if (fruit !== '') {
+        fruits.push(fruit);
+        showFruits();
+      }
+      input.value = '';
+      input.focus();
+    }
+
+    function resetFruits() {
+      fruits = ['apple', 'banana', 'cherry'];
+      showFruits();
+    }
+
+    // Let the Enter key add a fruit too
+    document.getElementById('newFruit').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') addFruit();
+    });
+
+    showFruits();
+  </script>
+</body>
+</html>

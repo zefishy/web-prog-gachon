@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 5_1 Exercise 4: Live search filter with text highlighting — real-time input filtering and DOM updates.">
+  <title>Exercise 4: Live Search Filter &mdash; Week 5</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week5.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 5_1 &#183; Exercise 4</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Live Search Filter (Advanced)</h1>
+        <p class="lead">Week 5_1 &#183; Exercise 4: Filter students in real time as you type, and highlight matching characters with <code>&lt;mark&gt;</code>.</p>
+      </div>
+    </section>
+
+    <div class="container layout" style="max-width: 440px; margin: 0 auto;">
+      <style>
+        .search-card {
+          padding: 24px; border-radius: 12px;
+          border: 1px solid var(--rule); background: var(--surface);
+        }
+        .search-card h2 { margin: 0 0 14px; font-size: 1.35rem; color: var(--head); }
+        #search {
+          width: 100%; padding: 10px 14px; font-size: 16px; box-sizing: border-box;
+          border: 2px solid var(--rule); border-radius: 8px; margin-bottom: 14px;
+          background: var(--paper); color: var(--ink);
+        }
+        #search:focus { border-color: #1a56db; outline: none; }
+        .student {
+          padding: 10px 14px; margin-bottom: 6px; background: var(--paper);
+          border-radius: 8px; border: 1px solid var(--rule); font-size: 15px; color: var(--ink);
+        }
+        mark { background: #f7df1e; color: #092328; border-radius: 3px; padding: 0 2px; }
+        #no-results { display: none; color: var(--muted); text-align: center; padding: 20px 0 8px; margin: 0; }
+      </style>
+
+      <div class="search-card">
+        <h2>Student Search</h2>
+        <input id="search" type="text" placeholder="Search students...">
+        <div id="student-list">
+          <div class="student" data-name="Kim Jisoo">Kim Jisoo — Web Programming</div>
+          <div class="student" data-name="Park Minjun">Park Minjun — Computer Science</div>
+          <div class="student" data-name="Lee Sooyeon">Lee Sooyeon — Software Engineering</div>
+          <div class="student" data-name="Choi Hyunwoo">Choi Hyunwoo — Artificial Intelligence</div>
+          <div class="student" data-name="Jung Yuna">Jung Yuna — Data Science</div>
+          <div class="student" data-name="Kang Seojun">Kang Seojun — Web Programming</div>
+        </div>
+        <p id="no-results">No students found.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Ryan Wong &#183; Web Programming &#183; Gachon University</p>
+    </div>
+  </footer>
+
+  <script>
+    // YOUR CODE HERE
+    // 1. Select #search and all .student elements
+    const searchInput = document.getElementById('search');
+    const students = document.querySelectorAll('.student');
+    const noResults = document.getElementById('no-results');
+    const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, (m) => '\\' + m);
+
+    students.forEach(student => {
+      student.dataset.originalText = student.innerHTML; // Store original text for highlighting
+    });
+
+    // 2. Add 'input' event listener to #search
+    searchInput.addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      let visibleCount = 0;
+      // 3. Inside the listener:
+      //    a. Get the search term: e.target.value.toLowerCase()
+      //    b. For each .student: get data-name attribute, compare with term
+      //    c. Show or hide each student (style.display = '' or 'none')
+      students.forEach(student => {
+        const name = student.dataset.name.toLowerCase();
+        const originalText = student.dataset.originalText;
+
+        if (name.includes(searchTerm)) {
+          student.style.display = '';
+          visibleCount++;
+          // Highlight matched text
+          if (searchTerm !== '') {
+            const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
+            student.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+          } else {
+            student.innerHTML = originalText; // Reset to original text
+          }
+        } else {
+          student.style.display = 'none';
+          student.innerHTML = originalText; // Reset to original text
+        }
+      });
+      // 4. Show #no-results if all students are hidden
+      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    });
+    // BONUS: wrap matched text in <mark> using innerHTML for highlighting
+  </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 5_1 Exercise 3: Interactive to-do list — DOM creation, keyboard listeners, and event delegation.">
+  <title>Exercise 3: Interactive To-Do List &mdash; Week 5</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week5.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 5_1 &#183; Exercise 3</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Interactive To-Do List</h1>
+        <p class="lead">Week 5_1 &#183; Exercise 3: Add tasks using click or <kbd>Enter</kbd>, remove tasks with event delegation, and update empty state visibility.</p>
+      </div>
+    </section>
+
+    <div class="container layout" style="max-width: 440px; margin: 0 auto;">
+      <style>
+        .todo-card {
+          padding: 24px; border-radius: 12px;
+          border: 1px solid var(--rule); background: var(--surface);
+        }
+        .todo-card h2 { margin: 0 0 14px; font-size: 1.35rem; color: var(--head); }
+        .add-row { display: flex; gap: 8px; margin-bottom: 14px; }
+        .add-row input {
+          flex: 1; padding: 10px 14px; border: 2px solid var(--rule);
+          border-radius: 8px; font-size: 15px; background: var(--paper); color: var(--ink);
+        }
+        .add-row input:focus { border-color: #1a56db; outline: none; }
+        .add-btn {
+          padding: 10px 18px; border: none; border-radius: 8px;
+          cursor: pointer; font-size: 15px; font-weight: bold;
+          background: #1a56db; color: white;
+        }
+        #todo-list { list-style: none; padding: 0; margin: 0; }
+        .todo-item {
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 10px 14px; margin-bottom: 8px; background: var(--paper);
+          border-radius: 8px; border: 1px solid var(--rule); color: var(--ink);
+        }
+        .del-btn {
+          background: #dc2626; color: white; border: none;
+          padding: 4px 10px; font-size: 12px; border-radius: 6px; cursor: pointer;
+        }
+        #empty-msg { color: var(--muted); text-align: center; padding: 20px 0 8px; margin: 0; }
+      </style>
+
+      <div class="todo-card">
+        <h2>My To-Do List</h2>
+        <div class="add-row">
+          <input id="todo-input" type="text" placeholder="Add a task...">
+          <button id="add-btn" class="add-btn" type="button">+ Add</button>
+        </div>
+        <ul id="todo-list"></ul>
+        <p id="empty-msg">No tasks yet! Add one above.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Ryan Wong &#183; Web Programming &#183; Gachon University</p>
+    </div>
+  </footer>
+
+  <script>
+    // YOUR CODE HERE
+    // 1. Select input, add-btn, todo-list, empty-msg
+    const input = document.getElementById('todo-input');
+    const addBtn = document.getElementById('add-btn');
+    const todoList = document.getElementById('todo-list');
+    const emptyMsg = document.getElementById('empty-msg');
+
+    function updateEmptyMsg() {
+      emptyMsg.style.display = todoList.children.length === 0 ? 'block' : 'none';
+    }
+
+    updateEmptyMsg(); // Initial check
+
+    // 2. Write function addTask() that:
+    //    a. Reads input.value (trim it, skip if empty)
+    //    b. Creates an <li> with the text and a delete button
+    //    c. Appends to the list
+    //    d. Clears the input
+    function addTask() {
+      const taskText = input.value.trim();
+      if (taskText === '') return;
+
+      const li = document.createElement('li');
+      li.className = 'todo-item';
+      li.innerHTML = `<span>${taskText}</span><button type="button" class="del-btn">✕</button>`;
+      
+      todoList.appendChild(li);
+      input.value = '';
+
+      updateEmptyMsg();
+    }
+    // 3. Add 'click' listener to add-btn → call addTask()
+    addBtn.addEventListener('click', addTask);
+    // 4. Add 'keydown' listener to input → if e.key === 'Enter', call addTask()
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        addTask();
+      }
+    });
+    // 5. Add 'click' event delegation on todo-list → if .del-btn clicked, remove li
+    todoList.addEventListener('click', (e) => {
+      if (e.target.classList.contains('del-btn')) {
+        const li = e.target.closest('li');
+        if (li) {
+          li.remove();
+          updateEmptyMsg();
+        }
+      }
+    });
+    // BONUS: Show/hide #empty-msg based on list length
+  </script>
+</body>
+</html>

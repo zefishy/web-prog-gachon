@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 5_2 Exercise 2: Grade Calculator — evaluating scores from 0 to 100 with if/else if/else conditionals.">
+  <title>Exercise 2: Grade Calculator &mdash; Week 5</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week5.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 5_2 &#183; Exercise 2</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Grade Calculator</h1>
+        <p class="lead">Week 5_2 &#183; Exercise 2: Enter a score from 0 to 100 to calculate letter grades using conditional <code>if / else if / else</code> logic.</p>
+      </div>
+    </section>
+
+    <div class="container layout" style="max-width: 440px; margin: 0 auto;">
+      <style>
+        .grade-card {
+          background: var(--surface); padding: 32px;
+          border-radius: 12px; border: 1px solid var(--rule); text-align: center;
+        }
+        .grade-card input {
+          width: 100%; padding: 12px; font-size: 18px; box-sizing: border-box;
+          border: 2px solid var(--rule); border-radius: 8px; text-align: center;
+          background: var(--paper); color: var(--ink);
+        }
+        .grade-card input:focus { outline: none; border-color: #3b6fd8; }
+        .btn-grade {
+          margin-top: 12px; width: 100%; padding: 12px; font-size: 17px;
+          border: none; border-radius: 8px; background: #3b6fd8; color: #fff;
+          cursor: pointer; font-weight: bold;
+        }
+        .btn-grade:hover { background: #2f5bb5; }
+        #grade {
+          margin-top: 24px; font-size: 72px; font-weight: bold; min-height: 86px;
+        }
+        #message { color: var(--muted); min-height: 22px; font-size: 15px; }
+        .grade-table {
+          margin: 24px auto 0; border-collapse: collapse; font-size: 14px; width: 100%;
+        }
+        .grade-table td {
+          padding: 6px 12px; border-bottom: 1px solid var(--rule); text-align: left;
+        }
+        .grade-table td:last-child { text-align: right; font-weight: bold; }
+      </style>
+
+      <div class="grade-card">
+        <input type="number" id="score" min="0" max="100" placeholder="e.g. 75">
+        <button class="btn-grade" type="button" onclick="calculateGrade()">Calculate Grade</button>
+
+        <div id="grade"></div>
+        <div id="message"></div>
+
+        <table class="grade-table">
+          <tr><td>90 and above</td><td>A</td></tr>
+          <tr><td>80 &#8211; 89</td><td>B</td></tr>
+          <tr><td>70 &#8211; 79</td><td>C</td></tr>
+          <tr><td>Below 70</td><td>F</td></tr>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Ryan Wong &#183; Web Programming &#183; Gachon University</p>
+    </div>
+  </footer>
+
+  <script>
+    function calculateGrade() {
+      let score = Number(document.getElementById('score').value);
+      let gradeBox = document.getElementById('grade');
+      let messageBox = document.getElementById('message');
+      let input = document.getElementById('score').value;
+
+      // Check the input is valid
+      if (input === '' || score < 0 || score > 100) {
+        gradeBox.textContent = '';
+        messageBox.textContent = 'Please enter a score between 0 and 100.';
+        return;
+      }
+
+      // Conditions (if / else)
+      let grade;
+      let color;
+      if (score >= 90) {
+        grade = 'A';
+        color = '#2e9e5b';
+      } else if (score >= 80) {
+        grade = 'B';
+        color = '#3b6fd8';
+      } else if (score >= 70) {
+        grade = 'C';
+        color = '#e0a100';
+      } else {
+        grade = 'F';
+        color = '#d64545';
+      }
+
+      console.log(grade);
+      gradeBox.textContent = grade;
+      gradeBox.style.color = color;
+      messageBox.textContent = 'A score of ' + score + ' gets grade ' + grade + '.';
+    }
+
+    // Let the Enter key calculate too
+    document.getElementById('score').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') calculateGrade();
+    });
+  </script>
+</body>
+</html>
