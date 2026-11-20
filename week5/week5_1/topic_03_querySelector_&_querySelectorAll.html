@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 5_1 topic 3: querySelector returns the first matching element, querySelectorAll returns every match as a NodeList.">
+  <title>Topic 3: querySelector &amp; querySelectorAll &mdash; Week 5</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week5.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 5_1 &middot; Topic 3</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container prose">
+      <h1>querySelector &amp; querySelectorAll</h1>
+      <p class="lead">CSS selectors, but for JavaScript.</p>
+      <p><code>querySelector</code> stops at the first match. <code>querySelectorAll</code> returns a NodeList, so you can loop over every match at once &mdash; here it recolours all three list items.</p>
+      <h2 id="main-title">A heading with an id</h2>
+      <p class="card active">A paragraph with class="card active"</p>
+      <ul>
+        <li class="list-item">First list item</li>
+        <li class="list-item">Second list item</li>
+        <li class="list-item">Third list item</li>
+      </ul>
+      <h2>The snippet</h2>
+      <pre><code>const btn   = document.querySelector('button');      // first &lt;button&gt;
+const title = document.querySelector('#main-title'); // by id
+const card  = document.querySelector('.card.active'); // both classes
+
+document.querySelectorAll('.list-item').forEach(item =&gt; {
+  item.style.color = 'blue';
+});</code></pre>
+      <p class="fine">Raw snippet: <a href="topic_03_querySelector_&amp;_querySelectorAll.js">topic_03_querySelector_&amp;_querySelectorAll.js</a></p>
+      <script src="topic_03_querySelector_&amp;_querySelectorAll.js"></script>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Web Programming Library &mdash; Ryan Wong, Gachon University.</p>
+    </div>
+  </footer>
+</body>
+</html>

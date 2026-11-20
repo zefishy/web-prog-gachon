@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 5_1 topic 5: innerHTML parses a string as markup, which makes it powerful and dangerous when the string comes from a user.">
+  <title>Topic 5: innerHTML &mdash; Week 5</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week5.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 5_1 &middot; Topic 5</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container prose">
+      <h1>innerHTML: power &amp; danger</h1>
+      <p class="lead">Same box, two ways to fill it. Type something and compare.</p>
+      <p class="fine">The payload below is the classic test string. Rendered as HTML it becomes a live image element with an event handler; rendered as text it stays inert.</p>
+      <p>
+        <input id="payload" size="40" value="&lt;img src=x onerror=&quot;alert('hacked')&quot;&gt;">
+        <button type="button" class="btn btn-primary" id="as-html">innerHTML</button>
+        <button type="button" class="btn btn-secondary" id="as-text">textContent</button>
+      </p>
+      <div id="box" style="border:1px solid currentColor;padding:1rem;border-radius:.5rem;min-height:2.5rem"></div>
+      <p class="fine">The <code>innerHTML</code> button may show a broken image or fire the alert; the <code>textContent</code> button always prints the string.</p>
+      <h2>The snippet</h2>
+      <pre><code>const box = document.querySelector('#box');
+
+// Fine: you control the string
+box.innerHTML = '&lt;strong&gt;Bold&lt;/strong&gt; and &lt;em&gt;italic&lt;/em&gt;';
+
+// Dangerous: the string comes from a user
+box.innerHTML = userInput;   // can inject markup and scripts
+
+// Safe: same string, no parsing
+box.textContent = userInput;</code></pre>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Web Programming Library &mdash; Ryan Wong, Gachon University.</p>
+    </div>
+  </footer>
+  <script>
+      document.getElementById('as-html').addEventListener('click', () => {
+        document.getElementById('box').innerHTML = document.getElementById('payload').value;
+      });
+      document.getElementById('as-text').addEventListener('click', () => {
+        document.getElementById('box').textContent = document.getElementById('payload').value;
+      });
+</script>
+</body>
+</html>

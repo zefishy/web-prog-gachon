@@ -251,6 +251,37 @@ code { font-family: var(--mono); font-size: .875em; }
 .btn-secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
 .btn-secondary:hover { background: color-mix(in srgb, var(--ink) 10%, var(--surface)); }
 
+/* ---------- Long-form content ----------
+   Topic pages are prose rather than a hero + grid, so they need the vertical
+   rhythm the base reset removes. Scoped to .prose so no existing page moves. */
+.prose > * + * { margin-top: 1.15rem; }
+.prose h2 { margin-top: 2.25rem; }
+.prose h2 + * { margin-top: .6rem; }
+.prose ul, .prose ol { list-style: revert; padding-left: 1.5rem; }
+.prose li + li { margin-top: .35rem; }
+.prose li > ul, .prose li > ol { margin-top: .35rem; }
+.prose table { width: 100%; border-collapse: collapse; margin-block: .5rem; }
+.prose th, .prose td {
+  padding: .55rem .8rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: left; vertical-align: top;
+}
+.prose thead th { background: var(--surface); font-weight: 700; }
+.prose tbody tr:last-child td { border-bottom: 0; }
+.prose pre {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+}
+.prose pre code { font-size: .875rem; }
+.prose output { font-family: var(--mono); font-size: .875rem; }
+.prose input:not([type="submit"]):not([type="button"]) {
+  padding: .45rem .65rem; border: 1px solid var(--rule);
+  border-radius: 6px; background: var(--paper); color: var(--ink); font: inherit;
+}
+
 /* ---------- Footer ---------- */
 .site-footer { background: var(--footer-bg); color: var(--footer-ink); padding-block: 2.5rem; }
 .site-footer .container { display: grid; gap: 1.25rem; }

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 5_1 topic 6: classList adds, removes, toggles and tests CSS classes so JavaScript changes appearance without touching inline styles.">
+  <title>Topic 6: classList &mdash; Week 5</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week5.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 5_1 &middot; Topic 6</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container prose">
+      <h1>classList styling</h1>
+      <p class="lead">JavaScript flips the class; CSS decides what the class looks like.</p>
+      <p>Press the buttons and watch the box. The styling lives in the stylesheet, so it can be themed and reused.</p>
+      <p>
+        <button type="button" class="btn btn-primary" id="cl-add">add()</button>
+        <button type="button" class="btn btn-secondary" id="cl-remove">remove()</button>
+        <button type="button" class="btn btn-secondary" id="cl-toggle">toggle()</button>
+      </p>
+      <div id="cl-box" style="border:1px solid currentColor;padding:1rem;border-radius:.5rem">A plain box</div>
+      <p class="fine">Current class list: <output id="cl-out">(empty)</output></p>
+      <h2>The snippet</h2>
+      <pre><code>const box = document.querySelector('.card');
+
+box.classList.add('highlighted');
+box.classList.remove('highlighted');
+box.classList.toggle('dark');        // on if off, off if on
+box.classList.contains('active');    // true / false
+
+/* CSS decides the look:
+   .highlighted { background: yellow; font-weight: bold; } */</code></pre>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Web Programming Library &mdash; Ryan Wong, Gachon University.</p>
+    </div>
+  </footer>
+  <script>
+      const box = document.getElementById('cl-box');
+      const out = document.getElementById('cl-out');
+      const show = () => { out.textContent = box.className || '(empty)'; };
+      document.getElementById('cl-add').addEventListener('click', () => {
+        box.classList.add('highlighted');
+        box.style.background = 'gold';
+        box.style.fontWeight = '700';
+        show();
+      });
+      document.getElementById('cl-remove').addEventListener('click', () => {
+        box.classList.remove('highlighted');
+        box.style.background = '';
+        box.style.fontWeight = '';
+        show();
+      });
+      document.getElementById('cl-toggle').addEventListener('click', () => {
+        const on = box.classList.toggle('highlighted');
+        box.style.background = on ? 'gold' : '';
+        box.style.fontWeight = on ? '700' : '';
+        show();
+      });
+      show();
+</script>
+</body>
+</html>
