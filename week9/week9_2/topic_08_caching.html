@@ -1,0 +1,17 @@
+/* Server response headers — set by your server (Apache/Nginx/Node) */
+
+// Cache for 1 year — for versioned files (CSS/JS with hash in filename)
+Cache-Control: public, max-age=31536000, immutable
+
+// Cache for 1 hour — for frequently updated content
+Cache-Control: public, max-age=3600
+
+// No cache — for HTML pages that must always be fresh
+Cache-Control: no-store
+
+/* Cache Busting — add version hash to filenames */
+/* When you update the file, the hash changes → new URL → browser downloads fresh */
+<link rel="stylesheet" href="styles.a3f9c2b1.css">
+<script src="app.d8e4f2a9.js" defer></script>
+
+/* Build tools (Vite, webpack) add these hashes automatically */

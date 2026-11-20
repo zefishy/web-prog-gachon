@@ -1,0 +1,17 @@
+/* ── The classic CSS reset using * ── */
+*, *::before, *::after {
+  box-sizing: border-box; /* padding/border included in width — very useful */
+  margin: 0;
+  padding: 0;
+}
+
+/* Now you add styles on top cleanly */
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+/* Avoid this — affects every element */
+/* * { color: blue; } ← too aggressive! */

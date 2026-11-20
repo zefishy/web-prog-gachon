@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="author" content="Ryan Wong" />
+		<meta
+			name="description"
+			content="A student registration form by Ryan Wong: fieldsets, labelled inputs, built-in HTML validation, and CSS that reacts to valid and invalid input."
+		/>
+		<title>Homework: Build a student registration form &mdash; Week 8</title>
+		<link
+			rel="icon"
+			href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E"
+		/>
+
+		<link
+			rel="stylesheet"
+			href="../../css/shared.css"
+		/>
+		<link rel="stylesheet" href="homework.css" />
+		<script src="../../js/main.js"></script>
+	</head>
+
+	<body id="top">
+		<a class="skip" href="#main">Skip to content</a>
+
+		<header class="site-header">
+			<div class="container">
+				<a class="back" href="../../index.html"
+					><span aria-hidden="true">&larr;</span>
+					<span class="back-full">Web Programming Library</span
+					><span class="back-short">Library</span></a
+				>
+				<div class="header-end">
+					<span class="here">Week 8_1 &middot; Homework</span>
+					<button
+						type="button"
+						class="theme-toggle"
+						id="theme-toggle"
+						aria-label="Switch to light mode"
+						title="Switch to light mode"
+					>
+						<svg
+							class="icon-sun"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+							focusable="false"
+						>
+							<circle cx="12" cy="12" r="5" />
+							<path
+								d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+							/>
+						</svg>
+						<svg
+							class="icon-moon"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+							focusable="false"
+						>
+							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+						</svg>
+					</button>
+				</div>
+			</div>
+		</header>
+
+		<main id="main">
+			<section class="hero" aria-labelledby="page-title">
+				<div class="container">
+					<h1 id="page-title">Student Registration</h1>
+					<p class="lead">
+						An exercise in HTML forms. This registration form uses fieldsets,
+						labelled inputs, and HTML's built-in validation, with CSS that turns
+						fields green when they're valid and red when they need fixing.
+					</p>
+				</div>
+			</section>
+
+			<div class="container layout">
+				<div class="form-column">
+					
+					<div
+						class="success"
+						id="success"
+						role="group"
+						aria-labelledby="success-title"
+						hidden
+					>
+						<h2 id="success-title" tabindex="-1">Registration complete</h2>
+						<p>
+							Thanks, <strong id="success-name"></strong>. Every field passed
+							validation. Here is what you entered:
+						</p>
+						<dl class="summary" id="summary"></dl>
+						<p class="demo-note">
+							This is a demo. Nothing was sent anywhere, and your password is
+							never shown.
+						</p>
+						<div class="actions">
+							<button type="button" class="btn btn-secondary" id="edit-btn">
+								Edit my answers
+							</button>
+						</div>
+					</div>
+
+					<p class="required-note">Fields marked * are required.</p>
+
+					<form
+						id="register"
+						method="post"
+						action="/register"
+						aria-labelledby="page-title"
+						novalidate
+					>
+						<fieldset>
+							<legend>Personal Info</legend>
+							<div class="fields">
+								<div class="field">
+									<label for="fullname"
+										>Full Name
+										<span class="req" aria-hidden="true">*</span></label
+									>
+									<input
+										class="control"
+										type="text"
+										id="fullname"
+										name="fullname"
+										required
+										autocomplete="name"
+										placeholder="e.g. Ryan Wong"
+										aria-describedby="fullname-hint"
+										aria-invalid="false"
+									/>
+									<p class="hint" id="fullname-hint">
+										<span class="hint-default"
+											>As it appears on your student card.</span
+										>
+										<span class="hint-ok">Looks good.</span>
+										<span class="hint-error">Please enter your full name.</span>
+									</p>
+								</div>
+
+								<div class="field">
+									<label for="studentid"
+										>Student ID
+										<span class="req" aria-hidden="true">*</span></label
+									>
+									<input
+										class="control"
+										type="text"
+										id="studentid"
+										name="studentid"
+										required
+										pattern="\d{9}"
+										title="Exactly 9 digits, numbers only"
+										inputmode="numeric"
+										autocomplete="off"
+										placeholder="9 digits"
+										aria-describedby="studentid-hint"
+										aria-invalid="false"
+									/>
+									<p class="hint" id="studentid-hint">
+										<span class="hint-default"
+											>9 digits, no spaces or dashes.</span
+										>
+										<span class="hint-ok">Looks good.</span>
+										<span class="hint-error"
+											>Student ID must be exactly 9 digits (numbers only).</span
+										>
+									</p>
+								</div>
+
+								<div class="field">
+									<label for="dob">Date of Birth</label>
+									<input
+										class="control"
+										type="date"
+										id="dob"
+										name="dob"
+										min="1900-01-01"
+										autocomplete="bday"
+										data-watch
+										aria-describedby="dob-hint"
+										aria-invalid="false"
+									/>
+									<p class="hint" id="dob-hint">
+										<span class="hint-default">Optional.</span>
+										<span class="hint-ok">Looks good.</span>
+										<span class="hint-error"
+											>Please choose a real date that isn't in the future.</span
+										>
+									</p>
+								</div>
+
+								<div class="field">
+									<label for="major">Major</label>
+									<select
+										class="control"
+										id="major"
+										name="major"
+										data-watch
+										aria-describedby="major-hint"
+										aria-invalid="false"
+									>
+										<option value="" selected>Select your major</option>
+										<option value="computer-science">Computer Science</option>
+										<option value="software-engineering">
+											Software Engineering
+										</option>
+										<option value="artificial-intelligence">
+											Artificial Intelligence
+										</option>
+										<option value="information-systems">
+											Information Systems
+										</option>
+										<option value="visual-design">Visual Design</option>
+										<option value="business-administration">
+											Business Administration
+										</option>
+										<option value="other">Other</option>
+									</select>
+									<p class="hint" id="major-hint">
+										<span class="hint-default"
+											>Optional. Choose the closest match.</span
+										>
+										<span class="hint-ok">Looks good.</span>
+									</p>
+								</div>
+
+								<div class="field field-wide">
+									<div class="range-head">
+										<label for="experience">Years of coding experience</label>
+										<output
+											id="experience-output"
+											for="experience"
+											class="range-value"
+											>0 years</output
+										>
+									</div>
+									<input
+										class="range"
+										type="range"
+										id="experience"
+										name="experience"
+										min="0"
+										max="10"
+										step="1"
+										value="0"
+										aria-describedby="experience-scale"
+									/>
+									<div
+										class="range-scale"
+										id="experience-scale"
+										aria-hidden="true"
+									>
+										<span>0</span><span>10</span>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+
+						<fieldset>
+							<legend>Account Info</legend>
+							<div class="fields">
+								<div class="field">
+									<label for="email"
+										>Email <span class="req" aria-hidden="true">*</span></label
+									>
+									<input
+										class="control"
+										type="email"
+										id="email"
+										name="email"
+										required
+										pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+										title="An email address like name@example.com"
+										autocomplete="email"
+										placeholder="name@example.com"
+										aria-describedby="email-hint"
+										aria-invalid="false"
+									/>
+									<p class="hint" id="email-hint">
+										<span class="hint-default"
+											>We'll use this to sign you in.</span
+										>
+										<span class="hint-ok">Looks good.</span>
+										<span class="hint-error"
+											>Enter a valid email address, like name@example.com.</span
+										>
+									</p>
+								</div>
+
+								<div class="field">
+									<label for="phone">Phone</label>
+									<input
+										class="control"
+										type="text"
+										id="phone"
+										name="phone"
+										pattern="\d{3}-\d{4}-\d{4}"
+										title="Format: 010-1234-5678"
+										inputmode="tel"
+										autocomplete="tel"
+										placeholder="010-1234-5678"
+										aria-describedby="phone-hint"
+										aria-invalid="false"
+									/>
+									<p class="hint" id="phone-hint">
+										<span class="hint-default"
+											>Optional. Format: 010-1234-5678.</span
+										>
+										<span class="hint-ok">Looks good.</span>
+										<span class="hint-error"
+											>Use the format 010-1234-5678.</span
+										>
+									</p>
+								</div>
+
+								<div class="field">
+									<label for="password"
+										>Password
+										<span class="req" aria-hidden="true">*</span></label
+									>
+									<input
+										class="control"
+										type="password"
+										id="password"
+										name="password"
+										required
+										minlength="8"
+										autocomplete="new-password"
+										placeholder="Create a password"
+										aria-describedby="password-hint"
+										aria-invalid="false"
+									/>
+									<p class="hint" id="password-hint">
+										<span class="hint-default">At least 8 characters.</span>
+										<span class="hint-ok">Looks good.</span>
+										<span class="hint-error"
+											>Password must be at least 8 characters.</span
+										>
+									</p>
+								</div>
+
+								<div class="field">
+									<label for="confirmpassword"
+										>Confirm Password
+										<span class="req" aria-hidden="true">*</span></label
+									>
+									<input
+										class="control"
+										type="password"
+										id="confirmpassword"
+										name="confirmpassword"
+										required
+										autocomplete="new-password"
+										placeholder="Re-enter your password"
+										aria-describedby="confirmpassword-hint"
+										aria-invalid="false"
+									/>
+									<p class="hint" id="confirmpassword-hint">
+										<span class="hint-default"
+											>Type the same password again.</span
+										>
+										<span class="hint-ok">Passwords match.</span>
+										<span class="hint-error"
+											>Please confirm your password.</span
+										>
+									</p>
+								</div>
+							</div>
+						</fieldset>
+
+						<div class="field-check">
+							<input
+								class="check"
+								type="checkbox"
+								id="terms"
+								name="terms"
+								required
+								aria-describedby="terms-hint"
+								aria-invalid="false"
+							/>
+							<label for="terms"
+								>I agree to the terms
+								<span class="req" aria-hidden="true">*</span></label
+							>
+							<p class="hint" id="terms-hint">
+								<span class="hint-default"
+									>Required to create your account.</span
+								>
+								<span class="hint-ok">Thank you.</span>
+								<span class="hint-error"
+									>You need to agree to the terms to continue.</span
+								>
+							</p>
+						</div>
+
+						<div class="actions">
+							<button
+								type="submit"
+								class="btn btn-primary"
+								id="submit-btn"
+								aria-describedby="submit-hint"
+							>
+								Create account
+							</button>
+							<button type="reset" class="btn btn-secondary">Reset form</button>
+						</div>
+						
+						<p class="submit-hint" id="submit-hint" hidden></p>
+
+						
+						<p class="sr-only" id="form-status" role="status"></p>
+					</form>
+				</div>
+
+				<aside class="tips" aria-labelledby="tips-title">
+					<h2 id="tips-title">Before you start</h2>
+					<ul>
+						<li>Fields marked * are required.</li>
+						<li>Student ID is exactly 9 digits.</li>
+						<li>Password needs at least 8 characters.</li>
+						<li>Retype your password to confirm it.</li>
+						<li>Phone is optional, in the format 010-1234-5678.</li>
+						<li>Create account switches on once every field is valid.</li>
+					</ul>
+					<p class="fine-print">
+						Fields turn green when they're valid and red when something needs
+						fixing, and a message underneath says what to do.
+					</p>
+				</aside>
+			</div>
+		</main>
+
+		<footer class="site-footer">
+			<div class="container">
+				<p class="foot-title">Web Programming Library @ Gachon University</p>
+				<p class="fine">
+					2026 Ryan Wong. Built with semantic HTML, modern CSS, and JavaScript.
+				</p>
+				<ul>
+					<li><a href="../../index.html">Back to the library</a></li>
+					<li>
+						<a href="https://github.com/zefishy/web-prog-gachon"
+							>Source on GitHub</a
+						>
+					</li>
+					<li><a href="#top">Back to top</a></li>
+				</ul>
+				<p class="fine">&copy; 2026 Ryan Wong</p>
+			</div>
+		</footer>
+
+		<script>
+			(function () {
+				
+				var DEMO_MODE = true;
+
+				var form = document.getElementById("register");
+				var success = document.getElementById("success");
+				var submitBtn = document.getElementById("submit-btn");
+				var submitHint = document.getElementById("submit-hint");
+				var status = document.getElementById("form-status");
+				var range = document.getElementById("experience");
+				var rangeOut = document.getElementById("experience-output");
+				var dob = document.getElementById("dob");
+				var password = document.getElementById("password");
+				var confirmPw = document.getElementById("confirmpassword");
+				var confirmError = document.querySelector(
+					"#confirmpassword-hint .hint-error",
+				);
+
+				
+				var fields = Array.prototype.filter.call(form.elements, function (el) {
+					return el.willValidate && el.tagName !== "BUTTON";
+				});
+				var watched = form.querySelectorAll("[data-watch]");
+				var submitted = false; 
+
+				function say(message) {
+					status.textContent = message;
+				}
+
+				
+				function markEmpty(el) {
+					el.setAttribute("data-empty", el.value === "" ? "true" : "false");
+				}
+
+				
+				function pad(n) {
+					return String(n).padStart(2, "0");
+				}
+				var now = new Date();
+				dob.max =
+					now.getFullYear() +
+					"-" +
+					pad(now.getMonth() + 1) +
+					"-" +
+					pad(now.getDate());
+
+				
+				function updateRange() {
+					var value = Number(range.value);
+					var ratio =
+						(value - Number(range.min)) /
+						(Number(range.max) - Number(range.min));
+					var text = value + (value === 1 ? " year" : " years");
+					rangeOut.textContent = text;
+					range.setAttribute("aria-valuetext", text);
+					range.style.setProperty("--ratio", ratio);
+				}
+
+				
+				function checkPasswordMatch() {
+					var mismatch =
+						confirmPw.value !== "" && confirmPw.value !== password.value;
+					confirmPw.setCustomValidity(
+						mismatch ? "Passwords do not match." : "",
+					); 
+					confirmError.textContent = mismatch
+						? confirmPw.validationMessage
+						: "Please confirm your password.";
+				}
+
+				
+				function hasValue(el) {
+					return el.type === "checkbox" ? el.checked : el.value !== "";
+				}
+
+				
+				function showsError(el) {
+					return (
+						!el.validity.valid &&
+						(submitted ||
+							hasValue(el) ||
+							el.getAttribute("data-touched") === "true")
+					);
+				}
+
+				function refreshField(el) {
+					if (el === confirmPw) checkPasswordMatch();
+					el.setAttribute("aria-invalid", showsError(el) ? "true" : "false");
+				}
+
+				
+				function refreshSubmit() {
+					var ok = form.checkValidity();
+					submitBtn.disabled = !ok;
+					submitHint.textContent = ok
+						? "Everything looks good. You can create your account."
+						: "Fill in every required field correctly to switch on this button.";
+				}
+
+				function refreshAll() {
+					fields.forEach(refreshField);
+					refreshSubmit();
+				}
+
+				function syncAll() {
+					watched.forEach(markEmpty);
+					updateRange();
+					refreshAll();
+				}
+
+				
+				function onFieldEvent(el) {
+					el.setAttribute("data-touched", "true");
+					if (el.hasAttribute("data-watch")) markEmpty(el);
+					if (el === range) updateRange();
+					refreshField(el);
+					if (el === password)
+						refreshField(
+							confirmPw,
+						); 
+					refreshSubmit();
+				}
+
+				fields.forEach(function (el) {
+					el.addEventListener("input", function () {
+						onFieldEvent(el);
+					});
+					el.addEventListener("change", function () {
+						onFieldEvent(el);
+					}); 
+				});
+
+				form.addEventListener("reset", function () {
+					
+					setTimeout(function () {
+						submitted = false;
+						form.classList.remove("was-submitted");
+						fields.forEach(function (el) {
+							el.removeAttribute("data-touched");
+						});
+						success.hidden = true;
+						say("");
+						syncAll();
+					}, 0);
+				});
+
+				
+				function valueOf(id) {
+					return document.getElementById(id).value.trim();
+				}
+
+				function formatDate(iso) {
+					if (!iso) return "";
+					var d = new Date(iso + "T00:00:00");
+					return isNaN(d)
+						? iso
+						: d.toLocaleDateString("en-US", {
+								year: "numeric",
+								month: "long",
+								day: "numeric",
+							});
+				}
+
+				function showSuccess() {
+					var major = document.getElementById("major");
+					var rows = [
+						["Full Name", valueOf("fullname")],
+						["Student ID", valueOf("studentid")],
+						["Date of Birth", formatDate(valueOf("dob"))],
+						[
+							"Major",
+							major.value ? major.options[major.selectedIndex].text : "",
+						],
+						["Years of coding experience", rangeOut.textContent],
+						["Email", valueOf("email")],
+						["Phone", valueOf("phone")],
+						[
+							"Password",
+							"\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022 (hidden)",
+						],
+					];
+
+					var list = document.getElementById("summary");
+					list.replaceChildren();
+					rows.forEach(function (row) {
+						var wrap = document.createElement("div");
+						var dt = document.createElement("dt");
+						var dd = document.createElement("dd");
+						dt.textContent = row[0];
+						dd.textContent =
+							row[1] ||
+							"Not provided"; 
+						wrap.append(dt, dd);
+						list.append(wrap);
+					});
+
+					document.getElementById("success-name").textContent =
+						valueOf("fullname");
+					success.hidden = false;
+					var heading = document.getElementById("success-title");
+					heading.focus();
+					success.scrollIntoView({ block: "start" });
+				}
+
+				
+				form.addEventListener("submit", function (event) {
+					
+					event.preventDefault();
+					refreshAll(); 
+
+					var firstInvalid = fields.filter(function (el) {
+						return !el.validity.valid;
+					})[0];
+					if (firstInvalid) {
+						submitted = true;
+						form.classList.add(
+							"was-submitted",
+						); 
+						refreshAll();
+						var count = fields.filter(function (el) {
+							return !el.validity.valid;
+						}).length;
+						say(
+							count +
+								(count === 1 ? " field needs" : " fields need") +
+								" your attention.",
+						);
+						firstInvalid.focus();
+						return;
+					}
+
+					if (!DEMO_MODE) {
+						form.submit();
+						return;
+					} 
+					showSuccess();
+				});
+
+				document
+					.getElementById("edit-btn")
+					.addEventListener("click", function () {
+						success.hidden = true;
+						document.getElementById("fullname").focus();
+					});
+
+				
+				submitHint.hidden = false;
+				syncAll();
+				window.addEventListener(
+					"pageshow",
+					syncAll,
+				); 
+			})();
+		</script>
+	</body>
+</html>

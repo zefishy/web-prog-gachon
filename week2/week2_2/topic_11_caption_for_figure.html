@@ -1,59 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
-  <meta name="author" content="Ryan Wong">
-  <meta name="description" content="Week 2_2 topic 11: figcaption labels a figure and must be its first or last child.">
-  <title>Caption for a figure &mdash; Week 2</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="../../css/shared.css">
-  <script src="../../js/main.js"></script>
-</head>
+<link rel="stylesheet" href="../../css/shared.css">
+<button class="back-button" type="button" onclick="history.back()">Back</button>
+<figure>
+  
+  
+  <img src="../../images/flexbox-demo.gif"
+       alt="Animation showing flex items rearranging when flex-direction changes"
+       width="500">
+  <figcaption>Figure 3: Flex direction controls the main axis orientation.</figcaption>
+</figure>
 
-<body id="top">
-  <a class="skip" href="#main">Skip to content</a>
-
-  <header class="site-header">
-    <div class="container">
-      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
-      <div class="header-end">
-        <span class="here">Week 2_2 &middot; Topic 11</span>
-        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
-          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main id="main">
-    <div class="container prose">
-      <h1>Caption for a figure</h1>
-      <p class="lead">The caption belongs to the figure, not to the image.</p>
-      <p>That is why it is <code>figcaption</code> inside <code>figure</code> rather than a paragraph underneath. Assistive technology then announces them as one unit.</p>
-      <figure>
-        <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20120%2080'%3E%3Crect%20width='120'%20height='80'%20fill='%234d9a73'/%3E%3Ccircle%20cx='60'%20cy='40'%20r='22'%20fill='%23fff'/%3E%3C/svg%3E" alt="A white circle centred on a green square" width="120" height="80">
-        <figcaption>Figure 1: a circle on a square, rendered as inline SVG.</figcaption>
-      </figure>
-      <h2>The markup</h2>
-      <pre><code>&lt;figure&gt;
-  &lt;img src="chart.png" alt="Sales rose 20%"&gt;
-  &lt;figcaption&gt;Figure 1: sales, 2025&amp;ndash;2026.&lt;/figcaption&gt;
-&lt;/figure&gt;</code></pre>
-    </div>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p>Web Programming Library &mdash; Ryan Wong, Gachon University.</p>
-    </div>
-  </footer>
-</body>
-</html>
+<figure>
+  <figcaption>Table 1: Browser support for HTML5 semantic elements.</figcaption>
+  <table>
+    <tr><th>Element</th><th>Chrome</th><th>Firefox</th><th>Safari</th></tr>
+    <tr><td>&lt;main&gt;</td><td>26+</td><td>21+</td><td>7+</td></tr>
+    <tr><td>&lt;article&gt;</td><td>6+</td><td>4+</td><td>5+</td></tr>
+  </table>
+</figure>

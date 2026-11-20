@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { color: #0f766e; font-family: 'Georgia', serif; font-size: 18px; }
+
+    
+    .parent {
+      color: #f43f5e;   
+      font-size: 20px;
+    }
+    .child-inherit { color: inherit; }  
+    
+    .child-initial { color: initial; }  
+
+    
+    .with-border { border: 3px solid currentColor; padding: 8px; }
+
+    
+    .parent-bordered {
+      border: 3px solid #0f766e;
+      padding: 12px;
+    }
+    .inherit-border { border: inherit; }  
+
+    p { margin: 8px 0; }
+  </style>
+  <link rel="stylesheet" href="../../css/shared.css">
+</head>
+<body>
+	<button class="back-button" type="button" onclick="history.back()">Back</button>
+  <div class="parent">
+    <p>Parent — color: red</p>
+    <p class="child-inherit">child color: inherit → red</p>
+    <p class="child-normal">child with no color set → also red (inherits)</p>
+    <p class="child-initial">child color: initial → black (browser default)</p>
+  </div>
+  <hr>
+  <div class="parent-bordered">
+    Parent has a border
+    <div class="inherit-border" style="margin-top:8px">border: inherit → same border</div>
+  </div>
+</body>
+</html>

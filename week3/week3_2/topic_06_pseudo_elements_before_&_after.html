@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    
+    h2::before {
+      content: '🌿 ';
+    }
+
+    
+    .required::after {
+      content: ' *';
+      color: #f43f5e;
+      font-weight: bold;
+    }
+
+    
+    .underline-title {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 8px;
+    }
+    .underline-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 3px;
+      background: #0f766e;
+      border-radius: 2px;
+    }
+
+    
+    blockquote { position: relative; padding-left: 36px; font-style: italic; }
+    blockquote::before {
+      content: '"';
+      position: absolute;
+      left: 0; top: -8px;
+      font-size: 56px;
+      color: #14b8a6;
+      line-height: 1;
+    }
+  </style>
+  <link rel="stylesheet" href="../../css/shared.css">
+</head>
+<body>
+	<button class="back-button" type="button" onclick="history.back()">Back</button>
+  <h2>CSS Pseudo-elements</h2>
+  <p><label class="required">Email address</label></p>
+  <p class="underline-title">Decorative Underline</p>
+  <blockquote>CSS gives you superpowers — no JavaScript needed.</blockquote>
+</body>
+</html>

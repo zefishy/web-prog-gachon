@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My CSS Profile — Week 3</title>
+  <style>
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      background-color: #f0fdf4;
+      color: #1e293b;
+    }
+
+    
+    .container { max-width: 700px; margin: 40px auto; padding: 0 20px; }
+
+    
+    .card {
+      background-color: #ffffff;
+      border: 1px solid #bbf7d0;
+      border-radius: 16px;
+      padding: 40px;
+    }
+
+    
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #15803d;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    h1 { font-size: 1.75rem; color: #15803d; }
+    .role { color: #64748b; font-size: 0.9rem; }
+
+    
+    .skills { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .skill-badge {
+      background-color: #dcfce7;
+      color: #15803d;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+  </style>
+  <link rel="stylesheet" href="../../css/shared.css">
+</head>
+<body>
+	<button class="back-button" type="button" onclick="history.back()">Back</button>
+  <div class="container">
+    <div class="card">
+      <div class="profile-header">
+        <div class="avatar">😊</div>
+        <div>
+          <h1>Yang Kaijing Charmine</h1>
+          <p class="role">Web Programming Student · Gachon University</p>
+        </div>
+      </div>
+      <p>Hello! I am learning HTML and CSS in Week 3. Today I styled this
+         profile card using everything in the CSS Introduction guide.</p>
+      <div class="skills">
+        <span class="skill-badge">HTML5</span>
+        <span class="skill-badge">CSS3</span>
+        <span class="skill-badge">Flexbox</span>
+        <span class="skill-badge">Box Model</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

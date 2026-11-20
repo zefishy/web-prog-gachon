@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 7 base format by Ryan Wong: the skeleton every Fetch exercise starts from — an async function, a checked response, parsed JSON, and four TODO steps where the rendering goes.">
+  <title>Base format: Random joke fetcher &mdash; Week 7</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week7.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 7_1 &middot; Base format</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Base format: random joke fetcher</h1>
+        <p class="lead">Every exercise in this week is the same six lines in a different costume. This page is that skeleton, left deliberately unfinished: the request works and logs the data, and the four TODO steps are where your own rendering goes.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="base-btn">Fetch a joke</button>
+      </div>
+
+      <p class="status" id="base-status" role="status">Press the button — the data lands in the console, not on the page yet.</p>
+
+      <article class="api-panel" id="base-panel" hidden>
+        <p class="api-kicker">Your job: fill the two lines below</p>
+        <p class="api-quote" id="base-setup">&nbsp;</p>
+        <p class="api-title" id="base-punchline">&nbsp;</p>
+      </article>
+
+      <h2>What is already done</h2>
+      <ol>
+        <li>The button is wired to an <code>async</code> function.</li>
+        <li><code>fetch()</code> sends the request and <code>response.ok</code> is checked before anything is parsed.</li>
+        <li><code>await response.json()</code> turns the body into an object.</li>
+        <li>Errors are caught and written to the status line, so a dead API does not fail silently.</li>
+      </ol>
+
+      <h2>The four TODO steps</h2>
+      <pre><code>// 1. Read the two fields you need from the object
+const joke = data;
+
+// 2. Write the setup into #base-setup
+//    document.getElementById('base-setup').textContent = ???
+
+// 3. Write the punchline into #base-punchline
+//    document.getElementById('base-punchline').textContent = ???
+
+// 4. Un-hide the panel so the text becomes visible
+//    document.getElementById('base-panel').hidden = false;</code></pre>
+
+      <p class="hint">Open the console before pressing the button: <code>console.log(data)</code> prints the whole object, and the field names you need are inside it. That habit removes most of the guessing from any API exercise.</p>
+
+      <noscript>
+        <p class="noscript">This demo needs JavaScript &mdash; the request runs in the browser.</p>
+      </noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 7 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript.</p>
+      <ul>
+        <li><a href="../../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script>
+    // ---------------------------------------------------------------------
+    // The parts that are already done. Read them top to bottom before you
+    // start; the TODO block at the end is the whole exercise.
+    // ---------------------------------------------------------------------
+    const btn = document.getElementById('base-btn');
+    const status = document.getElementById('base-status');
+    const panel = document.getElementById('base-panel');
+
+    async function fetchJoke() {
+      status.textContent = 'Fetching…';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch('https://official-joke-api.appspot.com/random_joke');
+
+        // A fetch only rejects on a network failure — a 404 or a 500 still
+        // arrives as a normal response, so this check is not optional.
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+
+        const data = await response.json();
+        console.log('data:', data);
+
+        // -----------------------------------------------------------------
+        // TODO 1: pull setup and punchline out of `data`
+        // TODO 2: put the setup into #base-setup
+        // TODO 3: put the punchline into #base-punchline
+        // TODO 4: un-hide #base-panel
+        // -----------------------------------------------------------------
+
+        status.textContent = 'Fetched — now write it to the page (see the TODOs).';
+      } catch (error) {
+        status.textContent = 'Request failed: ' + error.message;
+        status.classList.add('error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    btn.addEventListener('click', fetchJoke);
+  </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 7 exercise 5 by Ryan Wong: a Pokémon lookup on PokéAPI — fetching a named resource, reading its sprite, types and base stats, and handling a 404 for a name that does not exist.">
+  <title>Exercise 5: Pok&eacute;mon lookup &mdash; Week 7</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week7.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 7_1 &middot; Exercise 5</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Pok&eacute;mon lookup</h1>
+        <p class="lead">Pok&eacute;API is the first endpoint here where the URL carries a <em>variable</em>: <code>/pokemon/pikachu</code>. Type a name and the same code path serves any creature — including the 404 for one that does not exist.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <form class="search-form" id="pokemon-form">
+        <label class="visually-hidden" for="pokemon-name">Pok&eacute;mon name</label>
+        <input class="search-input" type="text" id="pokemon-name" value="pikachu" placeholder="pikachu, eevee, snorlax…">
+        <button type="submit" class="btn btn-primary">Look up</button>
+      </form>
+
+      <p class="status" id="pokemon-status" role="status">Try a name, then press Look up.</p>
+
+      <article class="api-panel" id="pokemon-panel" aria-live="polite" hidden>
+        <img class="sprite" id="pokemon-sprite" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" width="128" height="128">
+        <h2 class="api-title" id="pokemon-title"></h2>
+        <dl class="api-rows">
+          <dt>Types</dt><dd id="pokemon-types"></dd>
+          <dt>Height</dt><dd id="pokemon-height"></dd>
+          <dt>Weight</dt><dd id="pokemon-weight"></dd>
+          <dt>Base experience</dt><dd id="pokemon-xp"></dd>
+        </dl>
+      </article>
+
+      <p class="hint">Every resource in the response has a <code>name</code> and a <code>url</code>; the types arrive as an array, so the page joins them rather than assuming there is only one.</p>
+
+      <noscript>
+        <p class="noscript">This demo needs JavaScript &mdash; the request and the rendering both run in the browser.</p>
+      </noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 7 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and JavaScript.</p>
+      <ul>
+        <li><a href="../../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script>
+    const form = document.getElementById('pokemon-form');
+    const status = document.getElementById('pokemon-status');
+    const panel = document.getElementById('pokemon-panel');
+
+    async function lookUp(rawName) {
+      const name = rawName.trim().toLowerCase();
+      if (!name) {
+        status.textContent = 'Type a Pokémon name first.';
+        return;
+      }
+
+      status.textContent = 'Looking up ' + name + '…';
+      panel.hidden = true;
+
+      try {
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon/' + encodeURIComponent(name));
+        if (response.status === 404) throw new Error('no Pokémon called "' + name + '"');
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+
+        const pokemon = await response.json();
+        const sprite = document.getElementById('pokemon-sprite');
+        sprite.src = pokemon.sprites.front_default || '';
+        sprite.alt = 'Sprite of ' + pokemon.name;
+
+        document.getElementById('pokemon-title').textContent =
+          pokemon.name[0].toUpperCase() + pokemon.name.slice(1) + ' #' + pokemon.id;
+        document.getElementById('pokemon-types').textContent =
+          pokemon.types.map(t => t.type.name).join(', ');
+        document.getElementById('pokemon-height').textContent = pokemon.height / 10 + ' m';
+        document.getElementById('pokemon-weight').textContent = pokemon.weight / 10 + ' kg';
+        document.getElementById('pokemon-xp').textContent = pokemon.base_experience;
+
+        panel.hidden = false;
+        status.textContent = 'Loaded.';
+      } catch (error) {
+        status.textContent = 'Could not load it: ' + error.message;
+        status.classList.add('error');
+      }
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      lookUp(document.getElementById('pokemon-name').value);
+    });
+  </script>
+</body>
+</html>

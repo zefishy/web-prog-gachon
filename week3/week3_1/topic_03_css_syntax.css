@@ -1,0 +1,23 @@
+/* Basic CSS rule anatomy:
+   selector {
+     property: value;       (one declaration)
+     property: value;       (another declaration)
+   }
+*/
+
+/* Real examples */
+h1 {
+  color: #15803d;        /* text colour */
+  font-size: 2rem;       /* size */
+  font-weight: bold;     /* weight */
+  text-align: center;    /* alignment */
+}
+
+p {
+  line-height: 1.7;      /* space between lines */
+  max-width: 65ch;       /* column width */
+}
+
+/* Common mistakes */
+/* h1 { color = red }    ← = instead of : → WRONG */
+/* h1 { color: red }     ← missing semicolon → risky */

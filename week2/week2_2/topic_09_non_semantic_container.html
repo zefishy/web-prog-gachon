@@ -1,58 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
-  <meta name="author" content="Ryan Wong">
-  <meta name="description" content="Week 2_2 topic 9: div is the element of last resort — a container with no meaning, used only for layout or scripting.">
-  <title>Non-semantic container &mdash; Week 2</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="../../css/shared.css">
-  <script src="../../js/main.js"></script>
-</head>
+<link rel="stylesheet" href="../../css/shared.css">
+<button class="back-button" type="button" onclick="history.back()">Back</button>
 
-<body id="top">
-  <a class="skip" href="#main">Skip to content</a>
+<div class="page-wrapper">
+  <div class="header">
+    <div class="nav">...</div>
+  </div>
+  <div class="content">
+    <div class="article">...</div>
+    <div class="sidebar">...</div>
+  </div>
+  <div class="footer">...</div>
+</div>
 
-  <header class="site-header">
-    <div class="container">
-      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
-      <div class="header-end">
-        <span class="here">Week 2_2 &middot; Topic 9</span>
-        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
-          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
+<div class="page-wrapper">    
+  <header>
+    <nav>...</nav>
   </header>
-
-  <main id="main">
-    <div class="container prose">
-      <h1>Non-semantic container</h1>
-      <p class="lead">Last resort, not first choice.</p>
-      <p>Nothing is wrong with <code>div</code>; it is simply uninformative. Reach for it when no semantic element describes the grouping, not because it is the shortest thing to type.</p>
-      <div style="border:1px dashed currentColor;padding:1rem;border-radius:.5rem">
-        A div wrapping content purely to apply a border.
-      </div>
-      <h2>The markup</h2>
-      <pre><code>&lt;div class="grid"&gt;
-  &lt;div class="col"&gt;Layout only&lt;/div&gt;
-  &lt;div class="col"&gt;Layout only&lt;/div&gt;
-&lt;/div&gt;</code></pre>
-    </div>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p>Web Programming Library &mdash; Ryan Wong, Gachon University.</p>
-    </div>
-  </footer>
-</body>
-</html>
+  <div class="content-grid"> 
+    <main>
+      <article>...</article>
+    </main>
+    <aside>...</aside>
+  </div>
+  <footer>...</footer>
+</div>

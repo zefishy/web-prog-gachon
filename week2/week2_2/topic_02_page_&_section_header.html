@@ -2,64 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
-  <meta name="author" content="Ryan Wong">
-  <meta name="description" content="Week 2_2 topic 2: header introduces a page or a section and usually holds its heading and supporting text.">
-  <title>Page &amp; section header &mdash; Week 2</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <title>Blog — Gachon Web Students</title>
   <link rel="stylesheet" href="../../css/shared.css">
-  <script src="../../js/main.js"></script>
 </head>
+<body>
+	<button class="back-button" type="button" onclick="history.back()">Back</button>
 
-<body id="top">
-  <a class="skip" href="#main">Skip to content</a>
-
-  <header class="site-header">
-    <div class="container">
-      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
-      <div class="header-end">
-        <span class="here">Week 2_2 &middot; Topic 2</span>
-        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
-          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
+  
+  <header>
+    <h1>Gachon Web Blog</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </nav>
   </header>
 
-  <main id="main">
-    <div class="container prose">
-      <h1>Page &amp; section header</h1>
-      <p class="lead">Not only the top of the page.</p>
-      <p>A <code>header</code> can introduce the whole document or a single <code>article</code> or <code>section</code>. Inside an article it is that article's masthead, not the site's.</p>
-      <article>
-        <header>
-          <h2>An article with its own header</h2>
-          <p>Published 12 March 2026</p>
-        </header>
-        <p>Body text of the article.</p>
-      </article>
-      <h2>The markup</h2>
-      <pre><code>&lt;article&gt;
-  &lt;header&gt;
-    &lt;h2&gt;Article title&lt;/h2&gt;
-    &lt;p&gt;Published 12 March 2026&lt;/p&gt;
-  &lt;/header&gt;
-  &lt;p&gt;Body text.&lt;/p&gt;
-&lt;/article&gt;</code></pre>
-    </div>
+  <main>
+    <article>
+      
+      <header>
+        <h2>My First HTML Page</h2>
+        <p>Posted by Yang Kaijing Charmine · <time datetime="2026-09-11">Sep 11, 2026</time></p>
+      </header>
+      <p>Today I built my first webpage...</p>
+    </article>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <p>Web Programming Library &mdash; Ryan Wong, Gachon University.</p>
-    </div>
-  </footer>
 </body>
 </html>

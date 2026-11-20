@@ -1,56 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
-  <meta name="author" content="Ryan Wong">
-  <meta name="description" content="Week 2_1 topic 21: id must be unique in the document and is the target for fragment links and getElementById.">
-  <title>The id attribute &mdash; Week 2</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="../../css/shared.css">
-  <script src="../../js/main.js"></script>
+<head><meta charset="UTF-8"><title>ID Example</title>  <link rel="stylesheet" href="../../css/shared.css">
 </head>
+<body>
+	<button class="back-button" type="button" onclick="history.back()">Back</button>
 
-<body id="top">
-  <a class="skip" href="#main">Skip to content</a>
+  
+  <nav>
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </nav>
 
-  <header class="site-header">
-    <div class="container">
-      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
-      <div class="header-end">
-        <span class="here">Week 2_1 &middot; Topic 21</span>
-        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
-          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
+  <section id="about">
+    <h2>About Me</h2>
+    <p>Web programming student at Gachon.</p>
+  </section>
 
-  <main id="main">
-    <div class="container prose">
-      <h1>The id attribute</h1>
-      <p class="lead">One unique name per document.</p>
-      <p>Ids do three jobs: fragment link targets, CSS and JavaScript hooks, and label associations. Duplicating one is invalid and makes all three unreliable.</p>
-      <h2 id="details">A section with an id</h2>
-      <p><a href="#details">Jump to that section</a></p>
-      <p class="fine">The URL fragment <code>#details</code> scrolls to the heading above.</p>
-      <h2>The markup</h2>
-      <pre><code>&lt;h2 id="details"&gt;Details&lt;/h2&gt;
-&lt;a href="#details"&gt;Jump to details&lt;/a&gt;</code></pre>
-    </div>
-  </main>
+  <section id="skills">
+    <h2>Skills</h2>
+  </section>
 
-  <footer class="site-footer">
-    <div class="container">
-      <p>Web Programming Library &mdash; Ryan Wong, Gachon University.</p>
-    </div>
-  </footer>
+  <section id="contact">
+    <h2>Contact</h2>
+  </section>
+
 </body>
 </html>

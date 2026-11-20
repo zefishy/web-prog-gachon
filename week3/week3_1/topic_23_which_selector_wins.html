@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    
+
+    p           { color: gray; }    
+    .highlight  { color: blue; }    
+    p.highlight { color: purple; }  
+    #note       { color: green; }   
+
+    
+    div p       { font-style: italic; }   
+    div .highlight { font-weight: bold; } 
+  </style>
+  <link rel="stylesheet" href="../../css/shared.css">
+</head>
+<body>
+	<button class="back-button" type="button" onclick="history.back()">Back</button>
+  
+  <p>Plain paragraph — gray</p>
+
+  
+  <p class="highlight">P with class — purple (p.highlight wins)</p>
+
+  
+  <p class="highlight" id="note">P with class AND id — green (#note wins)</p>
+</body>
+</html>

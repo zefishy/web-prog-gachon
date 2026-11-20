@@ -1,0 +1,17 @@
+/* Specificity examples — higher number wins */
+
+p              { color: gray; }       /* (0,0,0,1) type = 1 */
+.intro         { color: blue; }       /* (0,0,1,0) class = 10 */
+#main          { color: green; }      /* (0,1,0,0) ID = 100 */
+p.intro        { color: purple; }     /* (0,0,1,1) = 11 */
+#main p        { color: orange; }     /* (0,1,0,1) = 101 */
+
+/* Example: which colour does this element get?
+   <p class="intro" id="main"> ... </p>
+
+   Rules that match:  p (1), .intro (10), p.intro (11),
+                      #main (100), #main p (101)
+   Winner: #main p with score 101 → orange  */
+
+/* Bad practice — avoid! */
+p { color: red !important; }   /* overrides EVERYTHING — hard to debug */

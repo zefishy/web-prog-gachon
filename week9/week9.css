@@ -321,3 +321,119 @@ details.what-changed > div {
 @media (prefers-reduced-motion: reduce) {
   .stat { transition: none; }
 }
+
+/* ---------- Exercise demos ----------
+   The week-9_1 exercises are single-column demonstrations, not reports: they
+   opt out of the two-column report layout, keep a readable measure, and
+   bring their own form and figure parts. Moved here from week7.css when the
+   accessibility exercises were re-filed under their week-9 names. */
+.layout.exercise {
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 1.5rem;
+}
+
+.layout.exercise > * { max-width: 34rem; }
+
+.actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+/* Keyboard hint: Tab / Enter / Space rendered as key caps */
+kbd {
+  padding: .15rem .5rem;
+  font-family: var(--mono);
+  font-size: .875em;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+}
+
+/* The round icon-only close button, with its accessible name */
+.close-btn {
+  width: 2.5rem; height: 2.5rem; padding: 0;
+  border: none; border-radius: 50%;
+  font: inherit; font-size: 1.125rem; line-height: 1;
+  color: var(--on-danger);
+  background: var(--danger);
+  cursor: pointer;
+}
+
+.close-btn:hover { background: color-mix(in srgb, var(--danger) 86%, var(--ink)); }
+
+/* Each sample image sits on a card, caption underneath */
+.figure-card {
+  margin: 0;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+.figure-card img {
+  display: block;
+  width: 100%; height: auto;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+
+.figure-card .inline-img { width: 7.5rem; }
+
+.figure-card figcaption {
+  margin-top: .6rem;
+  font-size: .875rem;
+  color: var(--muted);
+}
+
+/* The sign-up demo form (before and after) */
+.field-group { display: flex; flex-direction: column; gap: .4rem; }
+.field-group label { font-weight: 700; }
+
+.field-group input {
+  width: 100%;
+  min-height: 2.875rem;
+  padding: .6rem .8rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 2px solid var(--rule);
+  border-radius: 8px;
+  transition: border-color .2s;
+}
+
+.field-group input::placeholder { color: var(--muted); opacity: .85; }
+.field-group input:focus { border-color: var(--wk); }
+
+/* Validation message. On the fixed page it also carries a text marker and
+   role="alert"; on the "before" page the colour alone is the deliberate flaw. */
+.error { color: var(--danger); font-weight: 600; }
+
+.icon-btn {
+  width: 2.5rem; height: 2.5rem; padding: 0;
+  border: none; border-radius: 50%;
+  font-size: 1.125rem; line-height: 1;
+  color: var(--on-wk);
+  background: var(--wk);
+  cursor: pointer;
+}
+
+.icon-btn:hover { background: color-mix(in srgb, var(--wk) 86%, var(--ink)); }
+
+.btn-block { width: 100%; }
+
+.logo-link img {
+  display: block;
+  width: 5rem; height: 2.5rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+/* The status line these demos report through */
+.status { color: var(--muted); min-height: 1.4em; }
+.status.error { color: var(--danger); font-weight: 600; }
+.status.good { color: var(--accent); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  .field-group input { transition: none; }
+}

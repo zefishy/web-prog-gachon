@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .box {
+      width: 120px; height: 60px;
+      background: #0f766e; color: white;
+      padding: 8px; margin: 6px; font-size: 14px;
+    }
+
+    
+    .static { position: static; }
+
+    
+    .relative {
+      position: relative;
+      top:  20px;   
+      left: 30px;   
+      background: #14b8a6;
+    }
+  </style>
+  <link rel="stylesheet" href="../../css/shared.css">
+</head>
+<body>
+	<button class="back-button" type="button" onclick="history.back()">Back</button>
+  <div class="box static">static (default)</div>
+  <div class="box relative">relative — shifted ↓20px →30px</div>
+  <div class="box static">Next element — unaffected by relative shift above</div>
+</body>
+</html>

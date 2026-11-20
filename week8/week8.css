@@ -1,9 +1,12 @@
-/* ---------- week8.css (Week 8: JavaScript validation) ----------
-   The Week 8 layer on top of css/shared.css, shared by the seven pages in
-   week8_1 (exercises E1-E3 and the homework) and week8_2 (challenges
-   C1-C3): the narrow demo column, the form controls, the live validation
-   colouring, and the status messages. Tokens, the theme cross-fade, the
-   header frame, buttons, and the footer all come from shared.css.
+/* ---------- week8.css (Week 8: forms and validation) ----------
+   The Week 8 layer on top of css/shared.css, shared by both sessions:
+   week8_1 (topics 1-6, exercises 1-2, the registration homework and its
+   extra JavaScript version) and week8_2 (topic 7, exercise 3, the contact
+   homework). Holds the narrow demo column, the form controls, both kinds
+   of validation colouring — the class-driven one the scripts toggle and
+   the pure-CSS :valid/:invalid one — and the status panels. Tokens, the
+   theme cross-fade, the header frame, buttons, and the footer all come
+   from shared.css.
 
    One token override: this week takes its own green from the homepage
    shelf ramp, a step deeper than Week 7, with white ink on top for
@@ -26,6 +29,11 @@
 }
 
 .layout > * { max-width: 34rem; }
+
+/* Bulleted hints inside the demo column (the prose layer only covers
+   .container.prose, and these pages use .layout instead) */
+.layout ul, .layout ol { margin: 0; padding-left: 1.35rem; list-style: revert; }
+.layout li + li { margin-top: .35rem; }
 
 /* ---------- Form ---------- */
 form { display: grid; gap: 1.25rem; }
@@ -51,7 +59,7 @@ fieldset .field-group + .field-group { margin-top: 1.25rem; }
 
 label { font-weight: 700; }
 
-input[type="text"], input[type="email"], input[type="password"], input[type="date"], select {
+input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="tel"], textarea, select {
   width: 100%;
   min-height: 2.875rem;
   padding: .6rem .8rem;
@@ -65,8 +73,37 @@ input[type="text"], input[type="email"], input[type="password"], input[type="dat
 
 input::placeholder { color: var(--muted); opacity: .85; }
 
+textarea {
+  resize: vertical;
+  line-height: 1.55;
+}
+
 /* The shared :focus-visible outline stays; the border picks up the week green */
-input:focus, select:focus { border-color: var(--wk); }
+input:focus, textarea:focus, select:focus { border-color: var(--wk); }
+
+/* ---------- Exercise 3: the same feedback with no JavaScript ----------
+   :valid / :invalid read the browser's own verdict; :not(:placeholder-shown)
+   keeps an untouched required field neutral instead of red on load. */
+.states-demo input:valid:not(:placeholder-shown) {
+  border-color: #16a34a;
+  background: #dcfce7;
+}
+
+.states-demo input:invalid:not(:placeholder-shown) {
+  border-color: #dc2626;
+  background: #fee2e2;
+}
+
+/* The dark theme needs the pastel fills pulled back so light ink stays
+   readable; the classic hex values are kept in light mode because the
+   exercise quotes them in its code block. */
+:root:not([data-theme="light"]) .states-demo input:valid:not(:placeholder-shown) {
+  background: color-mix(in srgb, #16a34a 14%, var(--surface));
+}
+
+:root:not([data-theme="light"]) .states-demo input:invalid:not(:placeholder-shown) {
+  background: color-mix(in srgb, #dc2626 14%, var(--surface));
+}
 
 /* ---------- Live validation colours ----------
    A field only colours in once it holds a value or fails a check, so
@@ -140,5 +177,21 @@ output {
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-  input, select { transition: none; }
+  input, textarea, select { transition: none; }
 }
+
+/* ---------- Homework 2: the contact form's thank-you panel ---------- */
+.thanks {
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-left-width: .5rem;
+  border-radius: 8px;
+}
+
+.thanks h2 { font-size: 1.5rem; }
+.thanks p { margin-top: .5rem; }
+.thanks .btn { margin-top: 1.25rem; }
+.thanks h2:focus-visible { outline: 2px solid var(--accent); outline-offset: .35rem; }
+
+[hidden] { display: none !important; }

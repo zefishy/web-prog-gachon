@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Placeholder avatar with the initials RW">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2A835F"/>
+      <stop offset="1" stop-color="#12544F"/>
+    </linearGradient>
+  </defs>
+  <circle cx="80" cy="80" r="80" fill="url(#g)"/>
+  <circle cx="80" cy="80" r="76" fill="none" stroke="#8BBB92" stroke-opacity=".55" stroke-width="2"/>
+  <text x="80" y="82" text-anchor="middle" dominant-baseline="central" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="56" font-weight="700" letter-spacing="2" fill="#FFFFFF">RW</text>
+</svg>

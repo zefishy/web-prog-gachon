@@ -1,59 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
-  <meta name="author" content="Ryan Wong">
-  <meta name="description" content="Week 2_2 topic 16: blockquote marks a quotation set apart from the surrounding text, with the source in a cite element.">
-  <title>Block quotation &mdash; Week 2</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="../../css/shared.css">
-  <script src="../../js/main.js"></script>
-</head>
+<link rel="stylesheet" href="../../css/shared.css">
+<button class="back-button" type="button" onclick="history.back()">Back</button>
+<article>
+  <h2>On the Web</h2>
+  <p>The inventor of the web described his vision clearly:</p>
 
-<body id="top">
-  <a class="skip" href="#main">Skip to content</a>
+  
+  <blockquote cite="https://www.w3.org/People/Berners-Lee/FAQ.html">
+    <p>The original idea of the web was that it should be a
+       collaborative space where you can communicate through sharing
+       information.</p>
+    <footer>
+      — <cite>Tim Berners-Lee</cite>, W3C Director
+    </footer>
+  </blockquote>
 
-  <header class="site-header">
-    <div class="container">
-      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
-      <div class="header-end">
-        <span class="here">Week 2_2 &middot; Topic 16</span>
-        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
-          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main id="main">
-    <div class="container prose">
-      <h1>Block quotation</h1>
-      <p class="lead">A quotation that stands on its own.</p>
-      <p>The quotation goes inside <code>blockquote</code>. The attribution goes outside it, in a <code>cite</code> &mdash; putting the source inside the quote misattributes it.</p>
-      <blockquote>
-        <p>The web is more a social creation than a technical one.</p>
-      </blockquote>
-      <p class="fine">&mdash; <cite>Tim Berners-Lee, Weaving the Web</cite></p>
-      <h2>The markup</h2>
-      <pre><code>&lt;blockquote&gt;
-  &lt;p&gt;The web is more a social creation than a technical one.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;cite&gt;Tim Berners-Lee&lt;/cite&gt;&lt;/p&gt;</code></pre>
-    </div>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p>Web Programming Library &mdash; Ryan Wong, Gachon University.</p>
-    </div>
-  </footer>
-</body>
-</html>
+  <p>Today, his vision has expanded beyond what even he imagined.</p>
+</article>
