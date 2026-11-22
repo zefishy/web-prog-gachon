@@ -250,6 +250,27 @@ code { font-family: var(--mono); font-size: .875em; }
 .btn-secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
 .btn-secondary:hover { background: color-mix(in srgb, var(--ink) 10%, var(--surface)); }
 
+/* Back button on the lecturer's topic pages (<button class="back-button"
+   onclick="history.back()">Back</button>). Sits in the flow at the top-left
+   so it never covers the fragment's own content. It shows only a left arrow:
+   the "Back" text stays in the HTML as the accessible name and is hidden
+   visually with font-size: 0, and the arrow is generated content with an
+   empty alt so screen readers do not announce it. */
+.back-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.5rem; height: 2.5rem; margin: 1rem; padding: 0;
+  border: 2px solid var(--ink); border-radius: 8px;
+  background: transparent; color: var(--ink);
+  font: inherit; font-size: 0; font-weight: 700;
+  cursor: pointer;
+}
+.back-button::before {
+  content: "\2190";
+  content: "\2190" / "";
+  font-size: 1.25rem; line-height: 1;
+}
+.back-button:hover { background: color-mix(in srgb, var(--ink) 10%, var(--surface)); }
+
 /* ---------- Long-form content ----------
    Topic pages are prose rather than a hero + grid, so they need the vertical
    rhythm the base reset removes. Scoped to .prose so no existing page moves. */
