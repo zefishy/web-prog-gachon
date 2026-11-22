@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 homework step 6 by Ryan Wong: the submission checklist &mdash; the brief's six parts, the repository to submit, the personal page and the lecturer's Week 12 resources.">
+  <title>Homework Step 6: Submission &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_1 &middot; Homework 6 of 6</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Step 6 &middot; Submission</h1>
+        <p class="lead">What goes in: the six steps as separate pages, one page to open first, and where to hand them in.</p>
+      </div>
+    </section>
+
+    <div class="container layout wide">
+      <div id="root"></div>
+
+      <h2>Submit by the next class</h2>
+      <p>The brief asks for the GitHub repository URL on Cybercampus. The marker opens this library and starts from <a href="homework_05_shopping_cart_component.html">Step 5</a>, the finished cart.</p>
+      <ul class="checklist">
+        <li>Repository: <a href="https://github.com/zefishy/web-prog-gachon" target="_blank" rel="noopener noreferrer">github.com/zefishy/web-prog-gachon</a></li>
+        <li>Folder: <code>week12/week12_1/</code> &mdash; the six steps, and nothing else is needed to run them.</li>
+      </ul>
+
+      <h2>The brief, in six parts</h2>
+      <ul class="checklist">
+        <li><a href="homework_01_product_list.html">Product list</a> &mdash; at least five items, each with a name, a price and an image</li>
+        <li><a href="homework_02_add_remove_buttons.html">Add / remove buttons</a> &mdash; the state is an array of cart items</li>
+        <li><a href="homework_03_cart_sidebar.html">Cart sidebar</a> &mdash; the items and the total, computed from state</li>
+        <li><a href="homework_04_quantity_controls.html">Quantity controls</a> &mdash; a &minus; and a + per item</li>
+        <li><a href="homework_05_shopping_cart_component.html">ShoppingCart component</a> &mdash; the product list and the cart panel composed</li>
+        <li>Submission &mdash; this page, the checklist you are on</li>
+      </ul>
+
+      <h2>Personal page</h2>
+      <p>The brief also asks for some of these features on the personal page: <a href="https://ryanw-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer">ryanw-portfolio.vercel.app</a>. The rules are the same there &mdash; one component owns the data, arrays are copied rather than pushed into, and every total is derived at render time.</p>
+
+      <h2>Course resources</h2>
+      <ul class="checklist">
+        <li><a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Mon_VideoLecture.html" target="_blank" rel="noopener noreferrer">Video lecture &mdash; React State &amp; useState</a></li>
+        <li><a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Mon_StudyGuide.html" target="_blank" rel="noopener noreferrer">Study guide &mdash; the same material in writing</a></li>
+        <li><a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Mon_SprintQuiz.html" target="_blank" rel="noopener noreferrer">Sprint quiz &mdash; twelve questions</a></li>
+        <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSepjQvK2sTFffJ6Fubjuj5sJzPNvfbB7v7eguu8TKeB8Zo8OA/viewform" target="_blank" rel="noopener noreferrer">Weekly quiz form</a></li>
+      </ul>
+      <p class="hint">The study guide, video and quiz are the lecturer's own pages, linked from the Week 12 deck.</p>
+
+      <h2>Known limits</h2>
+      <ul class="checklist">
+        <li>State resets on reload &mdash; nothing is persisted; <code>useEffect</code> is the next session's topic.</li>
+        <li>The cart is client-side only; there is no checkout request.</li>
+        <li>Product images are inline SVG data URIs, so the page works offline &mdash; a build with real files would point at image URLs of the same 400 &times; 260 shape.</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 homework by Ryan Wong, exchange student at Gachon University. React 18 runs from a CDN with Babel Standalone, so the demo is a real component with no build step.</p>
+      <ul>
+        <li><a href="../../index.html">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState } = React;
+
+const STEPS = [
+  { n: 1, name: 'Product list', file: 'homework_01_product_list.html', concept: 'map over data' },
+  { n: 2, name: 'Add / remove', file: 'homework_02_add_remove_buttons.html', concept: 'spread and filter' },
+  { n: 3, name: 'Cart sidebar', file: 'homework_03_cart_sidebar.html', concept: 'derived totals' },
+  { n: 4, name: 'Quantity controls', file: 'homework_04_quantity_controls.html', concept: 'copy one item' },
+  { n: 5, name: 'ShoppingCart', file: 'homework_05_shopping_cart_component.html', concept: 'composition' },
+  { n: 6, name: 'Submission', file: 'homework_06_submission.html', concept: 'this checklist' },
+];
+
+function App() {
+  const [reviewed, setReviewed] = useState([]);
+  const toggle = (n) => setReviewed((current) =>
+    current.includes(n) ? current.filter((x) => x !== n) : [...current, n]
+  );
+  const done = reviewed.length;
+
+  return (
+    <section className="demo" style={{ width: '100%' }}>
+      <h2>Submission checklist ({done} / {STEPS.length})</h2>
+      <ul className="cart-list" style={{ width: '100%' }}>
+        {STEPS.map((step) => (
+          <li key={step.n} className="cart-item">
+            <label style={{ display: 'flex', gap: '.75rem', alignItems: 'center' }}>
+              <input
+                type="checkbox"
+                checked={reviewed.includes(step.n)}
+                onChange={() => toggle(step.n)}
+                aria-label={'Mark step ' + step.n + ' reviewed'}
+              />
+              <span>
+                <span className="name">{step.n}. {step.name}</span><br />
+                <span className="price">{step.concept}</span>
+              </span>
+            </label>
+            <a href={step.file}>Open</a>
+          </li>
+        ))}
+      </ul>
+      <p className={done === STEPS.length ? 'cart-total' : 'hint'}>
+        {done === STEPS.length
+          ? 'All six reviewed — ready to submit.'
+          : done + ' of ' + STEPS.length + ' reviewed so far.'}
+      </p>
+    </section>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

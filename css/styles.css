@@ -31,6 +31,7 @@
   --wk9: #9CC5A2;  --on-wk9: #092328;
   --wk10: #ABD4B2;  --on-wk10: #092328;
   --wk11: #BFDDC4;  --on-wk11: #092328;
+  --wk12: #D2E9D6;  --on-wk12: #092328;
 
   /* The shelf ramp itself, one token per spine position from left to right
      (11 steps). The shelf spines and the numbered section badges share this
@@ -45,7 +46,8 @@
   --spine-8:  #8BBB92;  --on-spine-8:  #092328; /* Week 9:  7.50:1 */
   --spine-9:  #9CC5A2;  --on-spine-9:  #092328; /* Week 10: 8.51:1 */
   --spine-10: #ABD4B2;  --on-spine-10: #092328; /* Week 11: 9.97:1 */
-  --spine-11: #C6E3CB;  --on-spine-11: #092328; /* Project: 11.89:1 */
+  --spine-11: #C6E3CB;  --on-spine-11: #092328; /* Week 12: 11.89:1 */
+  --spine-12: #D2E9D6;  --on-spine-12: #092328; /* Project: 13.30:1 */
 }
 
 .wk2 { --wk: var(--wk2); --on-wk: var(--on-wk2); }
@@ -58,6 +60,7 @@
 .wk9 { --wk: var(--wk9); --on-wk: var(--on-wk9); }
 .wk10 { --wk: var(--wk10); --on-wk: var(--on-wk10); }
 .wk11 { --wk: var(--wk11); --on-wk: var(--on-wk11); }
+.wk12 { --wk: var(--wk12); --on-wk: var(--on-wk12); }
 
 /* ---------- Header content ----------
    The sticky frame comes from shared.css. The homepage packs its nav a
@@ -193,7 +196,8 @@ h4 { font-size: 1rem; margin: 1.5rem 0 .75rem; }
 .wk9  .num { --spine: var(--spine-8);  --on-spine: var(--on-spine-8); }
 .wk10 .num { --spine: var(--spine-9);  --on-spine: var(--on-spine-9); }
 .wk11 .num { --spine: var(--spine-10); --on-spine: var(--on-spine-10); }
-#project .num { --spine: var(--spine-11); --on-spine: var(--on-spine-11); }
+.wk12 .num { --spine: var(--spine-11); --on-spine: var(--on-spine-11); }
+#project .num { --spine: var(--spine-12); --on-spine: var(--on-spine-12); }
 .label { line-height: 1.3; }
 .note { display: block; font-size: .8125rem; line-height: 1.3; color: var(--muted); }
 
