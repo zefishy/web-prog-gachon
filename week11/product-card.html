@@ -84,11 +84,22 @@
           <p>
             Three instances of the same component below, from the same array of
             plain objects. Only the props differ &mdash; there is no per-product
-            markup anywhere. The third product has
+            markup anywhere. The photo is a prop too: <code>image</code> and
+            <code>imageAlt</code> ride along with the other four. The third
+            product has
             <code>inStock: false</code>, which is what turns its badge into
             &ldquo;Out of Stock&rdquo;.
           </p>
           <div id="product-card-demo" class="product-grid"></div>
+          <p class="photo-credit">
+            Photos:
+            <a href="https://unsplash.com/photos/wireless-earbuds-and-their-charging-case-eFJwnb96exg" rel="noopener">Andrey Matveev</a>
+            and
+            <a href="https://unsplash.com/photos/closeup-photography-of-mechanical-computer-keyboard-HIbAmybJHVs" rel="noopener">blurrystock</a>
+            on Unsplash,
+            <a href="https://www.pexels.com/photo/usb-hub-type-c-dock-adapter-4195406/" rel="noopener">Kaboompics</a>
+            on Pexels.
+          </p>
           <noscript>
             <p class="no-js">
               These cards are rendered by React, so they need JavaScript. The
@@ -136,6 +147,11 @@
                   <td>boolean</td>
                   <td><code>In Stock</code>, or <code>Out of Stock</code> when false.</td>
                 </tr>
+                <tr>
+                  <td>image, imageAlt</td>
+                  <td>string, optional</td>
+                  <td>The product photo and its alt text. Left out, the card renders without one.</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -162,9 +178,13 @@
   );
 }
 
-function ProductCard({ name, price, rating, inStock }) {
+function ProductCard({ name, price, rating, inStock, image, imageAlt }) {
   return (
     &lt;article className="product-card"&gt;
+      {image ? (
+        &lt;img className="product-card__img" src={image} alt={imageAlt}
+          width="800" height="520" loading="lazy" /&gt;
+      ) : null}
       &lt;h3 className="product-card__name"&gt;{name}&lt;/h3&gt;
       &lt;p className="product-card__price"&gt;
         {price.toLocaleString('ko-KR')} KRW
@@ -181,9 +201,12 @@ function ProductCard({ name, price, rating, inStock }) {
 }
 
 const products = [
-  { name: 'Wireless Earbuds',    price: 89000,  rating: 4.5, inStock: true  },
-  { name: 'Mechanical Keyboard', price: 129000, rating: 4.8, inStock: true  },
-  { name: 'USB-C Hub',           price: 45000,  rating: 3.5, inStock: false },
+  { name: 'Wireless Earbuds',    price: 89000,  rating: 4.5, inStock: true,
+    image: 'img/earbuds.jpg',   imageAlt: 'Purple wireless earbuds in an open charging case' },
+  { name: 'Mechanical Keyboard', price: 129000, rating: 4.8, inStock: true,
+    image: 'img/keyboard.jpg',  imageAlt: 'Close-up of a black mechanical keyboard with orange backlit keys' },
+  { name: 'USB-C Hub',           price: 45000,  rating: 3.5, inStock: false,
+    image: 'img/usb-c-hub.jpg', imageAlt: 'Grey USB-C hub with HDMI, USB-C and USB-A ports plugged into a laptop' },
 ];
 
 ReactDOM.createRoot(document.getElementById('product-card-demo')).render(
@@ -250,7 +273,7 @@ ReactDOM.createRoot(document.getElementById('product-card-demo')).render(
           </div>
           <div>
             <dt>Props</dt>
-            <dd>4 &mdash; name, price, rating, inStock</dd>
+            <dd>4 required &mdash; name, price, rating, inStock &mdash; plus image, imageAlt</dd>
           </div>
           <div>
             <dt>Instances</dt>
@@ -306,9 +329,13 @@ ReactDOM.createRoot(document.getElementById('product-card-demo')).render(
         );
       }
 
-      function ProductCard({ name, price, rating, inStock }) {
+      function ProductCard({ name, price, rating, inStock, image, imageAlt }) {
         return (
           <article className="product-card">
+            {image ? (
+              <img className="product-card__img" src={image} alt={imageAlt}
+                width="800" height="520" loading="lazy" />
+            ) : null}
             <h3 className="product-card__name">{name}</h3>
             <p className="product-card__price">
               {price.toLocaleString('ko-KR')} KRW
@@ -325,9 +352,12 @@ ReactDOM.createRoot(document.getElementById('product-card-demo')).render(
       }
 
       const products = [
-        { name: 'Wireless Earbuds',    price: 89000,  rating: 4.5, inStock: true  },
-        { name: 'Mechanical Keyboard', price: 129000, rating: 4.8, inStock: true  },
-        { name: 'USB-C Hub',           price: 45000,  rating: 3.5, inStock: false },
+        { name: 'Wireless Earbuds',    price: 89000,  rating: 4.5, inStock: true,
+          image: 'img/earbuds.jpg',   imageAlt: 'Purple wireless earbuds in an open charging case' },
+        { name: 'Mechanical Keyboard', price: 129000, rating: 4.8, inStock: true,
+          image: 'img/keyboard.jpg',  imageAlt: 'Close-up of a black mechanical keyboard with orange backlit keys' },
+        { name: 'USB-C Hub',           price: 45000,  rating: 3.5, inStock: false,
+          image: 'img/usb-c-hub.jpg', imageAlt: 'Grey USB-C hub with HDMI, USB-C and USB-A ports plugged into a laptop' },
       ];
 
       ReactDOM.createRoot(document.getElementById('product-card-demo')).render(

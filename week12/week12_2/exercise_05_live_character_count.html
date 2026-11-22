@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 5 by Ryan Wong: the practice task from the Friday slides, a live character count on an input kept in sync with useEffect.">
+  <title>Exercise 5: Live character count &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 5</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Live character count</h1>
+        <p class="lead">The practice task from the end of the Friday slides: a live character count on an input, kept in sync with <code>useEffect</code>. It works, and it is also a good example of an effect the slides say you might not need.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Practice: add a live character count to any input using useEffect.</p>
+          <cite>Week 12 Friday slides &mdash; Next Session &amp; Resources, Practice</cite>
+        </blockquote>
+<div id="charcount-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">CharacterCount.jsx</p>
+<pre class="code"><code>const LIMIT = 140;
+
+function CharacterCount() {
+  const [text, setText]   = useState('');
+  const [count, setCount] = useState(0);
+
+  useEffect(() =&gt; {
+    setCount(text.length);
+  }, [text]);
+
+  const left = LIMIT - count;
+
+  return (
+    &lt;div&gt;
+      &lt;label htmlFor="cc-text"&gt;Your message&lt;/label&gt;
+      &lt;input id="cc-text" value={text} onChange={e =&gt; setText(e.target.value)}
+             placeholder="Type here…" style={{ width: '100%' }} /&gt;
+      &lt;p aria-live="polite"&gt;
+        &lt;span className="figure"&gt;{count}&lt;/span&gt; characters ·{' '}
+        &lt;span className={left &lt; 0 ? 'error' : 'muted'}&gt;{left} left of {LIMIT}&lt;/span&gt;
+      &lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="compare-title">
+        <h2 id="compare-title">The version without an effect</h2>
+        <p>The slides&rsquo; &ldquo;When NOT to use useEffect&rdquo; flowchart asks: can it be calculated from props or state? The count can, so the effect and the second piece of state could both go:</p>
+<div class="code-block">
+<p class="code-label">Derived instead</p>
+<pre class="code"><code>function CharacterCount() {
+  const [text, setText] = useState('');
+  const count = text.length;
+  // ...same JSX
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>The task asks for <code>useEffect</code>,</strong> so the page uses it: whenever <code>text</code> changes, the effect copies its length into <code>count</code>.</li>
+          <li><strong>The cost is one extra render per keystroke.</strong> React renders with the new text and the old count, runs the effect, then renders again with the new count.</li>
+          <li><strong>Deriving it is the better habit.</strong> Quiz 8 in the Friday slides makes the same point about <code>fullName</code>: compute it during render, with no state and no effect.</li>
+          <li>The remaining count turns red past 140 characters, the way a post box would warn you.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Effect</dt><dd>Sync count from text</dd></div>
+          <div><dt>Dependencies</dt><dd>[text]</dd></div>
+          <div><dt>Limit</dt><dd>140 characters</dd></div>
+          <div><dt>Source</dt><dd>Friday slides, practice</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="homework_weather_dashboard.html">Next: Homework, weather dashboard</a></p>
+          <p><a href="https://react.dev/learn/you-might-not-need-an-effect" rel="noopener">react.dev: You Might Not Need an Effect</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+const LIMIT = 140;
+
+function CharacterCount() {
+  const [text, setText]   = useState('');
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    setCount(text.length);
+  }, [text]);
+
+  const left = LIMIT - count;
+
+  return (
+    <div>
+      <label htmlFor="cc-text">Your message</label>
+      <input id="cc-text" value={text} onChange={e => setText(e.target.value)}
+             placeholder="Type here…" style={{ width: '100%' }} />
+      <p aria-live="polite">
+        <span className="figure">{count}</span> characters ·{' '}
+        <span className={left < 0 ? 'error' : 'muted'}>{left} left of {LIMIT}</span>
+      </p>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('charcount-demo')).render(<CharacterCount />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 4 by Ryan Wong: the in-class code challenge, a GitHub user search that fetches on Search, shows avatar, name, bio, followers and repos, handles loading and 404, and aborts the previous request.">
+  <title>Exercise 4: GitHub user lookup &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 4</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">GitHub user lookup</h1>
+        <p class="lead">The Friday code challenge. A search box that fetches a GitHub profile when Search is pressed, with a loading state, a 404 message, and the bonus: an <code>AbortController</code> that cancels the previous request.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Build a component that:</p>
+          <p>1. Has an <code>&lt;input&gt;</code> for a GitHub username. 2. On Search button click (or debounce 500ms), fetch from <code>https://api.github.com/users/{username}</code>. 3. Display: avatar, name, bio, followers, public_repos. 4. Show a loading indicator while fetching. 5. Show an error message when user is not found (404). 6. BONUS: abort the previous request when username changes.</p>
+          <p>Tip: search &ldquo;muxiddin19&rdquo; to test with the instructor&rsquo;s profile!</p>
+          <cite>Week 12 Friday slides &mdash; Code Challenge: GitHub User Lookup</cite>
+        </blockquote>
+<div id="lookup-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">GitHubUserLookup.jsx</p>
+<pre class="code"><code>function GitHubUserLookup() {
+  const [input, setInput]       = useState('');
+  const [username, setUsername] = useState('');
+  const [user, setUser]         = useState(null);
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState(null);
+
+  useEffect(() =&gt; {
+    if (!username) return;
+    const controller = new AbortController();
+    setLoading(true); setError(null); setUser(null);
+
+    fetch(`https://api.github.com/users/${encodeURIComponent(username)}`,
+          { signal: controller.signal })
+      .then(res =&gt; {
+        if (res.status === 404) throw new Error('User not found (404)');
+        if (!res.ok) throw new Error('Request failed: ' + res.status);
+        return res.json();
+      })
+      .then(data =&gt; { setUser(data); setLoading(false); })
+      .catch(err =&gt; {
+        if (err.name === 'AbortError') return;
+        setError(err.message); setLoading(false);
+      });
+
+    return () =&gt; controller.abort();
+  }, [username]);
+
+  function search(e) {
+    e.preventDefault();
+    setUsername(input.trim());
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;form onSubmit={search}&gt;
+        &lt;input value={input} placeholder="GitHub username" aria-label="GitHub username"
+               onChange={e =&gt; setInput(e.target.value)} /&gt;
+        &lt;button&gt;Search&lt;/button&gt;
+      &lt;/form&gt;
+
+      {loading &amp;&amp; &lt;p className="loading" role="status"&gt;Loading…&lt;/p&gt;}
+      {error &amp;&amp; &lt;p className="error" role="alert"&gt;{error}&lt;/p&gt;}
+      {user &amp;&amp; (
+        &lt;div className="profile"&gt;
+          &lt;img src={user.avatar_url} alt="" width="72" height="72" /&gt;
+          &lt;h3&gt;{user.name || user.login}&lt;/h3&gt;
+          &lt;p&gt;{user.bio || &lt;span className="muted"&gt;No bio.&lt;/span&gt;}&lt;/p&gt;
+          &lt;p&gt;{user.followers} followers · {user.public_repos} public repos&lt;/p&gt;
+          &lt;a href={user.html_url}&gt;{user.html_url}&lt;/a&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>Two strings, on purpose.</strong> <code>input</code> follows every keystroke; <code>username</code> only changes when Search is pressed. The effect depends on <code>username</code>, so typing alone never fetches.</li>
+          <li><strong>Loading, error and user</strong> are reset at the start of each search, so an old profile never sits under a new error.</li>
+          <li><strong>404 is checked by status</strong> to give the &ldquo;not found&rdquo; message the task asks for; anything else that is not OK gets a general error.</li>
+          <li><strong>Bonus: the cleanup aborts.</strong> A new search runs the previous effect&rsquo;s cleanup first, which calls <code>controller.abort()</code>; the cancelled request then throws an <code>AbortError</code>, which is ignored.</li>
+          <li>The input sits in a <code>&lt;form&gt;</code>, so Enter searches as well as the button. GitHub&rsquo;s API allows 60 unauthenticated requests an hour per IP.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>API</dt><dd>api.github.com/users</dd></div>
+          <div><dt>Fetch on</dt><dd>Search (username)</dd></div>
+          <div><dt>Errors</dt><dd>404 + other</dd></div>
+          <div><dt>Bonus</dt><dd>AbortController</dd></div>
+          <div><dt>Source</dt><dd>Friday slides, code challenge</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_05_live_character_count.html">Next: Live character count</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20Effects_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function GitHubUserLookup() {
+  const [input, setInput]       = useState('');
+  const [username, setUsername] = useState('');
+  const [user, setUser]         = useState(null);
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState(null);
+
+  useEffect(() => {
+    if (!username) return;
+    const controller = new AbortController();
+    setLoading(true); setError(null); setUser(null);
+
+    fetch(`https://api.github.com/users/${encodeURIComponent(username)}`,
+          { signal: controller.signal })
+      .then(res => {
+        if (res.status === 404) throw new Error('User not found (404)');
+        if (!res.ok) throw new Error('Request failed: ' + res.status);
+        return res.json();
+      })
+      .then(data => { setUser(data); setLoading(false); })
+      .catch(err => {
+        if (err.name === 'AbortError') return;
+        setError(err.message); setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [username]);
+
+  function search(e) {
+    e.preventDefault();
+    setUsername(input.trim());
+  }
+
+  return (
+    <div>
+      <form onSubmit={search}>
+        <input value={input} placeholder="GitHub username" aria-label="GitHub username"
+               onChange={e => setInput(e.target.value)} />
+        <button>Search</button>
+      </form>
+
+      {loading && <p className="loading" role="status">Loading…</p>}
+      {error && <p className="error" role="alert">{error}</p>}
+      {user && (
+        <div className="profile">
+          <img src={user.avatar_url} alt="" width="72" height="72" />
+          <h3>{user.name || user.login}</h3>
+          <p>{user.bio || <span className="muted">No bio.</span>}</p>
+          <p>{user.followers} followers · {user.public_repos} public repos</p>
+          <a href={user.html_url}>{user.html_url}</a>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('lookup-demo')).render(<GitHubUserLookup />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 Friday homework by Ryan Wong: a React weather dashboard on the free Open-Meteo API, searching by city name or coordinates, fetching in useEffect with loading and error states, and locating the user with navigator.geolocation.">
+  <title>Homework: Weather dashboard &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Homework</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Weather dashboard</h1>
+        <p class="lead">The Friday homework: a weather widget on the free Open-Meteo API. Pick a place by city name, by latitude and longitude, or with the browser&rsquo;s location, and an effect fetches the current temperature, wind and conditions.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The brief</h2>
+        <blockquote class="brief">
+          <p><strong>Open-Meteo API:</strong> free, no API key required.</p>
+          <p><strong>Input:</strong> latitude + longitude OR city name (geocoding endpoint).</p>
+          <p><strong>Display:</strong> current temperature, wind speed, weather description.</p>
+          <p><strong>useEffect fetch:</strong> on coordinate change; show a loading state; handle errors (network down, bad coords, rate limit).</p>
+          <p><strong>Bonus:</strong> auto-detect the user location with <code>navigator.geolocation</code>.</p>
+          <p><strong>Submit by Sunday:</strong> GitHub repo URL + live GitHub Pages URL. Also: SprintQuiz.html. Implementing react elements within personal page.</p>
+          <cite>Week 12 Friday slides &mdash; Homework: Weather Dashboard</cite>
+        </blockquote>
+<div id="weather-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">WeatherDashboard.jsx</p>
+<pre class="code"><code>const WEATHER_CODES = {
+  0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+  45: 'Fog', 48: 'Rime fog',
+  51: 'Light drizzle', 53: 'Drizzle', 55: 'Dense drizzle',
+  56: 'Freezing drizzle', 57: 'Dense freezing drizzle',
+  61: 'Light rain', 63: 'Rain', 65: 'Heavy rain',
+  66: 'Freezing rain', 67: 'Heavy freezing rain',
+  71: 'Light snow', 73: 'Snow', 75: 'Heavy snow', 77: 'Snow grains',
+  80: 'Light showers', 81: 'Showers', 82: 'Violent showers',
+  85: 'Snow showers', 86: 'Heavy snow showers',
+  95: 'Thunderstorm', 96: 'Thunderstorm with hail', 99: 'Thunderstorm with heavy hail',
+};
+
+function describe(code) {
+  return WEATHER_CODES[code] || 'Unknown (code ' + code + ')';
+}
+
+function errorMessage(err, status) {
+  if (status === 429) return 'Too many requests (rate limit). Wait a minute and try again.';
+  if (status === 400) return 'Those coordinates were rejected. Latitude must be -90 to 90, longitude -180 to 180.';
+  if (err instanceof TypeError) return 'Network error: check your connection.';
+  return err.message;
+}
+
+function WeatherDashboard() {
+  const [place, setPlace]     = useState({ name: 'Seoul', lat: 37.57, lon: 126.98 });
+  const [city, setCity]       = useState('');
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
+  const [locating, setLocating] = useState(false);
+
+  // Fetch the weather whenever the coordinates change
+  useEffect(() =&gt; {
+    const controller = new AbortController();
+    setLoading(true); setError(null);
+    let status = 0;
+
+    const url = 'https://api.open-meteo.com/v1/forecast'
+      + `?latitude=${place.lat}&amp;longitude=${place.lon}`
+      + '&amp;current=temperature_2m,wind_speed_10m,weather_code';
+
+    fetch(url, { signal: controller.signal })
+      .then(res =&gt; {
+        status = res.status;
+        if (!res.ok) throw new Error('Could not load weather (HTTP ' + res.status + ')');
+        return res.json();
+      })
+      .then(data =&gt; { setWeather(data.current); setLoading(false); })
+      .catch(err =&gt; {
+        if (err.name === 'AbortError') return;
+        setError(errorMessage(err, status)); setLoading(false);
+      });
+
+    return () =&gt; controller.abort();
+  }, [place.lat, place.lon]);
+
+  // City name -&gt; coordinates (Open-Meteo geocoding endpoint)
+  async function searchCity(e) {
+    e.preventDefault();
+    const name = city.trim();
+    if (!name) return;
+    setError(null);
+    try {
+      const res = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&amp;name='
+                              + encodeURIComponent(name));
+      if (!res.ok) throw new Error(errorMessage(new Error('Geocoding failed'), res.status));
+      const data = await res.json();
+      if (!data.results || data.results.length === 0) {
+        setError('No place called “' + name + '” was found.');
+        return;
+      }
+      const r = data.results[0];
+      setPlace({ name: r.name + (r.country ? ', ' + r.country : ''), lat: r.latitude, lon: r.longitude });
+    } catch (err) {
+      setError(err instanceof TypeError ? errorMessage(err, 0) : err.message);
+    }
+  }
+
+  // Latitude / longitude typed directly
+  function useCoordinates(e) {
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const lat = Number(form.get('lat'));
+    const lon = Number(form.get('lon'));
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) &gt; 90 || Math.abs(lon) &gt; 180) {
+      setError('Latitude must be -90 to 90 and longitude -180 to 180.');
+      return;
+    }
+    setPlace({ name: lat.toFixed(2) + ', ' + lon.toFixed(2), lat, lon });
+  }
+
+  // BONUS: the browser's own location
+  function locate() {
+    if (!('geolocation' in navigator)) {
+      setError('This browser cannot share its location.');
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      pos =&gt; {
+        setLocating(false);
+        const { latitude, longitude } = pos.coords;
+        setPlace({ name: 'Your location', lat: latitude, lon: longitude });
+      },
+      err =&gt; {
+        setLocating(false);
+        setError('Location unavailable: ' + err.message);
+      },
+      { timeout: 10000 }
+    );
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;form onSubmit={searchCity}&gt;
+        &lt;label htmlFor="wx-city"&gt;City&lt;/label&gt;{' '}
+        &lt;input id="wx-city" value={city} onChange={e =&gt; setCity(e.target.value)} placeholder="e.g. Busan" /&gt;
+        &lt;button&gt;Search&lt;/button&gt;
+      &lt;/form&gt;
+
+      &lt;form onSubmit={useCoordinates} key={place.lat + ',' + place.lon}&gt;
+        &lt;label htmlFor="wx-lat"&gt;Latitude&lt;/label&gt;{' '}
+        &lt;input id="wx-lat" name="lat" type="number" step="any" defaultValue={place.lat} style={{ width: '8rem' }} /&gt;{' '}
+        &lt;label htmlFor="wx-lon"&gt;Longitude&lt;/label&gt;{' '}
+        &lt;input id="wx-lon" name="lon" type="number" step="any" defaultValue={place.lon} style={{ width: '8rem' }} /&gt;
+        &lt;button&gt;Use coordinates&lt;/button&gt;
+      &lt;/form&gt;
+
+      &lt;p&gt;
+        &lt;button onClick={locate} disabled={locating}&gt;
+          {locating ? 'Locating…' : 'Use my location'}
+        &lt;/button&gt;
+      &lt;/p&gt;
+
+      {error &amp;&amp; &lt;p className="error" role="alert"&gt;{error}&lt;/p&gt;}
+
+      {loading
+        ? &lt;p className="loading" role="status"&gt;Loading weather for {place.name}…&lt;/p&gt;
+        : weather &amp;&amp; (
+          &lt;div className="weather" aria-live="polite"&gt;
+            &lt;p className="place"&gt;{place.name}&lt;/p&gt;
+            &lt;p className="temp"&gt;{weather.temperature_2m} °C&lt;/p&gt;
+            &lt;p&gt;{describe(weather.weather_code)}&lt;/p&gt;
+            &lt;p className="muted"&gt;wind {weather.wind_speed_10m} km/h&lt;/p&gt;
+          &lt;/div&gt;
+        )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="check-title">
+        <h2 id="check-title">Against the brief</h2>
+        <ul class="notes">
+          <li><strong>Open-Meteo, no key.</strong> Forecast from <code>api.open-meteo.com/v1/forecast</code> with <code>current=temperature_2m,wind_speed_10m,weather_code</code>, the same query as the lecturer&rsquo;s starter.</li>
+          <li><strong>Input: city name or coordinates.</strong> A city goes through <code>geocoding-api.open-meteo.com/v1/search</code> to get coordinates; the latitude and longitude fields set them directly.</li>
+          <li><strong>Display.</strong> Temperature, wind speed, and <code>weather_code</code> turned into words with the WMO code table (the starter&rsquo;s TODO 2).</li>
+          <li><strong>useEffect on coordinate change.</strong> The effect depends on <code>[place.lat, place.lon]</code>, shows a loading line while it runs, and aborts the previous request in its cleanup.</li>
+          <li><strong>Errors.</strong> Network down (a <code>TypeError</code> from <code>fetch</code>), bad coordinates (checked before fetching, and HTTP 400 from the API), rate limit (HTTP 429), and a city that is not found.</li>
+          <li><strong>Bonus.</strong> &ldquo;Use my location&rdquo; calls <code>navigator.geolocation.getCurrentPosition</code>; a refusal or timeout shows as an error, not a blank widget.</li>
+        </ul>
+      </section>
+
+      <section class="section" aria-labelledby="submit-title">
+        <h2 id="submit-title">Submission</h2>
+        <ol class="checklist">
+          <li><strong>GitHub repo URL:</strong> <a href="https://github.com/zefishy/web-prog-gachon">github.com/zefishy/web-prog-gachon</a></li>
+          <li><strong>Live GitHub Pages URL:</strong> <a href="https://zefishy.github.io/web-prog-gachon/week12/week12_2/homework_weather_dashboard.html">zefishy.github.io/web-prog-gachon/week12/week12_2/homework_weather_dashboard.html</a></li>
+          <li><strong>Submit both by Sunday,</strong> and take the <a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Fri_SprintQuiz.html" rel="noopener">SprintQuiz</a>.</li>
+          <li><strong>Add some React features to the personal page,</strong> as the slide asks.</li>
+        </ol>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>API</dt><dd>Open-Meteo, no key</dd></div>
+          <div><dt>Input</dt><dd>City, lat/lon, or geolocation</dd></div>
+          <div><dt>Dependencies</dt><dd>[lat, lon]</dd></div>
+          <div><dt>Cleanup</dt><dd>AbortController</dd></div>
+          <div><dt>Due</dt><dd>Sunday</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Fri_StudyGuide.html" rel="noopener">StudyGuide.html</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Fri_VideoLecture.html" rel="noopener">VideoLecture.html</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Fri_SprintQuiz.html" rel="noopener">SprintQuiz.html</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20Effects_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="https://open-meteo.com/en/docs" rel="noopener">Open-Meteo API docs</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 homework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+const WEATHER_CODES = {
+  0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+  45: 'Fog', 48: 'Rime fog',
+  51: 'Light drizzle', 53: 'Drizzle', 55: 'Dense drizzle',
+  56: 'Freezing drizzle', 57: 'Dense freezing drizzle',
+  61: 'Light rain', 63: 'Rain', 65: 'Heavy rain',
+  66: 'Freezing rain', 67: 'Heavy freezing rain',
+  71: 'Light snow', 73: 'Snow', 75: 'Heavy snow', 77: 'Snow grains',
+  80: 'Light showers', 81: 'Showers', 82: 'Violent showers',
+  85: 'Snow showers', 86: 'Heavy snow showers',
+  95: 'Thunderstorm', 96: 'Thunderstorm with hail', 99: 'Thunderstorm with heavy hail',
+};
+
+function describe(code) {
+  return WEATHER_CODES[code] || 'Unknown (code ' + code + ')';
+}
+
+function errorMessage(err, status) {
+  if (status === 429) return 'Too many requests (rate limit). Wait a minute and try again.';
+  if (status === 400) return 'Those coordinates were rejected. Latitude must be -90 to 90, longitude -180 to 180.';
+  if (err instanceof TypeError) return 'Network error: check your connection.';
+  return err.message;
+}
+
+function WeatherDashboard() {
+  const [place, setPlace]     = useState({ name: 'Seoul', lat: 37.57, lon: 126.98 });
+  const [city, setCity]       = useState('');
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
+  const [locating, setLocating] = useState(false);
+
+  // Fetch the weather whenever the coordinates change
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true); setError(null);
+    let status = 0;
+
+    const url = 'https://api.open-meteo.com/v1/forecast'
+      + `?latitude=${place.lat}&longitude=${place.lon}`
+      + '&current=temperature_2m,wind_speed_10m,weather_code';
+
+    fetch(url, { signal: controller.signal })
+      .then(res => {
+        status = res.status;
+        if (!res.ok) throw new Error('Could not load weather (HTTP ' + res.status + ')');
+        return res.json();
+      })
+      .then(data => { setWeather(data.current); setLoading(false); })
+      .catch(err => {
+        if (err.name === 'AbortError') return;
+        setError(errorMessage(err, status)); setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [place.lat, place.lon]);
+
+  // City name -> coordinates (Open-Meteo geocoding endpoint)
+  async function searchCity(e) {
+    e.preventDefault();
+    const name = city.trim();
+    if (!name) return;
+    setError(null);
+    try {
+      const res = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name='
+                              + encodeURIComponent(name));
+      if (!res.ok) throw new Error(errorMessage(new Error('Geocoding failed'), res.status));
+      const data = await res.json();
+      if (!data.results || data.results.length === 0) {
+        setError('No place called “' + name + '” was found.');
+        return;
+      }
+      const r = data.results[0];
+      setPlace({ name: r.name + (r.country ? ', ' + r.country : ''), lat: r.latitude, lon: r.longitude });
+    } catch (err) {
+      setError(err instanceof TypeError ? errorMessage(err, 0) : err.message);
+    }
+  }
+
+  // Latitude / longitude typed directly
+  function useCoordinates(e) {
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const lat = Number(form.get('lat'));
+    const lon = Number(form.get('lon'));
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) {
+      setError('Latitude must be -90 to 90 and longitude -180 to 180.');
+      return;
+    }
+    setPlace({ name: lat.toFixed(2) + ', ' + lon.toFixed(2), lat, lon });
+  }
+
+  // BONUS: the browser's own location
+  function locate() {
+    if (!('geolocation' in navigator)) {
+      setError('This browser cannot share its location.');
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        setLocating(false);
+        const { latitude, longitude } = pos.coords;
+        setPlace({ name: 'Your location', lat: latitude, lon: longitude });
+      },
+      err => {
+        setLocating(false);
+        setError('Location unavailable: ' + err.message);
+      },
+      { timeout: 10000 }
+    );
+  }
+
+  return (
+    <div>
+      <form onSubmit={searchCity}>
+        <label htmlFor="wx-city">City</label>{' '}
+        <input id="wx-city" value={city} onChange={e => setCity(e.target.value)} placeholder="e.g. Busan" />
+        <button>Search</button>
+      </form>
+
+      <form onSubmit={useCoordinates} key={place.lat + ',' + place.lon}>
+        <label htmlFor="wx-lat">Latitude</label>{' '}
+        <input id="wx-lat" name="lat" type="number" step="any" defaultValue={place.lat} style={{ width: '8rem' }} />{' '}
+        <label htmlFor="wx-lon">Longitude</label>{' '}
+        <input id="wx-lon" name="lon" type="number" step="any" defaultValue={place.lon} style={{ width: '8rem' }} />
+        <button>Use coordinates</button>
+      </form>
+
+      <p>
+        <button onClick={locate} disabled={locating}>
+          {locating ? 'Locating…' : 'Use my location'}
+        </button>
+      </p>
+
+      {error && <p className="error" role="alert">{error}</p>}
+
+      {loading
+        ? <p className="loading" role="status">Loading weather for {place.name}…</p>
+        : weather && (
+          <div className="weather" aria-live="polite">
+            <p className="place">{place.name}</p>
+            <p className="temp">{weather.temperature_2m} °C</p>
+            <p>{describe(weather.weather_code)}</p>
+            <p className="muted">wind {weather.wind_speed_10m} km/h</p>
+          </div>
+        )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('weather-demo')).render(<WeatherDashboard />);
+  </script>
+</body>
+</html>

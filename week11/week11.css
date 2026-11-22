@@ -1,8 +1,9 @@
 /* ---------- week11.css ----------
    Week 11 layer: the React props exercises.
    Loads after css/shared.css and before ../js/main.js, so every colour, type
-   size and motion value still comes from the shared tokens — nothing here
-   names a colour, which is what lets the theme switch cross-fade the page.
+   size and motion value comes from the shared tokens, which is what lets the
+   theme switch cross-fade the page. The one exception is the portfolio
+   gallery, which deliberately uses the portfolio site's own palette.
    This file owns two shapes: the page furniture (one column of prose beside
    a facts rail), and the two components the week teaches — ProductCard and
    the portfolio gallery — whose markup React generates at runtime.
@@ -218,6 +219,20 @@ pre.code code {
   transform: translateY(-2px);
 }
 
+/* Photo bleeds to the card edges; aspect-ratio + height:auto keeps the
+   flex column from stretching it (see the 20/13 tile lesson). */
+.product-card__img {
+  display: block;
+  width: calc(100% + 2.5rem);
+  max-width: none;
+  height: auto;
+  aspect-ratio: 20 / 13;
+  object-fit: cover;
+  margin: -1.25rem -1.25rem .5rem;
+  border-radius: 9px 9px 0 0;
+  background: var(--rule);
+}
+
 .product-card__name {
   font-size: 1.125rem;
   font-weight: 700;
@@ -260,78 +275,126 @@ pre.code code {
   color: var(--ink);
 }
 
-/* ---------- FilterBar (rendered by React) ---------- */
-.gallery {
-  margin-top: 1.5rem;
-  padding: clamp(.85rem, 3vw, 1.25rem);
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-}
-
-.gallery__header {
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--rule);
-}
-
-.gallery__title { font-size: 1.25rem; color: var(--head); }
-
-.gallery__lead {
-  margin-top: .35rem;
-  max-width: 62ch;
-  font-size: .9375rem;
+.photo-credit {
+  margin-top: .75rem;
+  font-size: .8125rem;
   color: var(--muted);
 }
 
+/* ---------- Portfolio gallery (rendered by React) ----------
+   This block copies the look of the Projects section on
+   ryanw-portfolio.vercel.app (vercel-portfolio/src/index.css + Tailwind
+   classes in Projects/FilterBar/ProjectCard.tsx), so the demo reads as a
+   piece of that site dropped into the library page. Its colours are the
+   portfolio's own shadcn HSL tokens, scoped to .gallery as --pf-* so they
+   never leak into the library's theme. Two light-mode inks are darker than
+   the original (primary text 33% instead of 50%, muted 42% instead of 50%)
+   so they pass WCAG AA on the white background. */
+.gallery {
+  --pf-bg: hsl(220 25% 5%);
+  --pf-fg: hsl(220 10% 90%);
+  --pf-card: hsl(220 20% 8% / .6);
+  --pf-primary: hsl(192 80% 55%);
+  --pf-primary-text: hsl(192 80% 55%);
+  --pf-on-primary: hsl(220 25% 5%);
+  --pf-secondary: hsl(220 15% 12%);
+  --pf-on-secondary: hsl(220 10% 90%);
+  --pf-muted: hsl(220 10% 55%);
+  --pf-border: hsl(220 15% 15%);
+  --pf-hero: linear-gradient(135deg, hsl(192 80% 55% / .08), hsl(260 60% 60% / .04));
+  --pf-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  margin-top: 1.5rem;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  background: var(--pf-hero), var(--pf-bg);
+  color: var(--pf-fg);
+  border: 1px solid var(--pf-border);
+  border-radius: .75rem;
+  font-family: Helvetica, "Helvetica Neue", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root[data-theme="light"] .gallery {
+  --pf-bg: hsl(0 0% 100%);
+  --pf-fg: hsl(220 20% 10%);
+  --pf-card: hsl(0 0% 98% / .6);
+  --pf-primary: hsl(192 80% 50%);
+  --pf-primary-text: hsl(192 80% 33%);
+  --pf-on-primary: hsl(220 25% 5%);
+  --pf-secondary: hsl(220 10% 94%);
+  --pf-on-secondary: hsl(220 20% 10%);
+  --pf-muted: hsl(220 10% 42%);
+  --pf-border: hsl(220 10% 90%);
+  --pf-hero: linear-gradient(135deg, hsl(192 80% 50% / .1), hsl(260 60% 60% / .05));
+}
+
+.gallery :focus-visible { outline-color: var(--pf-primary); }
+
+.gallery__eyebrow {
+  margin-bottom: .5rem;
+  font-family: var(--pf-mono);
+  font-size: .875rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--pf-primary-text);
+}
+
+.gallery__title {
+  margin-bottom: 1rem;
+  font-size: clamp(1.625rem, 1.2rem + 1.4vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  line-height: 1.15;
+  color: var(--pf-fg);
+}
+
+.gallery__lead {
+  max-width: 42rem;
+  margin-bottom: 2rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--pf-muted);
+}
+
+/* FilterBar: px-4 py-2 rounded-full border text-sm */
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: .5rem;
 }
 
-.filter-bar__label {
-  margin-right: .25rem;
-  font-size: .875rem;
-  font-weight: 700;
-  color: var(--muted);
-}
-
 .filter-bar__btn {
-  min-height: 2.5rem;
-  padding: .4rem 1rem;
-  border: 1px solid var(--rule);
+  padding: .5rem 1rem;
+  border: 1px solid var(--pf-border);
   border-radius: 999px;
   background: transparent;
-  color: var(--ink);
+  color: var(--pf-muted);
   font: inherit;
-  font-size: .9375rem;
-  font-weight: 700;
+  font-size: .875rem;
+  line-height: 1.25rem;
   cursor: pointer;
-  transition: background-color .18s var(--ease-out), border-color .18s var(--ease-out);
+  transition: background-color .15s, color .15s, border-color .15s;
 }
 
-.filter-bar__btn:hover { border-color: var(--wk); }
+.filter-bar__btn:hover { background: var(--pf-secondary); }
 
 .filter-bar__btn[aria-pressed="true"] {
-  background: var(--wk);
-  border-color: var(--wk);
-  color: var(--on-wk);
+  background: var(--pf-primary);
+  color: var(--pf-on-primary);
 }
 
 .gallery__count {
-  margin-top: .85rem;
+  margin-top: 1rem;
   font-size: .875rem;
-  color: var(--muted);
+  color: var(--pf-muted);
 }
 
-/* ---------- ProjectCard (rendered by React) ---------- */
+/* ProjectList: grid gap-6, two columns when there is room */
 .project-grid {
-  margin-top: 1.25rem;
+  margin-top: 1rem;
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
 }
 
 .project-grid > li {
@@ -341,71 +404,118 @@ pre.code code {
 
 .project-grid > li > .project-card { flex: 1; }
 
+/* ProjectCard: .glass-card h-full flex flex-col */
 .project-card {
   display: flex;
   flex-direction: column;
-  gap: .6rem;
-  padding: 1.25rem;
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: 10px;
+  padding: 1.5rem;
+  background: var(--pf-card);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border: 1px solid color-mix(in srgb, var(--pf-border) 50%, transparent);
+  border-radius: .75rem;
+  transition: border-color .3s, box-shadow .3s;
 }
 
-.project-card__title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--head);
+.project-card:hover {
+  border-color: color-mix(in srgb, var(--pf-primary) 30%, transparent);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1);
 }
 
-.project-card__desc {
-  font-size: .9375rem;
-  color: var(--muted);
+.project-card__media {
+  margin-bottom: 1rem;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: .75rem;
+  background: color-mix(in srgb, var(--pf-secondary) 50%, transparent);
 }
 
 .project-card__shot {
+  display: block;
   width: 100%;
-  height: auto;
-  max-height: 14rem;
+  height: 100%;
   object-fit: cover;
-  border-radius: 6px;
-  margin-bottom: .6rem;
 }
 
+.project-card__title {
+  margin-bottom: .5rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: var(--pf-fg);
+}
+
+.project-card__desc {
+  flex: 1;
+  margin-bottom: 1rem;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  color: var(--pf-muted);
+}
+
+/* Badge variant="secondary" */
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: .35rem;
-  margin: 0;
+  gap: .5rem;
+  margin: 0 0 1rem;
   padding: 0;
   list-style: none;
 }
 
 .chips li {
-  padding: .15rem .55rem;
+  padding: .125rem .625rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--wk) 20%, var(--surface));
-  font-size: .8125rem;
-  font-weight: 700;
+  background: var(--pf-secondary);
+  color: var(--pf-on-secondary);
+  font-size: .75rem;
+  line-height: 1rem;
+  font-weight: 600;
 }
 
 .project-card__links {
   display: flex;
   flex-wrap: wrap;
-  gap: .5rem 1rem;
-  margin-top: auto;
-  padding-top: .35rem;
-  font-size: .9375rem;
-  font-weight: 700;
+  gap: .75rem;
 }
 
-.project-card__links a { text-underline-offset: .2em; }
+.project-card__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  text-decoration: none;
+  color: var(--pf-muted);
+  transition: color .15s;
+}
+
+.project-card__links a:hover { color: var(--pf-fg); }
+
+.project-card__links .is-live { color: var(--pf-primary-text); }
+
+.project-card__links .is-live:hover {
+  color: var(--pf-primary-text);
+  text-decoration: underline;
+}
+
+.project-card__links svg {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
 .gallery__empty {
-  margin-top: 1.25rem;
+  margin-top: 1rem;
   padding: 1.5rem;
-  border: 1px dashed var(--rule);
-  border-radius: 10px;
-  color: var(--muted);
+  border: 1px dashed var(--pf-border);
+  border-radius: .75rem;
+  color: var(--pf-muted);
   text-align: center;
 }
 
@@ -493,6 +603,8 @@ pre.code code {
 @media (prefers-reduced-motion: reduce) {
   .stat,
   .product-card,
+  .project-card,
+  .project-card__links a,
   .filter-bar__btn { transition: none; }
   .product-card:hover { transform: none; }
 }

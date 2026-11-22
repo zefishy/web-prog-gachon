@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 5 by Ryan Wong: the practice task from the Monday slides, a textarea whose live word count is derived from one piece of useState.">
+  <title>Exercise 5: Live word count &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_1 &middot; Exercise 5</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Live word count</h1>
+        <p class="lead">One piece of state, one derived value. The textarea is controlled by <code>text</code>, and the word count is worked out from it on every render instead of being stored separately.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Practice: add a live word count to a textarea with useState.</p>
+          <cite>Week 12 Monday slides &mdash; Next Session &amp; Resources, Practice</cite>
+        </blockquote>
+<div id="wordcount-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">WordCount.jsx</p>
+<pre class="code"><code>function WordCount() {
+  const [text, setText] = useState('');
+
+  const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+
+  return (
+    &lt;div&gt;
+      &lt;label htmlFor="wc-text"&gt;Write something&lt;/label&gt;
+      &lt;textarea id="wc-text" value={text} onChange={e =&gt; setText(e.target.value)}
+                placeholder="Start typing…" /&gt;
+      &lt;p aria-live="polite"&gt;
+        &lt;span className="figure"&gt;{words}&lt;/span&gt; {words === 1 ? 'word' : 'words'}
+      &lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>A controlled textarea.</strong> <code>value={text}</code> plus <code>onChange</code> means React state is the single source of truth for what is typed.</li>
+          <li><strong>The count is derived, not stored.</strong> A second <code>useState</code> for the count would have to be updated in step with <code>text</code>; computing it during render cannot go stale.</li>
+          <li><strong>Splitting on <code>/\s+/</code></strong> treats any run of spaces, tabs or newlines as one gap, and trimming first stops an empty box from counting as one word.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>State</dt><dd>1 string</dd></div>
+          <div><dt>Derived</dt><dd>Word count</dd></div>
+          <div><dt>Source</dt><dd>Monday slides, practice</dd></div>
+          <div><dt>Runtime</dt><dd>React 18.3.1, Babel standalone</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="homework_01_product_list.html">Next: Homework step 1</a></p>
+          <p><a href="https://react.dev/learn/managing-state" rel="noopener">react.dev: Managing State</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function WordCount() {
+  const [text, setText] = useState('');
+
+  const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+
+  return (
+    <div>
+      <label htmlFor="wc-text">Write something</label>
+      <textarea id="wc-text" value={text} onChange={e => setText(e.target.value)}
+                placeholder="Start typing…" />
+      <p aria-live="polite">
+        <span className="figure">{words}</span> {words === 1 ? 'word' : 'words'}
+      </p>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('wordcount-demo')).render(<WordCount />);
+  </script>
+</body>
+</html>

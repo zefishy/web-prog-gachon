@@ -1,0 +1,360 @@
+/* ---------- week12.css (Week 12: React state and effects) ----------
+   The Week 12 layer on top of css/shared.css, shared by both sessions:
+   week12_1 (Monday, useState: exercises 1-5 and the five-step shopping cart
+   homework) and week12_2 (Friday, useEffect: exercises 1-5 and the weather
+   dashboard homework). The topic files are bare .js fragments and load no
+   CSS.
+
+   Every demo is a real React component (React 18 UMD + Babel standalone, no
+   build step) rendered into a .demo panel. The panel styles plain elements
+   (button, input, ul, li) so the exercise code can stay as close to the
+   lecturer's as possible; only the homework components carry class names.
+   Tokens, the theme cross-fade, the header frame, buttons and the footer all
+   come from shared.css, and nothing here names a colour. */
+
+/* ---------- Layout: one readable column ---------- */
+.layout {
+  display: grid;
+  gap: 3rem;
+  align-content: start;
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+}
+
+.layout > * { min-width: 0; max-width: 46rem; }
+.layout > .wide { max-width: 64rem; }
+
+/* ---------- Sections ---------- */
+.section > h2 {
+  font-size: 1.5rem;
+  border-top: .375rem solid var(--wk);
+  padding-top: 1.25rem;
+}
+
+.section > p { margin-top: 1rem; max-width: 62ch; }
+.section > p + p { margin-top: .9rem; }
+
+/* ---------- The brief: the task, quoted from the lecturer ---------- */
+.brief {
+  margin: 1.25rem 0 0;
+  padding: .25rem 0 .25rem 1.25rem;
+  border-left: .375rem solid var(--wk);
+}
+
+.brief p { max-width: 62ch; }
+.brief p + p { margin-top: .6rem; }
+.brief ul { margin-top: .6rem; padding-left: 1.25rem; list-style: disc; }
+.brief li + li { margin-top: .3rem; }
+
+.brief cite {
+  display: block;
+  margin-top: .75rem;
+  font-style: normal;
+  font-size: .9375rem;
+  color: var(--muted);
+}
+
+/* ---------- Code ---------- */
+.code-block { margin-top: 1.25rem; }
+
+.code-label {
+  font-size: .8125rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+pre.code {
+  margin-top: .4rem;
+  padding: 1rem 1.25rem;
+  max-width: 100%;
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  font-size: .875rem;
+  line-height: 1.55;
+  tab-size: 2;
+}
+
+pre.code code { font: inherit; white-space: pre; }
+
+:not(pre) > code {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: .1rem .35rem;
+}
+
+/* ---------- Demo panel: where React renders ---------- */
+.demo {
+  margin-top: 1.25rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+.demo > * + *,
+.demo div > * + * { margin-top: .75rem; }
+
+.demo h2 { font-size: 2.25rem; font-variant-numeric: tabular-nums; }
+.demo h3 { font-size: 1.125rem; }
+.demo label { font-weight: 700; }
+
+.demo button {
+  min-height: 2.5rem;
+  margin: .2rem .5rem .2rem 0;
+  padding: .35rem 1rem;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.demo button:hover { background: color-mix(in srgb, var(--ink) 10%, var(--surface)); }
+
+.demo button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.demo button:disabled:hover { background: transparent; }
+
+.demo input:not([type="checkbox"]),
+.demo textarea {
+  min-height: 2.5rem;
+  margin: .2rem .5rem .2rem 0;
+  padding: .4rem .7rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+
+.demo textarea {
+  display: block;
+  width: 100%;
+  min-height: 8rem;
+  margin-right: 0;
+  resize: vertical;
+}
+
+.demo ul { display: grid; gap: .4rem; }
+
+.demo ul > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .45rem .5rem .45rem .85rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+.demo ul > li button { margin: 0; }
+
+.demo img { display: block; max-width: 100%; height: auto; }
+
+.demo .muted,
+.demo .loading { color: var(--muted); }
+
+.demo .error { color: var(--danger); font-weight: 700; }
+
+/* Numbers that change on every click should not make the row jitter */
+.demo .figure {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Profile card (GitHub lookup, fetched user) ---------- */
+.demo .profile {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .25rem 1rem;
+  align-items: center;
+  padding: 1rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+.demo .profile img { grid-row: span 3; border-radius: 50%; }
+.demo .profile > * + * { margin-top: 0; }
+
+/* ---------- Weather widget (homework) ---------- */
+.demo .weather {
+  display: grid;
+  gap: .25rem;
+  padding: 1.25rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+.demo .weather > * + * { margin-top: 0; }
+.demo .weather .place { font-size: 1.125rem; font-weight: 700; }
+.demo .weather .temp { font-size: 2.5rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+
+/* ---------- Shopping cart (homework) ---------- */
+.shop { display: grid; gap: 1.5rem; }
+
+@media (min-width: 48rem) {
+  .shop.with-cart { grid-template-columns: minmax(0, 1fr) 17rem; align-items: start; }
+}
+
+.demo ul.product-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+}
+
+.demo ul.product-grid > li {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: .4rem;
+  padding: .75rem;
+  border-radius: 10px;
+}
+
+.product-grid img { border-radius: 6px; aspect-ratio: 8 / 5; object-fit: cover; }
+.product-grid h3 { font-size: 1rem; }
+.product-grid .price { font-variant-numeric: tabular-nums; color: var(--muted); }
+.product-grid button { margin-top: auto; align-self: flex-start; }
+
+.cart-panel {
+  padding: 1rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+.cart-panel h3 { font-size: 1.125rem; }
+
+/* Each cart line: name across the top, then quantity and price on one row */
+.demo .cart-panel ul > li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .4rem .75rem;
+  background: var(--surface);
+}
+
+.cart-panel .line-name { grid-column: 1 / -1; }
+.cart-panel .line-price { justify-self: end; }
+.cart-panel li > .line-name:first-child + .line-price { grid-column: 1 / -1; justify-self: start; }
+.demo .cart-panel ul > li > * + * { margin-top: 0; }
+
+.cart-panel .line-name { font-weight: 700; }
+.cart-panel .line-price { font-variant-numeric: tabular-nums; color: var(--muted); }
+
+.cart-panel .qty {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cart-panel .qty button { min-height: 2rem; min-width: 2rem; padding: 0 .5rem; }
+
+.cart-panel .total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: .75rem;
+  border-top: 1px solid var(--rule);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Homework steps 1-5 ---------- */
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  counter-reset: none;
+}
+
+.steps a {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 2.5rem;
+  padding: .35rem .9rem .35rem .4rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: .9375rem;
+  font-weight: 700;
+}
+
+.steps a:hover { border-color: var(--wk); }
+
+.steps .n {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--wk) 25%, var(--surface));
+}
+
+.steps a[aria-current="page"] { background: var(--wk); border-color: var(--wk); color: var(--on-wk); }
+.steps a[aria-current="page"] .n { background: var(--paper); color: var(--ink); }
+
+/* ---------- Notes and link lists ---------- */
+.notes { margin-top: 1rem; display: grid; gap: .6rem; max-width: 62ch; }
+
+.notes li { position: relative; padding-left: 1.1rem; }
+
+.notes li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .65em;
+  width: .5rem;
+  height: .5rem;
+  border-radius: 50%;
+  background: var(--wk);
+}
+
+.checklist { margin-top: 1rem; display: grid; gap: .6rem; max-width: 62ch; list-style: decimal; padding-left: 1.5rem; }
+
+.no-js {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  border: 1px dashed var(--rule);
+  border-radius: 10px;
+  color: var(--muted);
+}
+
+/* Grid children must not pick up the panel's stacking margin */
+.demo .shop > * + * { margin-top: 0; }
+
+/* ---------- At a glance ---------- */
+.facts { display: grid; margin-top: 1rem; }
+
+.facts > div {
+  display: grid;
+  gap: .15rem;
+  padding-block: .75rem;
+  border-top: 1px solid var(--rule);
+}
+
+.facts dt { font-weight: 700; }
+.facts dd { margin: 0; color: var(--muted); }
+
+.see-also { margin-top: 1.25rem; display: grid; gap: .45rem; }
+.see-also a { text-underline-offset: .2em; }
+
+/* Space between a section heading and whatever follows it */
+.section > h2 + * { margin-top: 1rem; }
+.section > .steps + * { margin-top: 1.25rem; }
+.section > .code-block + .code-block { margin-top: 1.5rem; }

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 4 by Ryan Wong: the in-class code challenge, a counter with +1, -1, Reset, the last five values and an Undo button, built from two state variables.">
+  <title>Exercise 4: Counter with history &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_1 &middot; Exercise 4</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Counter with history</h1>
+        <p class="lead">The in-class code challenge. Two state variables work together: <code>count</code> is the number on screen, and <code>history</code> remembers the last five values so Undo can step back.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Build a Counter component with these features:</p>
+          <p>1. Display current count (starts at 0). 2. +1 and -1 buttons. 3. Reset button (returns to 0). 4. History: show last 5 count values, e.g. [0, 1, 2, 1, 0]. 5. Undo: clicking Undo sets count to the previous value in history.</p>
+          <p>Hints: use TWO state variables, count + history (array). Add to history every time count changes. Undo: <code>setCount(history[history.length - 2])</code>, then remove the last item from history.</p>
+          <cite>Week 12 Monday slides &mdash; Code Challenge: Counter with History (15 minutes)</cite>
+        </blockquote>
+<div id="history-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">CounterWithHistory.jsx</p>
+<pre class="code"><code>function CounterWithHistory() {
+  const [count, setCount]     = useState(0);
+  const [history, setHistory] = useState([0]);
+
+  function change(next) {
+    setCount(next);
+    setHistory(h =&gt; [...h, next].slice(-5));
+  }
+
+  function undo() {
+    if (history.length &lt; 2) return;
+    setCount(history[history.length - 2]);
+    setHistory(h =&gt; h.slice(0, -1));
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;h2 aria-live="polite"&gt;{count}&lt;/h2&gt;
+      &lt;p&gt;
+        &lt;button onClick={() =&gt; change(count + 1)}&gt;+1&lt;/button&gt;
+        &lt;button onClick={() =&gt; change(count - 1)}&gt;-1&lt;/button&gt;
+        &lt;button onClick={() =&gt; change(0)}&gt;Reset&lt;/button&gt;
+        &lt;button onClick={undo} disabled={history.length &lt; 2}&gt;Undo&lt;/button&gt;
+      &lt;/p&gt;
+      &lt;p&gt;History: [{history.join(', ')}]&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>One helper for every change.</strong> +1, -1 and Reset all go through <code>change(next)</code>, which sets the count and appends to the history in one place, so the two can never fall out of step.</li>
+          <li><strong><code>.slice(-5)</code> keeps the last five.</strong> The array is copied with spread first, then trimmed, so the old history is never mutated.</li>
+          <li><strong>Undo reads the second-to-last entry</strong>, exactly as the hint says, then drops the last one with <code>slice(0, -1)</code>.</li>
+          <li>Undo is disabled when there is nothing to go back to, so the button never looks clickable when it would do nothing.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>State</dt><dd>count + history array</dd></div>
+          <div><dt>Buttons</dt><dd>+1, -1, Reset, Undo</dd></div>
+          <div><dt>History</dt><dd>Last 5 values</dd></div>
+          <div><dt>Source</dt><dd>Monday slides, code challenge</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_05_live_word_count.html">Next: Live word count</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20State_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function CounterWithHistory() {
+  const [count, setCount]     = useState(0);
+  const [history, setHistory] = useState([0]);
+
+  function change(next) {
+    setCount(next);
+    setHistory(h => [...h, next].slice(-5));
+  }
+
+  function undo() {
+    if (history.length < 2) return;
+    setCount(history[history.length - 2]);
+    setHistory(h => h.slice(0, -1));
+  }
+
+  return (
+    <div>
+      <h2 aria-live="polite">{count}</h2>
+      <p>
+        <button onClick={() => change(count + 1)}>+1</button>
+        <button onClick={() => change(count - 1)}>-1</button>
+        <button onClick={() => change(0)}>Reset</button>
+        <button onClick={undo} disabled={history.length < 2}>Undo</button>
+      </p>
+      <p>History: [{history.join(', ')}]</p>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('history-demo')).render(<CounterWithHistory />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 homework step 4 by Ryan Wong: plus and minus quantity controls on every cart line, updating one item immutably with map and the object spread.">
+  <title>Homework 4: Quantity controls &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_1 &middot; Homework 4/5</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Shopping cart, step 4: Quantity controls</h1>
+        <p class="lead">Each cart line gets a quantity with + and &minus; buttons. Changing one item&rsquo;s quantity means building a new array with <code>map</code> and a new object for that one item.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section wide" aria-labelledby="task-title">
+        <h2 id="task-title">The step</h2>
+        <nav class="steps" aria-label="Homework steps">
+          <a href="homework_01_product_list.html"><span class="n">1</span>Product list</a>
+          <a href="homework_02_add_remove_buttons.html"><span class="n">2</span>Add / Remove buttons</a>
+          <a href="homework_03_cart_sidebar.html"><span class="n">3</span>Cart sidebar</a>
+          <a href="homework_04_quantity_controls.html" aria-current="page"><span class="n">4</span>Quantity controls</a>
+          <a href="homework_05_shopping_cart_component.html"><span class="n">5</span>ShoppingCart component</a>
+        </nav>
+        <blockquote class="brief">
+          <p><strong>4. Quantity controls.</strong> + and - per item.</p>
+          <cite>Week 12 Monday slides &mdash; Homework: Interactive Shopping Cart</cite>
+        </blockquote>
+<div id="step4-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The code</h2>
+<div class="code-block">
+<p class="code-label">Shop.jsx</p>
+<pre class="code"><code>const PRODUCTS = [
+  { id: 1, name: 'Wireless Earbuds',    price: 89000,  image: 'img/earbuds.jpg' },
+  { id: 2, name: 'Mechanical Keyboard', price: 129000, image: 'img/keyboard.jpg' },
+  { id: 3, name: 'USB-C Hub',           price: 45000,  image: 'img/usb-hub.jpg' },
+  { id: 4, name: 'Laptop Stand',        price: 39000,  image: 'img/laptop-stand.jpg' },
+  { id: 5, name: 'HD Webcam',           price: 72000,  image: 'img/webcam.jpg' },
+];
+
+const won = n =&gt; n.toLocaleString('ko-KR') + ' KRW';
+
+function Shop() {
+  const [cart, setCart] = useState([]);
+
+  const lineOf = id =&gt; cart.find(item =&gt; item.id === id);
+
+  const add = product =&gt; setCart(prev =&gt; [...prev, { ...product, qty: 1 }]);
+  const remove = id =&gt; setCart(prev =&gt; prev.filter(item =&gt; item.id !== id));
+  const increase = id =&gt; setCart(prev =&gt; prev.map(item =&gt;
+    item.id === id ? { ...item, qty: item.qty + 1 } : item
+  ));
+  const decrease = id =&gt; setCart(prev =&gt; prev
+    .map(item =&gt; item.id === id ? { ...item, qty: item.qty - 1 } : item)
+    .filter(item =&gt; item.qty &gt; 0)
+  );
+
+  const total = cart.reduce((sum, item) =&gt; sum + item.price * item.qty, 0);
+  const count = cart.reduce((sum, item) =&gt; sum + item.qty, 0);
+
+  return (
+    &lt;div className="shop with-cart"&gt;
+      &lt;ul className="product-grid"&gt;
+        {PRODUCTS.map(p =&gt; (
+          &lt;li key={p.id}&gt;
+            &lt;img src={p.image} alt="" width="320" height="200" /&gt;
+            &lt;h3&gt;{p.name}&lt;/h3&gt;
+            &lt;p className="price"&gt;{won(p.price)}&lt;/p&gt;
+            {lineOf(p.id)
+              ? &lt;button onClick={() =&gt; remove(p.id)}&gt;Remove&lt;/button&gt;
+              : &lt;button onClick={() =&gt; add(p)}&gt;Add to cart&lt;/button&gt;}
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+
+      &lt;aside className="cart-panel" aria-label="Cart"&gt;
+        &lt;h3&gt;Cart ({count})&lt;/h3&gt;
+        {cart.length === 0
+          ? &lt;p className="muted"&gt;Your cart is empty.&lt;/p&gt;
+          : (
+            &lt;ul&gt;
+              {cart.map(item =&gt; (
+                &lt;li key={item.id}&gt;
+                  &lt;span className="line-name"&gt;{item.name}&lt;/span&gt;
+                  &lt;span className="qty"&gt;
+                    &lt;button onClick={() =&gt; decrease(item.id)} aria-label={'One fewer ' + item.name}&gt;−&lt;/button&gt;
+                    &lt;span aria-label={'Quantity of ' + item.name}&gt;{item.qty}&lt;/span&gt;
+                    &lt;button onClick={() =&gt; increase(item.id)} aria-label={'One more ' + item.name}&gt;+&lt;/button&gt;
+                  &lt;/span&gt;
+                  &lt;span className="line-price"&gt;{won(item.price * item.qty)}&lt;/span&gt;
+                &lt;/li&gt;
+              ))}
+            &lt;/ul&gt;
+          )}
+        &lt;p className="total" aria-live="polite"&gt;&lt;span&gt;Total&lt;/span&gt;&lt;span&gt;{won(total)}&lt;/span&gt;&lt;/p&gt;
+      &lt;/aside&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">Notes</h2>
+        <ul class="notes">
+          <li><strong>Each cart item now carries <code>qty</code></strong>, added with <code>{ ...product, qty: 1 }</code> when it first goes in.</li>
+          <li><strong>+ uses the Toggle pattern from the slides:</strong> <code>map</code> copies every item, and the one that matches gets a new object with <code>qty + 1</code>.</li>
+          <li><strong>&minus; at 1 removes the line.</strong> The map is followed by a <code>filter</code> that drops anything at zero, so the cart never shows a quantity of 0.</li>
+          <li><strong>Both the total and the cart count</strong> now multiply by quantity, and both are still derived with <code>reduce</code>.</li>
+        </ul>
+      </section>
+
+      <section class="section" aria-labelledby="credits-title">
+        <h2 id="credits-title">Photo credits</h2>
+        <ul class="notes credits">
+          <li><strong>Wireless Earbuds</strong>: <a href="https://commons.wikimedia.org/wiki/File:ActiveSound_wireless_earbuds_by_Hykker_(POJM200483).jpg" rel="noopener">photo</a> (uncredited), public domain, via Wikimedia Commons. Cropped and resized.</li>
+          <li><strong>Mechanical Keyboard</strong>: <a href="https://commons.wikimedia.org/wiki/File:Lingbao_JIGUANSHI_Mechanical_Gaming_Keyboard.jpg" rel="noopener">photo</a> by Morn, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, via Wikimedia Commons. Cropped and resized.</li>
+          <li><strong>USB-C Hub</strong>: <a href="https://commons.wikimedia.org/wiki/File:USB-C_Hubb_5_portar.jpg" rel="noopener">photo</a> by Khalid Bencherifa, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, via Wikimedia Commons. Cropped and resized.</li>
+          <li><strong>Laptop Stand</strong>: <a href="https://commons.wikimedia.org/wiki/File:Laptop_stand.jpg" rel="noopener">photo</a> by Solijon Solayev, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, via Wikimedia Commons. Cropped and resized.</li>
+          <li><strong>HD Webcam</strong>: <a href="https://commons.wikimedia.org/wiki/File:Webcam_01.jpg" rel="noopener">photo</a> by Pmwiki1, <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.en" rel="noopener">CC0</a>, via Wikimedia Commons. Cropped and resized.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Homework</dt><dd>Interactive Shopping Cart</dd></div>
+          <div><dt>Step</dt><dd>4 of 5</dd></div>
+          <div><dt>State</dt><dd>cart items with qty</dd></div>
+          <div><dt>Update</dt><dd>map + object spread</dd></div>
+          <div><dt>At zero</dt><dd>Line removed</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="homework_03_cart_sidebar.html">Previous: step 3, Cart sidebar</a></p>
+          <p><a href="homework_05_shopping_cart_component.html">Next: step 5, ShoppingCart component</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20State_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 homework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+const PRODUCTS = [
+  { id: 1, name: 'Wireless Earbuds',    price: 89000,  image: 'img/earbuds.jpg' },
+  { id: 2, name: 'Mechanical Keyboard', price: 129000, image: 'img/keyboard.jpg' },
+  { id: 3, name: 'USB-C Hub',           price: 45000,  image: 'img/usb-hub.jpg' },
+  { id: 4, name: 'Laptop Stand',        price: 39000,  image: 'img/laptop-stand.jpg' },
+  { id: 5, name: 'HD Webcam',           price: 72000,  image: 'img/webcam.jpg' },
+];
+
+const won = n => n.toLocaleString('ko-KR') + ' KRW';
+
+function Shop() {
+  const [cart, setCart] = useState([]);
+
+  const lineOf = id => cart.find(item => item.id === id);
+
+  const add = product => setCart(prev => [...prev, { ...product, qty: 1 }]);
+  const remove = id => setCart(prev => prev.filter(item => item.id !== id));
+  const increase = id => setCart(prev => prev.map(item =>
+    item.id === id ? { ...item, qty: item.qty + 1 } : item
+  ));
+  const decrease = id => setCart(prev => prev
+    .map(item => item.id === id ? { ...item, qty: item.qty - 1 } : item)
+    .filter(item => item.qty > 0)
+  );
+
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const count = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  return (
+    <div className="shop with-cart">
+      <ul className="product-grid">
+        {PRODUCTS.map(p => (
+          <li key={p.id}>
+            <img src={p.image} alt="" width="320" height="200" />
+            <h3>{p.name}</h3>
+            <p className="price">{won(p.price)}</p>
+            {lineOf(p.id)
+              ? <button onClick={() => remove(p.id)}>Remove</button>
+              : <button onClick={() => add(p)}>Add to cart</button>}
+          </li>
+        ))}
+      </ul>
+
+      <aside className="cart-panel" aria-label="Cart">
+        <h3>Cart ({count})</h3>
+        {cart.length === 0
+          ? <p className="muted">Your cart is empty.</p>
+          : (
+            <ul>
+              {cart.map(item => (
+                <li key={item.id}>
+                  <span className="line-name">{item.name}</span>
+                  <span className="qty">
+                    <button onClick={() => decrease(item.id)} aria-label={'One fewer ' + item.name}>−</button>
+                    <span aria-label={'Quantity of ' + item.name}>{item.qty}</span>
+                    <button onClick={() => increase(item.id)} aria-label={'One more ' + item.name}>+</button>
+                  </span>
+                  <span className="line-price">{won(item.price * item.qty)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        <p className="total" aria-live="polite"><span>Total</span><span>{won(total)}</span></p>
+      </aside>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('step4-demo')).render(<Shop />);
+  </script>
+</body>
+</html>

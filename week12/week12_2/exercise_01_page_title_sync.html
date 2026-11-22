@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 1 by Ryan Wong: an input whose text is copied into document.title by useEffect, with a cleanup that resets the title to WebPro on unmount.">
+  <title>Exercise 1: Page title sync &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 1</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Page title sync</h1>
+        <p class="lead">An effect that talks to something outside React: the browser tab. Whatever is typed becomes the tab title, and the cleanup puts it back when the component goes away.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Build a component with a text input. Use useEffect to update <code>document.title</code> to show whatever is typed in the input. Revert the title to &ldquo;WebPro&rdquo; when the component unmounts (via cleanup).</p>
+          <cite>Lecturer&rsquo;s Friday study guide &mdash; Practice exercise 1</cite>
+        </blockquote>
+<div id="title-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+        <p>Type, then watch the browser tab. The Unmount button removes the component so the cleanup can be seen running.</p>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">TitleEditor.jsx</p>
+<pre class="code"><code>function TitleEditor() {
+  const [text, setText] = useState('');
+
+  useEffect(() =&gt; {
+    document.title = text || 'WebPro';
+    return () =&gt; { document.title = 'WebPro'; };
+  }, [text]);
+
+  return (
+    &lt;input
+      value={text}
+      onChange={e =&gt; setText(e.target.value)}
+      placeholder="Type to change tab title…"
+      aria-label="Tab title"
+    /&gt;
+  );
+}
+
+function Demo() {
+  const [shown, setShown] = useState(true);
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setShown(s =&gt; !s)}&gt;
+        {shown ? 'Unmount TitleEditor' : 'Mount TitleEditor'}
+      &lt;/button&gt;
+      {shown ? &lt;TitleEditor /&gt; : &lt;p className="muted"&gt;Unmounted: the cleanup set the title back to “WebPro”.&lt;/p&gt;}
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong><code>document.title</code> is outside React</strong>, so changing it is a side effect. It belongs in <code>useEffect</code>, not in the render.</li>
+          <li><strong><code>[text]</code> re-runs the effect on every keystroke</strong>, and only then. Other re-renders leave the title alone.</li>
+          <li><strong>The cleanup runs twice in this component&rsquo;s life:</strong> before each new run, and on unmount. On unmount it is what resets the title to &ldquo;WebPro&rdquo;.</li>
+          <li>The <code>Demo</code> wrapper with the Unmount button is mine, in the same style as the lecturer&rsquo;s demo pages; the <code>TitleEditor</code> itself is the study guide&rsquo;s.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Effect</dt><dd>document.title</dd></div>
+          <div><dt>Dependencies</dt><dd>[text]</dd></div>
+          <div><dt>Cleanup</dt><dd>Reset to “WebPro”</dd></div>
+          <div><dt>Source</dt><dd>Study guide, exercise 1</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_02_fetch_a_user.html">Next: Fetch a user from an API</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Fri_StudyGuide.html" rel="noopener">Lecturer&rsquo;s Friday study guide</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function TitleEditor() {
+  const [text, setText] = useState('');
+
+  useEffect(() => {
+    document.title = text || 'WebPro';
+    return () => { document.title = 'WebPro'; };
+  }, [text]);
+
+  return (
+    <input
+      value={text}
+      onChange={e => setText(e.target.value)}
+      placeholder="Type to change tab title…"
+      aria-label="Tab title"
+    />
+  );
+}
+
+function Demo() {
+  const [shown, setShown] = useState(true);
+  return (
+    <div>
+      <button onClick={() => setShown(s => !s)}>
+        {shown ? 'Unmount TitleEditor' : 'Mount TitleEditor'}
+      </button>
+      {shown ? <TitleEditor /> : <p className="muted">Unmounted: the cleanup set the title back to “WebPro”.</p>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('title-demo')).render(<Demo />);
+  </script>
+</body>
+</html>

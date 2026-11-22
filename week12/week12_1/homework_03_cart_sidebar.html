@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 homework step 3 by Ryan Wong: a cart sidebar listing the items in the cart and a total price computed from state with reduce.">
+  <title>Homework 3: Cart sidebar &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_1 &middot; Homework 3/5</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Shopping cart, step 3: Cart sidebar</h1>
+        <p class="lead">The cart gets a sidebar. It lists what is in the cart and a total price, and the total is computed from the cart array on every render, not kept in a second piece of state.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section wide" aria-labelledby="task-title">
+        <h2 id="task-title">The step</h2>
+        <nav class="steps" aria-label="Homework steps">
+          <a href="homework_01_product_list.html"><span class="n">1</span>Product list</a>
+          <a href="homework_02_add_remove_buttons.html"><span class="n">2</span>Add / Remove buttons</a>
+          <a href="homework_03_cart_sidebar.html" aria-current="page"><span class="n">3</span>Cart sidebar</a>
+          <a href="homework_04_quantity_controls.html"><span class="n">4</span>Quantity controls</a>
+          <a href="homework_05_shopping_cart_component.html"><span class="n">5</span>ShoppingCart component</a>
+        </nav>
+        <blockquote class="brief">
+          <p><strong>3. Cart sidebar.</strong> Items + total price, computed from state.</p>
+          <cite>Week 12 Monday slides &mdash; Homework: Interactive Shopping Cart</cite>
+        </blockquote>
+<div id="step3-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The code</h2>
+<div class="code-block">
+<p class="code-label">Shop.jsx</p>
+<pre class="code"><code>const PRODUCTS = [
+  { id: 1, name: 'Wireless Earbuds',    price: 89000,  image: 'img/earbuds.jpg' },
+  { id: 2, name: 'Mechanical Keyboard', price: 129000, image: 'img/keyboard.jpg' },
+  { id: 3, name: 'USB-C Hub',           price: 45000,  image: 'img/usb-hub.jpg' },
+  { id: 4, name: 'Laptop Stand',        price: 39000,  image: 'img/laptop-stand.jpg' },
+  { id: 5, name: 'HD Webcam',           price: 72000,  image: 'img/webcam.jpg' },
+];
+
+const won = n =&gt; n.toLocaleString('ko-KR') + ' KRW';
+
+function Shop() {
+  const [cart, setCart] = useState([]);
+
+  const inCart = id =&gt; cart.some(item =&gt; item.id === id);
+  const add    = product =&gt; setCart(prev =&gt; [...prev, product]);
+  const remove = id =&gt; setCart(prev =&gt; prev.filter(item =&gt; item.id !== id));
+
+  const total = cart.reduce((sum, item) =&gt; sum + item.price, 0);
+
+  return (
+    &lt;div className="shop with-cart"&gt;
+      &lt;ul className="product-grid"&gt;
+        {PRODUCTS.map(p =&gt; (
+          &lt;li key={p.id}&gt;
+            &lt;img src={p.image} alt="" width="320" height="200" /&gt;
+            &lt;h3&gt;{p.name}&lt;/h3&gt;
+            &lt;p className="price"&gt;{won(p.price)}&lt;/p&gt;
+            {inCart(p.id)
+              ? &lt;button onClick={() =&gt; remove(p.id)}&gt;Remove&lt;/button&gt;
+              : &lt;button onClick={() =&gt; add(p)}&gt;Add to cart&lt;/button&gt;}
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+
+      &lt;aside className="cart-panel" aria-label="Cart"&gt;
+        &lt;h3&gt;Cart ({cart.length})&lt;/h3&gt;
+        {cart.length === 0
+          ? &lt;p className="muted"&gt;Your cart is empty.&lt;/p&gt;
+          : (
+            &lt;ul&gt;
+              {cart.map(item =&gt; (
+                &lt;li key={item.id}&gt;
+                  &lt;span className="line-name"&gt;{item.name}&lt;/span&gt;
+                  &lt;span className="line-price"&gt;{won(item.price)}&lt;/span&gt;
+                &lt;/li&gt;
+              ))}
+            &lt;/ul&gt;
+          )}
+        &lt;p className="total" aria-live="polite"&gt;&lt;span&gt;Total&lt;/span&gt;&lt;span&gt;{won(total)}&lt;/span&gt;&lt;/p&gt;
+      &lt;/aside&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">Notes</h2>
+        <ul class="notes">
+          <li><strong>&ldquo;Computed from state&rdquo;</strong> is the important phrase on the slide. <code>total</code> is a <code>reduce</code> over <code>cart</code>, recalculated each render.</li>
+          <li><strong>Why not <code>useState</code> for the total?</strong> Every add and remove would have to remember to update it too. A derived value cannot fall out of sync.</li>
+          <li><strong>The empty state</strong> says so in words instead of showing an empty list and a total of zero.</li>
+          <li>On wide screens the sidebar sits to the right of the products; on phones it drops below them.</li>
+        </ul>
+      </section>
+
+      <section class="section" aria-labelledby="credits-title">
+        <h2 id="credits-title">Photo credits</h2>
+        <ul class="notes credits">
+          <li><strong>Wireless Earbuds</strong>: <a href="https://commons.wikimedia.org/wiki/File:ActiveSound_wireless_earbuds_by_Hykker_(POJM200483).jpg" rel="noopener">photo</a> (uncredited), public domain, via Wikimedia Commons. Cropped and resized.</li>
+          <li><strong>Mechanical Keyboard</strong>: <a href="https://commons.wikimedia.org/wiki/File:Lingbao_JIGUANSHI_Mechanical_Gaming_Keyboard.jpg" rel="noopener">photo</a> by Morn, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, via Wikimedia Commons. Cropped and resized.</li>
+          <li><strong>USB-C Hub</strong>: <a href="https://commons.wikimedia.org/wiki/File:USB-C_Hubb_5_portar.jpg" rel="noopener">photo</a> by Khalid Bencherifa, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, via Wikimedia Commons. Cropped and resized.</li>
+          <li><strong>Laptop Stand</strong>: <a href="https://commons.wikimedia.org/wiki/File:Laptop_stand.jpg" rel="noopener">photo</a> by Solijon Solayev, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, via Wikimedia Commons. Cropped and resized.</li>
+          <li><strong>HD Webcam</strong>: <a href="https://commons.wikimedia.org/wiki/File:Webcam_01.jpg" rel="noopener">photo</a> by Pmwiki1, <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.en" rel="noopener">CC0</a>, via Wikimedia Commons. Cropped and resized.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Homework</dt><dd>Interactive Shopping Cart</dd></div>
+          <div><dt>Step</dt><dd>3 of 5</dd></div>
+          <div><dt>State</dt><dd>cart: array of items</dd></div>
+          <div><dt>Derived</dt><dd>total, with reduce</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="homework_02_add_remove_buttons.html">Previous: step 2, Add / Remove buttons</a></p>
+          <p><a href="homework_04_quantity_controls.html">Next: step 4, Quantity controls</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20State_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 homework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+const PRODUCTS = [
+  { id: 1, name: 'Wireless Earbuds',    price: 89000,  image: 'img/earbuds.jpg' },
+  { id: 2, name: 'Mechanical Keyboard', price: 129000, image: 'img/keyboard.jpg' },
+  { id: 3, name: 'USB-C Hub',           price: 45000,  image: 'img/usb-hub.jpg' },
+  { id: 4, name: 'Laptop Stand',        price: 39000,  image: 'img/laptop-stand.jpg' },
+  { id: 5, name: 'HD Webcam',           price: 72000,  image: 'img/webcam.jpg' },
+];
+
+const won = n => n.toLocaleString('ko-KR') + ' KRW';
+
+function Shop() {
+  const [cart, setCart] = useState([]);
+
+  const inCart = id => cart.some(item => item.id === id);
+  const add    = product => setCart(prev => [...prev, product]);
+  const remove = id => setCart(prev => prev.filter(item => item.id !== id));
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+  return (
+    <div className="shop with-cart">
+      <ul className="product-grid">
+        {PRODUCTS.map(p => (
+          <li key={p.id}>
+            <img src={p.image} alt="" width="320" height="200" />
+            <h3>{p.name}</h3>
+            <p className="price">{won(p.price)}</p>
+            {inCart(p.id)
+              ? <button onClick={() => remove(p.id)}>Remove</button>
+              : <button onClick={() => add(p)}>Add to cart</button>}
+          </li>
+        ))}
+      </ul>
+
+      <aside className="cart-panel" aria-label="Cart">
+        <h3>Cart ({cart.length})</h3>
+        {cart.length === 0
+          ? <p className="muted">Your cart is empty.</p>
+          : (
+            <ul>
+              {cart.map(item => (
+                <li key={item.id}>
+                  <span className="line-name">{item.name}</span>
+                  <span className="line-price">{won(item.price)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        <p className="total" aria-live="polite"><span>Total</span><span>{won(total)}</span></p>
+      </aside>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('step3-demo')).render(<Shop />);
+  </script>
+</body>
+</html>

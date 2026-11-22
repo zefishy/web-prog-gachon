@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 2 by Ryan Wong: a task list kept in array state, adding with the spread operator and removing with filter.">
+  <title>Exercise 2: Add &amp; remove items &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_1 &middot; Exercise 2</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Add &amp; remove items from a list</h1>
+        <p class="lead">Array state, updated the immutable way. Adding spreads the old array into a new one; removing filters into a new one. The original array is never pushed to or spliced.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Build a component with a text input and &ldquo;Add&rdquo; button. Items typed in the input are added to an array stored in state. Each item has a &ldquo;&#x2715;&rdquo; button that removes it from the list.</p>
+          <cite>Lecturer&rsquo;s Monday study guide &mdash; Practice exercise 2</cite>
+        </blockquote>
+<div id="tasks-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">TaskList.jsx</p>
+<pre class="code"><code>function TaskList() {
+  const [tasks, setTasks] = useState([]);
+  const [input, setInput] = useState('');
+
+  function addTask() {
+    if (!input.trim()) return;
+    setTasks(prev =&gt; [...prev, { id: Date.now(), text: input.trim() }]);
+    setInput('');
+  }
+
+  function removeTask(id) {
+    setTasks(prev =&gt; prev.filter(t =&gt; t.id !== id));
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;input value={input} onChange={e =&gt; setInput(e.target.value)}
+             onKeyDown={e =&gt; e.key === 'Enter' &amp;&amp; addTask()}
+             placeholder="New task" aria-label="New task" /&gt;
+      &lt;button onClick={addTask}&gt;Add&lt;/button&gt;
+      &lt;ul&gt;
+        {tasks.map(task =&gt; (
+          &lt;li key={task.id}&gt;
+            {task.text}
+            &lt;button onClick={() =&gt; removeTask(task.id)} aria-label={'Remove ' + task.text}&gt;✕&lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+      {tasks.length === 0 &amp;&amp; &lt;p className="muted"&gt;No tasks yet.&lt;/p&gt;}
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>Two pieces of state.</strong> <code>tasks</code> is the list; <code>input</code> is the text box. Each has its own setter, as the slides recommend for independent values.</li>
+          <li><strong>Add: <code>[...prev, item]</code>.</strong> A new array with the old items plus one. <code>tasks.push()</code> would keep the same reference, and React would skip the re-render.</li>
+          <li><strong>Remove: <code>prev.filter(...)</code>.</strong> <code>filter</code> always returns a new array, so it is immutable by design.</li>
+          <li><strong>Keys come from the data.</strong> Each task gets <code>id: Date.now()</code>, so removing one item does not make React confuse the rows after it.</li>
+          <li>Pressing Enter also adds a task, and each &#x2715; button is labelled with the task it removes.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>State</dt><dd>array + string</dd></div>
+          <div><dt>Add</dt><dd>spread</dd></div>
+          <div><dt>Remove</dt><dd>filter</dd></div>
+          <div><dt>Source</dt><dd>Study guide, exercise 2</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_03_lift_state_score_board.html">Next: Lift state between two counters</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Mon_StudyGuide.html" rel="noopener">Lecturer&rsquo;s Monday study guide</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function TaskList() {
+  const [tasks, setTasks] = useState([]);
+  const [input, setInput] = useState('');
+
+  function addTask() {
+    if (!input.trim()) return;
+    setTasks(prev => [...prev, { id: Date.now(), text: input.trim() }]);
+    setInput('');
+  }
+
+  function removeTask(id) {
+    setTasks(prev => prev.filter(t => t.id !== id));
+  }
+
+  return (
+    <div>
+      <input value={input} onChange={e => setInput(e.target.value)}
+             onKeyDown={e => e.key === 'Enter' && addTask()}
+             placeholder="New task" aria-label="New task" />
+      <button onClick={addTask}>Add</button>
+      <ul>
+        {tasks.map(task => (
+          <li key={task.id}>
+            {task.text}
+            <button onClick={() => removeTask(task.id)} aria-label={'Remove ' + task.text}>✕</button>
+          </li>
+        ))}
+      </ul>
+      {tasks.length === 0 && <p className="muted">No tasks yet.</p>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('tasks-demo')).render(<TaskList />);
+  </script>
+</body>
+</html>
