@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="Ryan Wong">
+    <meta name="description" content="Week 9_1 homework: Lighthouse accessibility audit of the GACHON WIND team project page, with before and after captures from Chrome DevTools.">
+    <title>Lighthouse Accessibility Audit &mdash; Week 9_1</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Crect%20width='16'%20height='16'%20rx='3'%20fill='%23e8b04b'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="../../css/shared.css">
+    <link rel="stylesheet" href="../week9.css">
+    <script src="../../js/main.js"></script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 9_1: Accessibility audit</span>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+  <main id="main">
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Week 9_1 &mdash; Accessibility Audit</h1>
+        <p class="lead">
+          I ran Lighthouse (Accessibility only) on our team project,
+          the GACHON WIND baseball club homepage. It scored 100 on the first
+          run, so there were no failing audits to fix. I fixed the one flag the
+          report did raise and ran it again.
+        </p>
+
+        <div class="stats" role="list" aria-label="Audit results at a glance">
+          <div class="stat" role="listitem">
+            <span class="page">Accessibility score</span>
+            <span class="name">Before &rarr; after</span>
+            <span class="figures">100 &rarr; 100</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="page">Failing audits</span>
+            <span class="name">Counted in the score</span>
+            <span class="figures">0 &rarr; 0</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="page">Unscored flags</span>
+            <span class="name">Label in name</span>
+            <span class="figures">1 &rarr; 0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <div class="report-column">
+
+        <section class="section" aria-labelledby="brief-title">
+          <h2 id="brief-title">The homework</h2>
+          <blockquote class="brief">
+            <p>Due Thursday before class &middot; post to Discord.</p>
+            <cite>Accessibility slides &mdash; Summary &amp; Homework</cite>
+          </blockquote>
+          <ol class="steps" role="list">
+            <li>Run Lighthouse on your personal or team project site (Accessibility audit only).</li>
+            <li>Screenshot the initial Accessibility score (make sure the scores are 100).</li>
+            <li>Fix at least 3 failing audits from the report.</li>
+            <li>Re-run Lighthouse and screenshot the improved score.</li>
+            <li>Post both screenshots and the list of 3 fixes to the weekly task page.</li>
+          </ol>
+        </section>
+
+        <section class="section" aria-labelledby="before-title">
+          <h2 id="before-title">Before</h2>
+          <p>
+            Audited page:
+            <a href="https://zefishy.github.io/wp-gachon-project2/">zefishy.github.io/wp-gachon-project2</a>
+            (source on <a href="https://github.com/zefishy/wp-gachon-project2">GitHub</a>).
+            Chrome DevTools, Lighthouse tab, Accessibility only, Mobile.
+          </p>
+          <div class="shots">
+            <figure class="audit-shot">
+              <a href="img/a11y-before.png"><img src="img/a11y-before.webp" width="1600" height="868" alt="Chrome DevTools Lighthouse report for zefishy.github.io/wp-gachon-project2 at 16:29:33, Accessibility score 100, showing the list of 10 additional items to check manually"></a>
+              <figcaption>24 Nov 2026, 16:29 &mdash; Accessibility 100. Select the image for the full-size capture.</figcaption>
+            </figure>
+          </div>
+          <p>
+            Every scored audit passed on the first run: colour contrast, image
+            <code>alt</code> text, form labels, button and link names, heading
+            order, the <code>lang</code> attribute and the main landmark. The
+            page already had a skip link
+            (<code>&lt;a class="skip-link" href="#main"&gt;</code>), which the
+            slides ask for.
+          </p>
+        </section>
+
+        <section class="section" aria-labelledby="fix-title">
+          <h2 id="fix-title">What I changed</h2>
+          <p>
+            Because nothing failed, I couldn&rsquo;t fix 3 failing audits. The
+            report did flag one item that doesn&rsquo;t count toward the score,
+            <em>&ldquo;Elements with visible text labels do not have matching
+            accessible names&rdquo;</em> (WCAG 2.5.3, label in name), on the
+            &ldquo;Next game&rdquo; card in the hero.
+          </p>
+          <div class="notes">
+            <ul>
+              <li>
+                The card is a link whose visible text starts with &ldquo;Next
+                game&rdquo;, but its <code>aria-label</code> replaced that text
+                for screen readers. Someone using voice control who says
+                &ldquo;click Next game&rdquo; might not hit it.
+              </li>
+              <li>
+                I removed the <code>aria-label</code> and moved the extra hint
+                into a visually hidden span inside the link, so the accessible
+                name now starts with the visible words.
+              </li>
+              <li>
+                The page is in five languages, so I renamed the dictionary key
+                from <code>hero.nextAria</code> to <code>hero.nextHint</code>
+                in <code>js/i18n.js</code> for all of them.
+              </li>
+            </ul>
+          </div>
+          <pre class="code-block"><code>&lt;!-- before --&gt;
+&lt;a class="hero-next" href="#schedule" data-hero-next
+   data-i18n-attr="aria-label:hero.nextAria"&gt;
+  &lt;span class="hero-next-label"&gt;Next game&lt;/span&gt;
+  ...
+&lt;/a&gt;
+
+&lt;!-- after --&gt;
+&lt;a class="hero-next" href="#schedule" data-hero-next&gt;
+  &lt;span class="hero-next-label"&gt;Next game&lt;/span&gt;
+  ...
+  &lt;span class="sr-only" data-i18n="hero.nextHint"&gt;&mdash; jump to the schedule&lt;/span&gt;
+&lt;/a&gt;</code></pre>
+          <p class="fine">
+            Commit <code>0e891c4</code> in wp-gachon-project2. My before capture
+            shows only the score and the manual checks, so the flag itself is
+            documented here by the code change.
+          </p>
+        </section>
+
+        <section class="section" aria-labelledby="after-title">
+          <h2 id="after-title">After</h2>
+          <div class="shots">
+            <figure class="audit-shot">
+              <a href="img/a11y-after.png"><img src="img/a11y-after.webp" width="1600" height="893" alt="Chrome DevTools Lighthouse report for zefishy.github.io/wp-gachon-project2 at 21:45:44, Accessibility score 100" loading="lazy"></a>
+              <figcaption>24 Nov 2026, 21:45 &mdash; Accessibility 100 after the change was pushed.</figcaption>
+            </figure>
+          </div>
+          <p>
+            The score stayed at 100 and the label-in-name flag is gone. The 10
+            &ldquo;additional items to manually check&rdquo; are still listed,
+            because Lighthouse can&rsquo;t test them automatically.
+          </p>
+        </section>
+
+      </div>
+
+      <aside class="facts" aria-labelledby="facts-title">
+        <h2 id="facts-title">Report facts</h2>
+        <dl>
+          <div>
+            <dt>Site</dt>
+            <dd>GACHON WIND, Team 16 project</dd>
+          </div>
+          <div>
+            <dt>Tool</dt>
+            <dd>Chrome DevTools Lighthouse, Accessibility only</dd>
+          </div>
+          <div>
+            <dt>Device</dt>
+            <dd>Mobile (default)</dd>
+          </div>
+          <div>
+            <dt>Score</dt>
+            <dd>100 &rarr; 100</dd>
+          </div>
+          <div>
+            <dt>Failing audits</dt>
+            <dd>0 on both runs</dd>
+          </div>
+          <div>
+            <dt>Captures</dt>
+            <dd>16:29 and 21:45, 24 Nov 2026</dd>
+          </div>
+        </dl>
+        <div class="see-also">
+          <h3>See also</h3>
+          <p><a href="https://zefishy.github.io/wp-gachon-project2/">The audited page</a></p>
+          <p><a href="../week9_2/hw-lighthouse-performance.html">Week 9_2: the performance audit</a></p>
+          <p><a href="../../index.html#week-9">Week 9 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Web Programming Library @ Gachon University</p>
+        <p class="fine">Coursework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and a little JavaScript.</p>
+        <ul>
+          <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+  </body>
+</html>

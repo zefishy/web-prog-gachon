@@ -608,3 +608,97 @@ pre.code code {
   .filter-bar__btn { transition: none; }
   .product-card:hover { transform: none; }
 }
+/* ---------- Lesson pages: week11_1/ and week11_2/ exercises ----------
+   The exercise pages use the Week 12 page shape (one column, a demo panel
+   React renders into, an "At a glance" aside), so everything here is scoped
+   to .lesson and leaves product-card.html and portfolio-gallery.html alone.
+   The topic files are bare .js fragments and load no CSS. */
+.layout.lesson {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3rem;
+  align-content: start;
+}
+
+.lesson > * { min-width: 0; max-width: 46rem; }
+.lesson .section + .section { margin-top: 0; }
+.lesson .section > h2 + * { margin-top: 1rem; }
+.lesson .section > .code-block + .code-block { margin-top: 1.5rem; }
+
+.lesson .brief { margin-top: 1.25rem; }
+.lesson .brief > * + :not(cite) { margin-top: .6rem; }
+.lesson .brief ul { padding-left: 1.25rem; list-style: disc; }
+.lesson .brief li + li { margin-top: .3rem; }
+
+.lesson .notes {
+  margin-top: 1rem;
+  padding-top: 0;
+  border-top: 0;
+  display: grid;
+  gap: .6rem;
+}
+
+/* At a glance: here .facts is the <dl>, not the aside */
+.lesson .facts {
+  display: grid;
+  margin-top: 1rem;
+  padding-top: 0;
+  border-top: 0;
+  position: static;
+}
+
+.lesson .facts > div {
+  display: grid;
+  gap: .15rem;
+  padding-block: .75rem;
+  border-top: 1px solid var(--rule);
+}
+
+.lesson .see-also { margin-top: 1.25rem; display: grid; gap: .45rem; }
+.lesson .see-also a { text-underline-offset: .2em; }
+
+/* ---------- Demo panel: where React renders ---------- */
+.demo {
+  margin-top: 1.25rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+.demo > * + *,
+.demo div > * + * { margin-top: .75rem; }
+
+.demo h2 { font-size: 1.5rem; }
+.demo h3 { font-size: 1.125rem; }
+.demo img { display: block; max-width: 100%; height: auto; }
+.demo a { text-underline-offset: .2em; }
+
+.demo ul { display: grid; gap: .4rem; }
+
+.demo ul > li {
+  padding: .45rem .85rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+/* Course catalog and student card: the lecturer's .card and .badge classes */
+.demo .card {
+  padding: 1rem 1.25rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+.demo .badge {
+  display: inline-block;
+  padding: .125rem .625rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.badge-required { background: var(--danger); color: var(--on-danger); }
+.badge-elective { background: var(--muted);  color: var(--paper); }

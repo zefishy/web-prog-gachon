@@ -299,6 +299,33 @@
   font-size: .875rem;
 }
 
+/* ---------- Homework reports: sub-headings and code samples ---------- */
+.section h3 {
+  margin-top: 2rem;
+  font-size: 1.125rem;
+}
+
+.section h3 + p { margin-top: .6rem; }
+
+pre.code-block {
+  max-width: 100%;
+  margin: 1.25rem 0 0;
+  background: var(--surface);
+  font-size: .8125rem;
+  line-height: 1.55;
+  white-space: pre;
+}
+
+.section > p code {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: .1rem .35rem;
+  font-size: .875em;
+}
+
+.audit-shot a { display: block; max-width: 35rem; }
+
 /* ---------- Details / disclosure ---------- */
 details.what-changed {
   margin-top: 1.5rem;

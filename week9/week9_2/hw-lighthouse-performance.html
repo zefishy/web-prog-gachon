@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="Ryan Wong">
+    <meta name="description" content="Week 9_2 homework: Lighthouse performance audit of the GACHON WIND team project page, 91 to 96 after a responsive hero image and minified CSS and JavaScript.">
+    <title>Lighthouse Performance Audit &mdash; Week 9_2</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Crect%20width='16'%20height='16'%20rx='3'%20fill='%23e8b04b'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="../../css/shared.css">
+    <link rel="stylesheet" href="../week9.css">
+    <script src="../../js/main.js"></script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 9_2: Performance audit</span>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+  <main id="main">
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Week 9_2 &mdash; Performance Audit</h1>
+        <p class="lead">
+          I ran Lighthouse (Performance, Mobile) on our team project, the
+          GACHON WIND baseball club homepage, fixed the three things the report
+          flagged that I could change, and ran it again.
+        </p>
+
+        <div class="stats" role="list" aria-label="Audit results at a glance">
+          <div class="stat" role="listitem">
+            <span class="page">Performance score</span>
+            <span class="name">Before &rarr; after</span>
+            <span class="figures">91 &rarr; 96</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="page">Largest Contentful Paint</span>
+            <span class="name">The hero photo</span>
+            <span class="figures">3.5 s &rarr; 2.8 s</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="page">Optimizations</span>
+            <span class="name">Image, CSS, JavaScript</span>
+            <span class="figures">3</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <div class="report-column">
+
+        <section class="section" aria-labelledby="brief-title">
+          <h2 id="brief-title">The homework</h2>
+          <blockquote class="brief">
+            <p>Optimize your personal site and post the result to your page.</p>
+            <cite>Performance slides &mdash; Summary &amp; Homework</cite>
+          </blockquote>
+          <ol class="steps" role="list">
+            <li>Run Lighthouse and screenshot your Performance score.</li>
+            <li>Apply at least 3 optimizations from the lecture.</li>
+            <li>Re-run Lighthouse and screenshot the new score.</li>
+            <li>Post both screenshots to your page with a 2-sentence description of what you changed.</li>
+          </ol>
+        </section>
+
+        <section class="section" aria-labelledby="summary-title">
+          <h2 id="summary-title">What I changed, in two sentences</h2>
+          <p>
+            I gave the hero photo a smaller 800-pixel WebP version with
+            <code>srcset</code>, so phones download 65&nbsp;KB instead of the
+            152&nbsp;KB original, and switched the page to minified copies of
+            its CSS and JavaScript. The Performance score went from 91 to 96 and
+            Largest Contentful Paint from 3.5&nbsp;s to 2.8&nbsp;s.
+          </p>
+        </section>
+
+        <section class="section" aria-labelledby="before-title">
+          <h2 id="before-title">Before</h2>
+          <p>
+            Audited page:
+            <a href="https://zefishy.github.io/wp-gachon-project2/">zefishy.github.io/wp-gachon-project2</a>
+            (source on <a href="https://github.com/zefishy/wp-gachon-project2">GitHub</a>).
+            Chrome DevTools, Lighthouse tab, Performance, Mobile, in a private
+            window so browser extensions didn&rsquo;t affect the result.
+          </p>
+          <div class="shots">
+            <figure class="audit-shot">
+              <a href="img/perf-before-score.png"><img src="img/perf-before-score.webp" width="1600" height="868" alt="Lighthouse report for zefishy.github.io/wp-gachon-project2 at 16:48:03, Performance score 91"></a>
+              <figcaption>Score: 91.</figcaption>
+            </figure>
+            <figure class="audit-shot">
+              <a href="img/perf-before-metrics.png"><img src="img/perf-before-metrics.webp" width="1600" height="868" alt="Lighthouse metrics before: First Contentful Paint 1.4 s, Largest Contentful Paint 3.5 s, Total Blocking Time 0 ms, Cumulative Layout Shift 0.019, Speed Index 1.4 s" loading="lazy"></a>
+              <figcaption>Metrics: FCP 1.4&nbsp;s, LCP 3.5&nbsp;s, TBT 0&nbsp;ms, CLS 0.019, Speed Index 1.4&nbsp;s.</figcaption>
+            </figure>
+            <figure class="audit-shot">
+              <a href="img/perf-before-insights.png"><img src="img/perf-before-insights.webp" width="1600" height="868" alt="Lighthouse insights and diagnostics before: efficient cache lifetimes 751 KiB, improve image delivery 99 KiB, render-blocking requests 500 ms, minify CSS 3 KiB, minify JavaScript 5 KiB" loading="lazy"></a>
+              <figcaption>Insights and diagnostics: image delivery 99&nbsp;KiB, minify CSS 3&nbsp;KiB, minify JavaScript 5&nbsp;KiB, render-blocking 500&nbsp;ms, cache lifetimes 751&nbsp;KiB.</figcaption>
+            </figure>
+          </div>
+          <p class="fine">All three before captures come from the same run, 24 Nov 2026 at 16:48.</p>
+        </section>
+
+        <section class="section" aria-labelledby="opt-title">
+          <h2 id="opt-title">The three optimizations</h2>
+
+          <h3>1. A correctly sized hero image</h3>
+          <p>
+            &ldquo;Improve image delivery&rdquo; pointed at the hero photo: a
+            1200&times;1500 WebP shown at about 721&times;901 on the test
+            phone. I made an 800&times;1000 copy and let the browser choose
+            with <code>srcset</code> and <code>sizes</code>. The photo is also
+            the Largest Contentful Paint element, so this is the change that
+            moved LCP.
+          </p>
+          <pre class="code-block"><code>&lt;!-- before: 152,238 bytes on every screen --&gt;
+&lt;img src="static/img/hero-batter.webp" width="1200" height="1500"
+     fetchpriority="high" alt="..."&gt;
+
+&lt;!-- after: 65,132 bytes on phones --&gt;
+&lt;img src="static/img/hero-batter-800.webp"
+     srcset="static/img/hero-batter-800.webp 800w,
+             static/img/hero-batter.webp 1200w"
+     sizes="(max-width: 1024px) 100vw, 50vw"
+     width="1200" height="1500" fetchpriority="high" alt="..."&gt;</code></pre>
+
+          <h3>2. Minified CSS</h3>
+          <p>
+            I generated <code>css/style.min.css</code> with esbuild and pointed
+            the page at it. The readable <code>style.css</code> stays in the
+            repo for editing. Size went from 67,904 to 52,825 bytes, or 13,658
+            to 10,563 bytes after gzip, which is what GitHub Pages actually
+            sends. The stylesheet is the page&rsquo;s only render-blocking file,
+            so making it smaller also helps first paint.
+          </p>
+
+          <h3>3. Minified JavaScript</h3>
+          <p>
+            Same approach for the two scripts: <code>main.js</code> went from
+            41,036 to 22,166 bytes and <code>i18n.js</code> from 51,248 to
+            45,421 bytes. The dictionary file shrinks less because most of it
+            is translation text, which can&rsquo;t be minified.
+          </p>
+          <pre class="code-block"><code>&lt;link rel="stylesheet" href="css/style.min.css"&gt;
+...
+&lt;script src="js/i18n.min.js"&gt;&lt;/script&gt;
+&lt;script src="js/main.min.js"&gt;&lt;/script&gt;</code></pre>
+          <p class="fine">All three changes are commit <code>0e891c4</code> in wp-gachon-project2.</p>
+        </section>
+
+        <section class="section" aria-labelledby="after-title">
+          <h2 id="after-title">After</h2>
+          <div class="shots">
+            <figure class="audit-shot">
+              <a href="img/perf-after-score.png"><img src="img/perf-after-score.webp" width="1600" height="893" alt="Lighthouse report for zefishy.github.io/wp-gachon-project2 at 21:47:07, Performance score 96" loading="lazy"></a>
+              <figcaption>Score: 96.</figcaption>
+            </figure>
+            <figure class="audit-shot">
+              <a href="img/perf-after-metrics.png"><img src="img/perf-after-metrics.webp" width="1600" height="893" alt="Lighthouse metrics after: First Contentful Paint 1.1 s, Largest Contentful Paint 2.8 s, Total Blocking Time 0 ms, Cumulative Layout Shift 0, Speed Index 1.2 s" loading="lazy"></a>
+              <figcaption>Metrics: FCP 1.1&nbsp;s, LCP 2.8&nbsp;s, TBT 0&nbsp;ms, CLS 0, Speed Index 1.2&nbsp;s.</figcaption>
+            </figure>
+            <figure class="audit-shot">
+              <a href="img/perf-after-insights.png"><img src="img/perf-after-insights.webp" width="1600" height="893" alt="Lighthouse insights and diagnostics after: improve image delivery 16 KiB, render-blocking requests 340 ms, cache lifetimes 666 KiB; diagnostics list no longer shows minify CSS or minify JavaScript" loading="lazy"></a>
+              <figcaption>Insights and diagnostics: &ldquo;Minify CSS&rdquo; and &ldquo;Minify JavaScript&rdquo; are gone, and image delivery is down to 16&nbsp;KiB.</figcaption>
+            </figure>
+          </div>
+          <p class="fine">
+            The score and metrics captures are from the 21:47 run. The insights
+            capture is from a second run at 21:51, so its render-blocking
+            estimate (340&nbsp;ms) comes from a different run than the score.
+          </p>
+        </section>
+
+        <section class="section" aria-labelledby="left-title">
+          <h2 id="left-title">What&rsquo;s still flagged</h2>
+          <div class="notes">
+            <ul>
+              <li>
+                <strong>Image delivery, 16&nbsp;KiB.</strong> My DevTools window
+                was 1056&nbsp;px wide, wider than the <code>sizes</code>
+                breakpoint, so the browser picked the 1200&nbsp;px original.
+                The saving went from 99&nbsp;KiB to 16&nbsp;KiB, but the warning
+                isn&rsquo;t fully gone.
+              </li>
+              <li>
+                <strong>Cache lifetimes.</strong> GitHub Pages sets
+                <code>Cache-Control: max-age=600</code> on every file, and a
+                static Pages site can&rsquo;t change its headers.
+              </li>
+              <li>
+                <strong>Render-blocking request.</strong> The stylesheet still
+                blocks first paint. Fixing that would mean inlining the
+                above-the-fold CSS, which I left for later.
+              </li>
+            </ul>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="facts" aria-labelledby="facts-title">
+        <h2 id="facts-title">Report facts</h2>
+        <dl>
+          <div>
+            <dt>Site</dt>
+            <dd>GACHON WIND, Team 16 project</dd>
+          </div>
+          <div>
+            <dt>Tool</dt>
+            <dd>Chrome DevTools Lighthouse, Performance</dd>
+          </div>
+          <div>
+            <dt>Device</dt>
+            <dd>Mobile, Slow 4G throttling (default)</dd>
+          </div>
+          <div>
+            <dt>Score</dt>
+            <dd>91 &rarr; 96</dd>
+          </div>
+          <div>
+            <dt>LCP</dt>
+            <dd>3.5&nbsp;s &rarr; 2.8&nbsp;s</dd>
+          </div>
+          <div>
+            <dt>Captures</dt>
+            <dd>16:48, 21:47 and 21:51, 24 Nov 2026</dd>
+          </div>
+        </dl>
+        <div class="see-also">
+          <h3>See also</h3>
+          <p><a href="https://zefishy.github.io/wp-gachon-project2/">The audited page</a></p>
+          <p><a href="../week9_1/hw-lighthouse-accessibility.html">Week 9_1: the accessibility audit</a></p>
+          <p><a href="../../index.html#week-9">Week 9 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Web Programming Library @ Gachon University</p>
+        <p class="fine">Coursework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and a little JavaScript.</p>
+        <ul>
+          <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 11 exercise 1 by Ryan Wong: a ProfileCard component that takes name, role and email props, plus an optional avatarUrl with a default placeholder image.">
+  <title>Exercise 1: Profile card &mdash; Week 11</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week11.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-11"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 11_2 &middot; Exercise 1</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Profile card</h1>
+        <p class="lead">One component, four props. Three are required. <code>avatarUrl</code> has a default value, so the card still shows a picture when the parent leaves it out.</p>
+      </div>
+    </section>
+
+    <div class="container layout lesson">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Create a <code>ProfileCard</code> component that accepts <code>name</code>, <code>role</code>, <code>email</code>, and optional <code>avatarUrl</code> (default: a placeholder image). Render a card showing all four fields. Use default prop for <code>avatarUrl</code>.</p>
+          <cite>Lecturer&rsquo;s Friday study guide &mdash; Practice exercise 1</cite>
+        </blockquote>
+<div id="profile-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">ProfileCard.jsx</p>
+<pre class="code"><code>function ProfileCard({ name, role, email, avatarUrl = 'https://via.placeholder.com/80' }) {
+  return (
+    &lt;div style={{ border: '1px solid #ccc', borderRadius: 8, padding: 16, maxWidth: 300 }}&gt;
+      &lt;img src={avatarUrl} alt={name} style={{ borderRadius: '50%', width: 80 }} /&gt;
+      &lt;h2&gt;{name}&lt;/h2&gt;
+      &lt;p&gt;{role}&lt;/p&gt;
+      &lt;a href={`mailto:${email}`}&gt;{email}&lt;/a&gt;
+    &lt;/div&gt;
+  );
+}
+
+function App() {
+  return (
+    &lt;ProfileCard
+      name="Dr. Toshpulatov"
+      role="Professor"
+      email="muhiddin@gachon.ac.kr"
+    /&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>Destructured props.</strong> <code>{ name, role, email, avatarUrl }</code> takes the four values out of the props object, so the JSX reads <code>{name}</code> instead of <code>{props.name}</code>.</li>
+          <li><strong>The default value.</strong> <code>avatarUrl = 'https://via.placeholder.com/80'</code> is ordinary destructuring default syntax. <code>App</code> passes no <code>avatarUrl</code>, so the placeholder is what renders.</li>
+          <li><strong>One prop, two uses.</strong> <code>href={`mailto:${email}`}</code> builds the link target from the same <code>email</code> prop that fills the link text.</li>
+          <li><strong>Inline styles are objects.</strong> <code>style={{ ... }}</code> is a JavaScript object inside JSX braces, and bare numbers such as <code>padding: 16</code> are read as pixels.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Component</dt><dd>ProfileCard</dd></div>
+          <div><dt>Props</dt><dd>3 required, 1 with a default</dd></div>
+          <div><dt>Source</dt><dd>Friday study guide, exercise 1</dd></div>
+          <div><dt>Runtime</dt><dd>React 18.3.1, Babel standalone</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_02_notification_list.html">Next: Notification list</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week10/WebPro_Week11_Fri_StudyGuide.html" rel="noopener">Lecturer&rsquo;s Friday study guide</a></p>
+          <p><a href="https://react.dev/learn/passing-props-to-a-component" rel="noopener">react.dev: Passing props to a component</a></p>
+          <p><a href="../../index.html#week-11">Week 11 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 11 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-11">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+function ProfileCard({ name, role, email, avatarUrl = 'https://via.placeholder.com/80' }) {
+  return (
+    <div style={{ border: '1px solid #ccc', borderRadius: 8, padding: 16, maxWidth: 300 }}>
+      <img src={avatarUrl} alt={name} style={{ borderRadius: '50%', width: 80 }} />
+      <h2>{name}</h2>
+      <p>{role}</p>
+      <a href={`mailto:${email}`}>{email}</a>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <ProfileCard
+      name="Dr. Toshpulatov"
+      role="Professor"
+      email="muhiddin@gachon.ac.kr"
+    />
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('profile-demo')).render(<App />);
+  </script>
+</body>
+</html>
