@@ -702,3 +702,31 @@ pre.code code {
 
 .badge-required { background: var(--danger); color: var(--on-danger); }
 .badge-elective { background: var(--muted);  color: var(--paper); }
+
+/* Student profile card (week11_2 homework, Task 11-A) */
+.demo .profile-card {
+  max-width: 22rem;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  transition: transform .2s var(--ease-out), border-color .2s var(--ease-out);
+}
+
+.demo .profile-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+
+.demo .profile-card .card-header {
+  padding: 1rem 1.25rem;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.demo .profile-card .student-name { font-size: 1.25rem; }
+.demo .profile-card .student-id { display: block; margin-top: .25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.demo .profile-card .card-body { padding: 1rem 1.25rem; }
+.demo .profile-card .card-body > * + * { margin-top: .4rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .demo .profile-card { transition: none; }
+  .demo .profile-card:hover { transform: none; }
+}
