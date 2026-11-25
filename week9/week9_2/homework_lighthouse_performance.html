@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="author" content="Ryan Wong" />
+    <meta name="description" content="Week 9_2 homework: the four steps set after the performance lecture, how to do them, and the lecturer's 10-item performance checklist as an interactive tick list with a counter." />
+    <title>Homework: Lighthouse performance &mdash; Week 9_2</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="../../css/shared.css" />
+    <link rel="stylesheet" href="../week9.css" />
+    <script src="../../js/main.js"></script>
+    <style>
+      /* Page-level layer: small bits week9.css does not have. Colours come from the shared tokens. */
+      .section > h3 { margin-top: 2rem; }
+      .section ul.plain, .section ol.plain { list-style: revert; padding-left: 1.4rem; margin-top: 1rem; max-width: 62ch; display: grid; gap: .5rem; }
+      .tag { display: inline-block; padding: .1rem .55rem; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); font-size: .8125rem; font-weight: 700; color: var(--ink); }
+      .tag.before { border-color: var(--danger); }
+      .tag.after { border-color: var(--accent); }
+      .cap { margin: 1.25rem 0 -.75rem; display: flex; gap: .6rem; align-items: center; font-weight: 700; }
+      .cap + pre.code-block { margin-top: 1rem; }
+      .metric-line { margin-top: 1rem; padding: .75rem 1rem; max-width: 62ch; background: var(--surface); border: 1px solid var(--rule); border-left: .375rem solid var(--wk); border-radius: 6px; }
+      pre.code-block { overflow-x: auto; }
+      .checklist { margin: 1.25rem 0 0; display: grid; gap: .5rem; max-width: 62ch; }
+      .checklist li { margin: 0; }
+      .checklist label { display: grid; grid-template-columns: 1.5rem 1fr; gap: .75rem; align-items: start; padding: .75rem 1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; cursor: pointer; }
+      .checklist input { width: 1.25rem; height: 1.25rem; margin: .1rem 0 0; accent-color: var(--accent); }
+      .checklist label:has(input:checked) { border-color: var(--accent); }
+      .checklist .hint { display: block; color: var(--muted); font-size: .9375rem; }
+      .counter { margin-top: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .counter-bar { margin: .5rem 0 1.25rem; max-width: 62ch; height: .5rem; border-radius: 999px; background: var(--surface); border: 1px solid var(--rule); overflow: hidden; }
+      .counter-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s var(--ease-out); }
+      @media (prefers-reduced-motion: reduce) { .counter-bar span { transition: none; } }
+    </style>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 9_2 &middot; Homework</span>
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Switch to light mode"
+            title="Switch to light mode"
+          >
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5" />
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Homework: Lighthouse performance</h1>
+          <p class="lead">
+            The homework in four steps, how to do it, and the lecturer&rsquo;s 10-item performance checklist to tick off.
+          </p>
+        </div>
+      </section>
+
+      <div class="container layout">
+        <div class="report-column">
+
+          <section class="section" aria-labelledby="hw-title">
+            <h2 id="hw-title">The homework</h2>
+            <p>
+              Set at the end of the performance lecture. The slide reads:
+            </p>
+            <blockquote class="brief">
+              <p>Optimize your personal site: (1) Run Lighthouse, screenshot your Performance score. (2) Apply at least 3 optimizations from today. (3) Re-run Lighthouse, screenshot new score. Post both screenshots to your page with a 2-sentence description of what you changed.</p>
+              <cite>Performance slides &mdash; Summary &amp; Homework</cite>
+            </blockquote>
+            <p>That is four jobs, in this order:</p>
+            <ol class="steps">
+              <li><strong>Measure.</strong> Run Lighthouse on your personal site and screenshot the Performance score.</li>
+              <li><strong>Fix.</strong> Apply at least three optimisations from the lecture.</li>
+              <li><strong>Measure again.</strong> Re-run Lighthouse and screenshot the new score.</li>
+              <li><strong>Post.</strong> Put both screenshots on your page, with a two-sentence description of what you changed.</li>
+            </ol>
+          </section>
+
+          <section class="section" aria-labelledby="how-title">
+            <h2 id="how-title">How to do it</h2>
+            <ul class="plain">
+              <li>Serve the page from a local server, not a <code>file://</code> path, so the result is the same on every run. <code>python3 -m http.server</code> is enough.</li>
+              <li>Open it in a private window with extensions off, because extensions add their own requests and skew the score.</li>
+              <li>In DevTools, open the <strong>Lighthouse</strong> tab, tick only <em>Performance</em>, choose <em>Navigation</em> and one device (mobile or desktop), then <em>Analyze page load</em>. Use the same settings for both runs.</li>
+              <li>Take the &ldquo;before&rdquo; screenshot and save the numbers <em>before</em> editing anything. Scores wobble a little between runs, so run twice and note it if they differ.</li>
+              <li>Pick your three fixes from the checklist below. The Diagnostics section of the report tells you which ones apply to your page; the <a href="exercise_01_run_lighthouse_&amp;_read_the_results.html">fix-the-slow-page exercise</a> shows each as a before and after.</li>
+              <li>Write the two sentences last: the first says what you changed, the second says what moved and by how much.</li>
+            </ul>
+          </section>
+
+          <section class="section" aria-labelledby="list-title">
+            <h2 id="list-title">The 10-item performance checklist</h2>
+            <p>
+              From the deck: students should aim to check off all 10 before
+              submitting their final project. The ticks are saved in this
+              browser only.
+            </p>
+            <form id="perf-list" aria-describedby="perf-list-count">
+              <ul class="checklist">
+                <li><label><input type="checkbox" /><span>Compress all images<span class="hint">Use WebP where possible.</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Set <code>width</code> and <code>height</code> on all <code>&lt;img&gt;</code> tags<span class="hint">Stops layout shift.</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Add <code>loading="lazy"</code> on all below-fold images<span class="hint">Not on the hero.</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Add <code>defer</code> to all <code>&lt;script&gt;</code> tags<span class="hint">No render-blocking JavaScript.</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Minify your CSS and JS files<span class="hint">Smaller files, faster load.</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Use a CDN for third-party libraries<span class="hint">Serve them from edge nodes.</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Enable GZIP or Brotli on your server<span class="hint">Compress text responses.</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Set <code>Cache-Control</code> headers for static assets<span class="hint">Repeat visits get <em>304 Not Modified</em> or no request at all.</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Preload your hero image and key fonts<span class="hint"><code>&lt;link rel="preload"&gt;</code>.</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Run Lighthouse &mdash; target Performance 90+<span class="hint">Measure, fix, measure again.</span></span></label></li>
+              </ul>
+              <p class="counter" id="perf-list-count" role="status">0 of 10 checked</p>
+              <div class="counter-bar" aria-hidden="true"><span id="perf-list-bar"></span></div>
+              <p><button type="reset" class="btn btn-secondary">Clear all</button></p>
+            </form>
+            <p class="fine">Source: Performance slides &mdash; Performance Checklist, 10 Quick Wins.</p>
+          </section>
+
+          <section class="section" aria-labelledby="mine-title">
+            <h2 id="mine-title">My own submission</h2>
+            <p>
+              This page is the brief and the checklist. My actual before and
+              after screenshots, scores and changes are on a separate page:
+              <a href="hw-lighthouse-performance.html">my real Lighthouse performance audit</a>.
+            </p>
+          </section>
+
+        </div>
+
+        <aside class="facts" aria-labelledby="facts-title">
+          <h2 id="facts-title">At a glance</h2>
+          <dl>
+            <div><dt>Steps</dt><dd>Measure, fix (3 or more), measure again, post</dd></div>
+            <div><dt>Checklist</dt><dd>10 quick wins</dd></div>
+            <div><dt>Deliverable</dt><dd>Two screenshots and a two-sentence description</dd></div>
+          </dl>
+          <div class="see-also">
+            <h3>See also</h3>
+            <a href="hw-lighthouse-performance.html">Ryan&rsquo;s real performance audit</a>
+            <a href="ex1-lighthouse-results.html">Explainer: reading the Lighthouse results</a>
+            <a href="exercise_01_run_lighthouse_&amp;_read_the_results.html">Exercise 1: fix the slow page</a>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <ul>
+          <li><a href="../../index.html">Week 9_2 &mdash; Performance</a></li>
+          <li><a href="../../index.html">Back to the library</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var form = document.getElementById('perf-list');
+        var boxes = form.querySelectorAll('input[type="checkbox"]');
+        var out = document.getElementById('perf-list-count');
+        var bar = document.getElementById('perf-list-bar');
+        var KEY = 'w9-perf-list';
+        var saved = [];
+        try { saved = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+        boxes.forEach(function (b, i) { b.checked = saved.indexOf(i) !== -1; });
+        function update() {
+          var n = 0, keep = [];
+          boxes.forEach(function (b, i) { if (b.checked) { n++; keep.push(i); } });
+          out.textContent = n + ' of ' + boxes.length + ' checked' + (n === boxes.length ? ' — all ten' : '');
+          bar.style.width = (n / boxes.length * 100) + '%';
+          try { localStorage.setItem(KEY, JSON.stringify(keep)); } catch (e) {}
+        }
+        form.addEventListener('change', update);
+        form.addEventListener('reset', function () { setTimeout(update, 0); });
+        update();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="author" content="Ryan Wong" />
+    <meta name="description" content="Week 9_2 exercise 3: a live page that logs the real run order of blocking, defer and async scripts, including inline module scripts, and explains why defer and async are ignored on inline classic scripts." />
+    <title>Exercise 3: Add defer to scripts &mdash; Week 9_2</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="../../css/shared.css" />
+    <link rel="stylesheet" href="../week9.css" />
+    <script src="../../js/main.js"></script>
+    <style>
+      /* Page-level layer: small bits week9.css does not have. Colours come from the shared tokens. */
+      .section > h3 { margin-top: 2rem; }
+      .section ul.plain, .section ol.plain { list-style: revert; padding-left: 1.4rem; margin-top: 1rem; max-width: 62ch; display: grid; gap: .5rem; }
+      .tag { display: inline-block; padding: .1rem .55rem; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); font-size: .8125rem; font-weight: 700; color: var(--ink); }
+      .tag.before { border-color: var(--danger); }
+      .tag.after { border-color: var(--accent); }
+      .cap { margin: 1.25rem 0 -.75rem; display: flex; gap: .6rem; align-items: center; font-weight: 700; }
+      .cap + pre.code-block { margin-top: 1rem; }
+      .metric-line { margin-top: 1rem; padding: .75rem 1rem; max-width: 62ch; background: var(--surface); border: 1px solid var(--rule); border-left: .375rem solid var(--wk); border-radius: 6px; }
+      pre.code-block { overflow-x: auto; }
+      .checklist { margin: 1.25rem 0 0; display: grid; gap: .5rem; max-width: 62ch; }
+      .checklist li { margin: 0; }
+      .checklist label { display: grid; grid-template-columns: 1.5rem 1fr; gap: .75rem; align-items: start; padding: .75rem 1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; cursor: pointer; }
+      .checklist input { width: 1.25rem; height: 1.25rem; margin: .1rem 0 0; accent-color: var(--accent); }
+      .checklist label:has(input:checked) { border-color: var(--accent); }
+      .checklist .hint { display: block; color: var(--muted); font-size: .9375rem; }
+      .counter { margin-top: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .counter-bar { margin: .5rem 0 1.25rem; max-width: 62ch; height: .5rem; border-radius: 999px; background: var(--surface); border: 1px solid var(--rule); overflow: hidden; }
+      .counter-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s var(--ease-out); }
+      @media (prefers-reduced-motion: reduce) { .counter-bar span { transition: none; } }
+    </style>
+    <style>
+      .run-table { width: 100%; margin-top: 1.25rem; border-collapse: collapse; font-size: .9375rem; }
+      .run-table th, .run-table td { padding: .6rem .75rem; text-align: left; border-bottom: 1px solid var(--rule); vertical-align: top; }
+      .run-table th { font-size: .8125rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+      .run-table td:first-child { font-variant-numeric: tabular-nums; }
+      .run-wrap { overflow-x: auto; }
+      .status-box { margin-top: 1.25rem; padding: .9rem 1.1rem; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); font-weight: 700; max-width: 62ch; }
+      .status-box.ok { border-color: var(--accent); }
+      .status-box.pending { border-color: var(--danger); }
+      .yes { color: var(--accent); font-weight: 700; }
+      .no { color: var(--danger); font-weight: 700; }
+    </style>
+    <script>
+      /* Classic inline script 1: blocking. Defines the logger the other scripts call. */
+      window.__runs = [];
+      window.__mark = function (label, attr) {
+        window.__runs.push({
+          label: label,
+          attr: attr,
+          state: document.readyState,
+          dom: !!document.getElementById('run-body'),
+          t: Math.round(performance.now())
+        });
+      };
+      __mark('Inline classic script', 'none');
+      document.addEventListener('DOMContentLoaded', function () { __mark('DOMContentLoaded event', 'event'); });
+      window.addEventListener('load', function () {
+        __mark('load event', 'event');
+        window.__render();
+      });
+    </script>
+    <script defer>__mark('Inline classic with defer', 'defer (ignored)')</script>
+    <script async>__mark('Inline classic with async', 'async (ignored)')</script>
+    <script src="data:text/javascript,__mark('External blocking', 'none')"></script>
+    <script src="data:text/javascript,__mark('External defer', 'defer')" defer></script>
+    <script src="data:text/javascript,__mark('External async', 'async')" async></script>
+    <script type="module">__mark('Inline module', 'module (deferred by default)')</script>
+    <script type="module" async>__mark('Inline module with async', 'module + async')</script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 9_2 &middot; Exercise 3</span>
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Switch to light mode"
+            title="Switch to light mode"
+          >
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5" />
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Add defer to scripts</h1>
+          <p class="lead">
+            A live page that records the order its own scripts ran in. Blocking, <code>defer</code>, <code>async</code> and module scripts, side by side.
+          </p>
+        </div>
+      </section>
+
+      <div class="container layout">
+        <div class="report-column">
+
+          <section class="section" aria-labelledby="demo-title">
+            <h2 id="demo-title">Live demo: what order did the scripts run in?</h2>
+            <p>
+              This page has seven scripts in its <code>&lt;head&gt;</code>.
+              Each one records the document&rsquo;s <code>readyState</code>,
+              whether the results table already existed in the DOM, and the
+              time. When the page has finished loading, the list below is
+              filled in from those records, in the order the scripts really
+              ran in your browser.
+            </p>
+            <p id="status" class="status-box pending" role="status">Waiting for the load event&#8230;</p>
+            <div class="run-wrap" tabindex="0" role="region" aria-label="Script run order table">
+              <table class="run-table">
+                <caption class="fine">Script run order on this page load</caption>
+                <thead>
+                  <tr><th scope="col">#</th><th scope="col">Script</th><th scope="col">Attribute</th><th scope="col">readyState</th><th scope="col">Table in DOM?</th><th scope="col">ms</th></tr>
+                </thead>
+                <tbody id="run-body"></tbody>
+              </table>
+            </div>
+            <p><button type="button" class="btn btn-primary" id="rerun">Reload and run again</button></p>
+            <p class="fine">
+              The times are <code>performance.now()</code> readings and
+              change on every reload. The async rows may move up or down
+              between runs, which is the point: async has no guaranteed
+              position.
+            </p>
+          </section>
+
+          <section class="section" aria-labelledby="read-title">
+            <h2 id="read-title">How to read the table</h2>
+            <ul class="plain">
+              <li><strong>Blocking</strong> scripts run with <code>readyState</code> <em>loading</em> and the table is not in the DOM yet. A script that touches the page there would fail.</li>
+              <li><strong>Defer</strong> scripts wait until parsing is done: <em>interactive</em>, table present, and they keep their written order.</li>
+              <li><strong>Async</strong> scripts run when their download finishes, so they can land while the page is still <em>loading</em> or after it is <em>interactive</em>.</li>
+              <li>All of them hold up the <code>load</code> event, but only blocking scripts hold up the first paint.</li>
+            </ul>
+
+            <h3>Why the inline scripts act differently</h3>
+            <p>
+              <code>defer</code> and <code>async</code> are ignored on an
+              inline classic script (one with no <code>src</code>). The
+              browser has nothing to download, so it runs the code on the
+              spot. The same attributes do work on external files, which is
+              why this page loads three tiny scripts from
+              <code>data:</code> URLs, and on inline
+              <code>type="module"</code> scripts: modules are deferred
+              automatically, and <code>async</code> makes them run as soon as
+              ready.
+            </p>
+            <pre class="code-block" tabindex="0"><code>&lt;!-- blocking: runs now, parser waits --&gt;
+&lt;script src="app.js"&gt;&lt;/script&gt;
+
+&lt;!-- defer: downloads in parallel, runs after parsing, in order --&gt;
+&lt;script src="app.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- async: downloads in parallel, runs the moment it arrives, any order --&gt;
+&lt;script src="analytics.js" async&gt;&lt;/script&gt;
+
+&lt;!-- inline classic: defer and async are ignored, it runs immediately --&gt;
+&lt;script defer&gt;doSomething()&lt;/script&gt;
+
+&lt;!-- inline module: deferred automatically; async makes it run as soon as ready --&gt;
+&lt;script type="module"&gt;doSomething()&lt;/script&gt;
+&lt;script type="module" async&gt;doSomething()&lt;/script&gt;</code></pre>
+          </section>
+
+          <section class="section" aria-labelledby="task-title">
+            <h2 id="task-title">Try it</h2>
+            <ol class="steps">
+              <li>Reload a few times and watch which rows keep their position and which move.</li>
+              <li>View the page source and delete <code>defer</code> from the external defer script. Reload: its <code>readyState</code> changes to <em>loading</em>, because without the attribute it blocks like any classic script.</li>
+              <li>Open the Performance tab, record a reload, and find the Scripting block for each script.</li>
+            </ol>
+            <p class="fine">
+              Compare with <a href="ex3-defer-scripts.html">the explainer</a>,
+              which describes the same rules in prose. Source: Performance
+              slides, JavaScript loading strategy.
+            </p>
+          </section>
+
+        </div>
+
+        <aside class="facts" aria-labelledby="facts-title">
+          <h2 id="facts-title">At a glance</h2>
+          <dl>
+            <div><dt>Scripts</dt><dd>7 in the head, 3 external via <code>data:</code> URLs</dd></div>
+            <div><dt>Measured</dt><dd><code>readyState</code>, DOM present, ms</dd></div>
+            <div><dt>Rule</dt><dd><code>defer</code>/<code>async</code> need a <code>src</code>, or <code>type="module"</code></dd></div>
+          </dl>
+          <div class="see-also">
+            <h3>See also</h3>
+            <a href="ex3-defer-scripts.html">Explainer: defer scripts</a>
+            <a href="hw-lighthouse-performance.html">Ryan&rsquo;s real performance audit</a>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <ul>
+          <li><a href="../../index.html">Week 9_2 &mdash; Performance</a></li>
+          <li><a href="../../index.html">Back to the library</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <script>
+      window.__render = function () {
+        var body = document.getElementById('run-body');
+        window.__runs.forEach(function (r, i) {
+          var tr = document.createElement('tr');
+          var cells = [String(i + 1), r.label, r.attr, r.state, r.dom ? 'yes' : 'no', String(r.t)];
+          cells.forEach(function (text, c) {
+            var td = document.createElement('td');
+            td.textContent = text;
+            if (c === 4) td.className = r.dom ? 'yes' : 'no';
+            tr.appendChild(td);
+          });
+          body.appendChild(tr);
+        });
+        var status = document.getElementById('status');
+        var blocking = window.__runs.filter(function (r) { return r.attr === 'none' ? !r.dom : false; }).length;
+        status.className = 'status-box ok';
+        status.textContent = window.__runs.length + ' records. ' + blocking + ' script(s) ran before the table existed.';
+      };
+      document.getElementById('rerun').addEventListener('click', function () { location.reload(); });
+    </script>
+  </body>
+</html>

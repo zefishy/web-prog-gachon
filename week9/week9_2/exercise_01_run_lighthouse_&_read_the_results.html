@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="author" content="Ryan Wong" />
+    <meta name="description" content="Week 9_2 exercise 1: fix a slow page with five loading changes (defer, width and height, lazy loading, fetchpriority, preload), each with a before and after snippet and the Lighthouse metric it moves." />
+    <title>Exercise 1: Fix the slow page &mdash; Week 9_2</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="../../css/shared.css" />
+    <link rel="stylesheet" href="../week9.css" />
+    <script src="../../js/main.js"></script>
+    <style>
+      /* Page-level layer: small bits week9.css does not have. Colours come from the shared tokens. */
+      .section > h3 { margin-top: 2rem; }
+      .section ul.plain, .section ol.plain { list-style: revert; padding-left: 1.4rem; margin-top: 1rem; max-width: 62ch; display: grid; gap: .5rem; }
+      .tag { display: inline-block; padding: .1rem .55rem; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); font-size: .8125rem; font-weight: 700; color: var(--ink); }
+      .tag.before { border-color: var(--danger); }
+      .tag.after { border-color: var(--accent); }
+      .cap { margin: 1.25rem 0 -.75rem; display: flex; gap: .6rem; align-items: center; font-weight: 700; }
+      .cap + pre.code-block { margin-top: 1rem; }
+      .metric-line { margin-top: 1rem; padding: .75rem 1rem; max-width: 62ch; background: var(--surface); border: 1px solid var(--rule); border-left: .375rem solid var(--wk); border-radius: 6px; }
+      pre.code-block { overflow-x: auto; }
+      .checklist { margin: 1.25rem 0 0; display: grid; gap: .5rem; max-width: 62ch; }
+      .checklist li { margin: 0; }
+      .checklist label { display: grid; grid-template-columns: 1.5rem 1fr; gap: .75rem; align-items: start; padding: .75rem 1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; cursor: pointer; }
+      .checklist input { width: 1.25rem; height: 1.25rem; margin: .1rem 0 0; accent-color: var(--accent); }
+      .checklist label:has(input:checked) { border-color: var(--accent); }
+      .checklist .hint { display: block; color: var(--muted); font-size: .9375rem; }
+      .counter { margin-top: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .counter-bar { margin: .5rem 0 1.25rem; max-width: 62ch; height: .5rem; border-radius: 999px; background: var(--surface); border: 1px solid var(--rule); overflow: hidden; }
+      .counter-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s var(--ease-out); }
+      @media (prefers-reduced-motion: reduce) { .counter-bar span { transition: none; } }
+    </style>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 9_2 &middot; Exercise 1</span>
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Switch to light mode"
+            title="Switch to light mode"
+          >
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5" />
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Fix the slow page</h1>
+          <p class="lead">
+            Five small edits to a slow page. For each one you get the line before, the line after, why it helps, and the Lighthouse metric that should move.
+          </p>
+        </div>
+      </section>
+
+      <div class="container layout">
+        <div class="report-column">
+
+          <section class="section" aria-labelledby="ex1-title">
+            <h2 id="ex1-title">The slow page</h2>
+            <p>
+              Here is a small cafe page with five common loading mistakes. Each
+              fix below shows the line as it stands now, the same line fixed,
+              why the change helps, and which Lighthouse metric it moves. Work
+              through them on a copy of your own page, then run Lighthouse
+              before and after.
+            </p>
+            <pre class="code-block" tabindex="0"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Café Corner&lt;/title&gt;
+  &lt;script src="js/app.js"&gt;&lt;/script&gt;
+  &lt;link rel="stylesheet" href="css/site.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="hero-banner"&gt; ... &lt;/div&gt;
+  &lt;img src="img/hero.jpg" alt="Latte art"&gt;
+  &lt;img src="img/menu.jpg" alt="Menu board"&gt;
+  &lt;img src="img/shop.jpg" alt="Front of the shop"&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            <p class="fine">
+              This page is a hands-on companion to
+              <a href="ex1-lighthouse-results.html">the explainer</a>, which
+              covers how to read the report. The metrics named here (FCP, LCP,
+              TBT, CLS) are the ones defined in the performance slides.
+            </p>
+          </section>
+
+          <section class="section" aria-labelledby="fix1-title">
+            <h2 id="fix1-title">Fix 1 &mdash; Add <code>defer</code> to the script</h2>
+            <p>A classic <code>&lt;script src&gt;</code> in the head stops the HTML parser until the file has downloaded and run, so nothing below it can paint. <code>defer</code> lets the download happen in parallel and runs the script after the document is parsed, in order.</p>
+            <p class="cap"><span class="tag before">Before</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;script src="js/app.js"&gt;&lt;/script&gt;</code></pre>
+            <p class="cap"><span class="tag after">After</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;script src="js/app.js" defer&gt;&lt;/script&gt;</code></pre>
+            <p class="metric-line"><strong>Moves:</strong> First Contentful Paint and Largest Contentful Paint (the render-blocking audit), and Total Blocking Time if the script is heavy.</p>
+          </section>
+
+          <section class="section" aria-labelledby="fix2-title">
+            <h2 id="fix2-title">Fix 2 &mdash; Give every image a <code>width</code> and <code>height</code></h2>
+            <p>Without dimensions the browser does not know how much room an image needs, so the text below jumps down when the file arrives. The two attributes give it the aspect ratio before the download starts. The CSS keeps the image fluid.</p>
+            <p class="cap"><span class="tag before">Before</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;img src="img/shop.jpg" alt="Front of the shop"&gt;</code></pre>
+            <p class="cap"><span class="tag after">After</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;img src="img/shop.jpg" alt="Front of the shop" width="800" height="450"&gt;
+
+/* in site.css */
+img { max-width: 100%; height: auto; }</code></pre>
+            <p class="metric-line"><strong>Moves:</strong> Cumulative Layout Shift. This is the one fix that has no effect on load speed, only on stability.</p>
+          </section>
+
+          <section class="section" aria-labelledby="fix3-title">
+            <h2 id="fix3-title">Fix 3 &mdash; Lazy-load images below the fold</h2>
+            <p>The menu and shop photos are off-screen on first load. Marking them <code>loading="lazy"</code> stops them competing for bandwidth with the hero. Do not put it on the hero image itself: that delays the largest element on the page.</p>
+            <p class="cap"><span class="tag before">Before</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;img src="img/menu.jpg" alt="Menu board"&gt;
+&lt;img src="img/shop.jpg" alt="Front of the shop"&gt;</code></pre>
+            <p class="cap"><span class="tag after">After</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;img src="img/menu.jpg" alt="Menu board" width="800" height="450" loading="lazy"&gt;
+&lt;img src="img/shop.jpg" alt="Front of the shop" width="800" height="450" loading="lazy"&gt;</code></pre>
+            <p class="metric-line"><strong>Moves:</strong> Largest Contentful Paint and Speed Index (less competing for bandwidth) and total bytes transferred on load. Lighthouse lists the images it could have deferred under its offscreen-images diagnostic.</p>
+          </section>
+
+          <section class="section" aria-labelledby="fix4-title">
+            <h2 id="fix4-title">Fix 4 &mdash; Mark the hero image <code>fetchpriority="high"</code></h2>
+            <p>Browsers guess an image&rsquo;s priority until layout tells them how big it is. The hero is the largest element on screen, so say so up front. Together with fix 3 this is the pair: <em>lazy</em> for what is not needed yet, <em>high</em> for what is needed first.</p>
+            <p class="cap"><span class="tag before">Before</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;img src="img/hero.jpg" alt="Latte art"&gt;</code></pre>
+            <p class="cap"><span class="tag after">After</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;img src="img/hero.jpg" alt="Latte art" width="1200" height="600" fetchpriority="high"&gt;</code></pre>
+            <p class="metric-line"><strong>Moves:</strong> Largest Contentful Paint. The related Lighthouse insight is about the LCP image being discovered early and given high priority.</p>
+          </section>
+
+          <section class="section" aria-labelledby="fix5-title">
+            <h2 id="fix5-title">Fix 5 &mdash; Preload what the page needs early</h2>
+            <p>A web font is only discovered after the CSS has downloaded and been parsed, so the text waits. A <code>rel="preload"</code> link in the head starts the download at once. Fonts need <code>crossorigin</code> even on the same origin, or the file is fetched twice. The same idea works for an image used as a CSS background, with <code>as="image"</code>.</p>
+            <p class="cap"><span class="tag before">Before</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;link rel="stylesheet" href="css/site.css"&gt;
+/* site.css: @font-face { src: url(../fonts/inter.woff2) } */</code></pre>
+            <p class="cap"><span class="tag after">After</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin&gt;
+&lt;link rel="stylesheet" href="css/site.css"&gt;</code></pre>
+            <p class="metric-line"><strong>Moves:</strong> First Contentful Paint and LCP when the largest element is text or a late-discovered image, and layout shift caused by the font swap.</p>
+            <p class="fine">
+              Preload only a few critical files. Each preload is a bet that the
+              file really is needed on this page; a preloaded file that goes
+              unused produces a console warning.
+            </p>
+          </section>
+
+          <section class="section" aria-labelledby="extra-title">
+            <h2 id="extra-title">Two extras Lighthouse checks in the same run</h2>
+            <p>
+              These do not change the Performance number. They are in the
+              Accessibility category, but the slow page above has both
+              problems and each is a one-line fix.
+            </p>
+            <p class="cap"><span class="tag before">Before</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;html&gt;
+...
+&lt;body&gt;
+  &lt;div class="content"&gt; ... &lt;/div&gt;</code></pre>
+            <p class="cap"><span class="tag after">After</span></p>
+            <pre class="code-block" tabindex="0"><code>&lt;html lang="en"&gt;
+...
+&lt;body&gt;
+  &lt;main id="main"&gt; ... &lt;/main&gt;</code></pre>
+            <p class="metric-line"><strong>Moves:</strong> the Accessibility audits for a <code>lang</code> attribute on <code>&lt;html&gt;</code> and for a <code>main</code> landmark, so screen readers pick the right pronunciation and can jump straight to the content.</p>
+          </section>
+
+          <section class="section" aria-labelledby="check-title">
+            <h2 id="check-title">Self-check</h2>
+            <p>Tick each item once you have done it on your own page and confirmed it in the HTML.</p>
+            <form id="ex1-check" aria-describedby="ex1-check-count">
+              <ul class="checklist">
+                <li><label><input type="checkbox" /><span>Every <code>&lt;script src&gt;</code> in the head has <code>defer</code> (or <code>async</code> for an independent one).<span class="hint">Fix 1</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Every <code>&lt;img&gt;</code> has both <code>width</code> and <code>height</code>.<span class="hint">Fix 2</span></span></label></li>
+                <li><label><input type="checkbox" /><span>Images below the fold have <code>loading="lazy"</code>, and the hero does not.<span class="hint">Fix 3</span></span></label></li>
+                <li><label><input type="checkbox" /><span>The hero image has <code>fetchpriority="high"</code>.<span class="hint">Fix 4</span></span></label></li>
+                <li><label><input type="checkbox" /><span>A font or other late-discovered critical file is preloaded, with <code>crossorigin</code> for fonts.<span class="hint">Fix 5</span></span></label></li>
+                <li><label><input type="checkbox" /><span><code>&lt;html lang="en"&gt;</code> and one <code>&lt;main&gt;</code> are in place.<span class="hint">Extras</span></span></label></li>
+                <li><label><input type="checkbox" /><span>I ran Lighthouse before and after, in the same mode and device setting, and compared the metrics named above.<span class="hint">Measure, fix, measure again</span></span></label></li>
+              </ul>
+              <p class="counter" id="ex1-check-count" role="status">0 of 7 checked</p>
+              <div class="counter-bar" aria-hidden="true"><span id="ex1-check-bar"></span></div>
+              <p><button type="reset" class="btn btn-secondary">Clear all</button></p>
+            </form>
+            <p class="fine">
+              Source: Performance slides, &ldquo;Performance Checklist &mdash;
+              10 Quick Wins&rdquo; and &ldquo;Above-the-Fold &mdash; Prioritize
+              Visible Content&rdquo;.
+            </p>
+          </section>
+
+        </div>
+
+        <aside class="facts" aria-labelledby="facts-title">
+          <h2 id="facts-title">At a glance</h2>
+          <dl>
+            <div><dt>Fixes</dt><dd>5, plus <code>lang</code> and <code>main</code></dd></div>
+            <div><dt>Metrics</dt><dd>FCP, LCP, TBT, CLS</dd></div>
+            <div><dt>Do it on</dt><dd>A copy of your own page, with Lighthouse before and after</dd></div>
+          </dl>
+          <div class="see-also">
+            <h3>See also</h3>
+            <a href="ex1-lighthouse-results.html">Explainer: reading the Lighthouse results</a>
+            <a href="hw-lighthouse-performance.html">Ryan&rsquo;s real performance audit</a>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <ul>
+          <li><a href="../../index.html">Week 9_2 &mdash; Performance</a></li>
+          <li><a href="../../index.html">Back to the library</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var form = document.getElementById('ex1-check');
+        var boxes = form.querySelectorAll('input[type="checkbox"]');
+        var out = document.getElementById('ex1-check-count');
+        var bar = document.getElementById('ex1-check-bar');
+        var KEY = 'w9-ex1-check';
+        var saved = [];
+        try { saved = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+        boxes.forEach(function (b, i) { b.checked = saved.indexOf(i) !== -1; });
+        function update() {
+          var n = 0, keep = [];
+          boxes.forEach(function (b, i) { if (b.checked) { n++; keep.push(i); } });
+          out.textContent = n + ' of ' + boxes.length + ' checked' + (n === boxes.length ? ' — done' : '');
+          bar.style.width = (n / boxes.length * 100) + '%';
+          try { localStorage.setItem(KEY, JSON.stringify(keep)); } catch (e) {}
+        }
+        form.addEventListener('change', update);
+        form.addEventListener('reset', function () { setTimeout(update, 0); });
+        update();
+      })();
+    </script>
+  </body>
+</html>

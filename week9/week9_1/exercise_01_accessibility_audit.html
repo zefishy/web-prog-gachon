@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="author" content="Ryan Wong" />
+    <meta name="description" content="Week 9 exercise 1: a self-guided Lighthouse accessibility audit. A checklist of the homework steps, the seven most common failing audits with a broken and a fixed snippet each, and a WCAG contrast ratio calculator." />
+    <title>Exercise 1: Accessibility audit walkthrough &mdash; Week 9_1</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="../../css/shared.css" />
+    <link rel="stylesheet" href="../week9.css" />
+    <script src="../../js/main.js"></script>
+    <style>
+      /* Page-level: this walkthrough is wider than the single-column demos
+         (cards and the calculator need room) and week9.css has no styles for
+         a checklist, failure cards or a colour calculator. Tokens only. */
+      .layout.exercise > * { max-width: 52rem; }
+      .check-list { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: .9rem; }
+      .check-list li { max-width: 62ch; }
+      .check-list label { display: grid; grid-template-columns: 1.5rem 1fr; gap: .75rem; align-items: start; cursor: pointer; }
+      .check-list input { width: 1.5rem; height: 1.5rem; margin: .1rem 0 0; accent-color: var(--wk); }
+      .check-list input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+      .progress { margin-top: 1rem; color: var(--muted); font-weight: 600; }
+      .fail-grid { display: grid; gap: 1.5rem; margin-top: 1.5rem; }
+      .fail-card { padding: 1.25rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; min-width: 0; }
+      .fail-card h3 { margin: 0; font-size: 1.125rem; }
+      .fail-card p { margin: .6rem 0 0; max-width: 62ch; }
+      .fail-card .audit-id { color: var(--muted); font-size: .875rem; margin-top: .3rem; }
+      .fail-card code { font-size: .875em; }
+      .pair { display: grid; gap: 1rem; margin-top: 1rem; }
+      .pair > div { min-width: 0; }
+      .pair pre.code-block { margin: .4rem 0 0; background: var(--paper); overflow-x: auto; }
+      .tag { margin: 0 !important; font-weight: 700; font-size: .875rem; }
+      .tag-fail { color: var(--danger); }
+      .tag-pass { color: var(--accent); }
+      @media (min-width: 48rem) { .pair { grid-template-columns: 1fr 1fr; } }
+      .calc { display: grid; gap: 1rem; }
+      .calc-inputs { display: grid; gap: 1rem; }
+      .calc-field { display: grid; gap: .4rem; }
+      .calc-field label { font-weight: 700; }
+      .calc-field .row { display: flex; gap: .6rem; align-items: center; }
+      .calc-field input[type="color"] { width: 3.25rem; height: 2.75rem; padding: 2px; background: var(--paper); border: 2px solid var(--rule); border-radius: 8px; cursor: pointer; }
+      .calc-field input[type="text"] { width: 8rem; min-height: 2.75rem; padding: .4rem .7rem; font: inherit; font-family: var(--mono); color: var(--ink); background: var(--paper); border: 2px solid var(--rule); border-radius: 8px; }
+      .calc-field input[type="text"][aria-invalid="true"] { border-color: var(--danger); }
+      .swatch { padding: 1.25rem; border: 1px solid var(--rule); border-radius: 8px; }
+      .swatch .big { font-size: 1.5rem; font-weight: 700; margin: 0; }
+      .swatch .small { font-size: 1rem; margin: .4rem 0 0; }
+      .panel .ratio { font-size: 2.25rem; font-weight: 700; line-height: 1.1; color: var(--head); margin-bottom: 0; font-variant-numeric: tabular-nums; margin: 0; }
+      .verdicts { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+      .verdicts li { padding: .6rem .9rem; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); font-weight: 600; }
+      .verdicts .pass { color: var(--accent); }
+      .verdicts .fail { color: var(--danger); }
+      .presets { display: flex; flex-wrap: wrap; gap: .6rem; }
+      .presets .btn { min-height: 2.5rem; padding: .4rem 1rem; font-size: .9375rem; }
+      .calc-note { color: var(--muted); font-size: .9375rem; margin: 0; }
+      .link-list { margin: 1rem 0 0; padding-left: 1.25rem; display: grid; gap: .6rem; max-width: 62ch; }
+      @media (min-width: 40rem) { .calc-inputs { grid-template-columns: 1fr 1fr; } }
+    </style>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 9_1 &middot; Exercise 1</span>
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Switch to light mode"
+            title="Switch to light mode"
+          >
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5" />
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Accessibility audit walkthrough</h1>
+          <p class="lead">
+            Do the Lighthouse accessibility homework yourself, step by step. Work
+            through the checklist, learn to recognise the seven failures that
+            show up most, and check any colour pair with the contrast
+            calculator.
+          </p>
+        </div>
+      </section>
+
+      <div class="container layout exercise">
+        <section class="section" aria-labelledby="steps-title">
+          <h2 id="steps-title">1. The homework checklist</h2>
+          <p>
+            The lecturer&rsquo;s homework is five steps (source: Accessibility
+            slides &mdash; Summary &amp; Homework). Tick each one off as you
+            go. Ticks are not saved, they only track this visit.
+          </p>
+          <ul class="check-list">
+            <li><label><input type="checkbox" class="step" /><span><strong>Run Lighthouse on your team project site, Accessibility only.</strong> In Chrome press <kbd>F12</kbd>, open the <em>Lighthouse</em> tab, untick Performance, Best practices and SEO, leave <em>Accessibility</em> ticked, choose a device, then press <em>Analyze page load</em>.</span></label></li>
+            <li><label><input type="checkbox" class="step" /><span><strong>Screenshot the initial Accessibility score.</strong> Capture the gauge and the list of failing audits. Do this before you touch any code.</span></label></li>
+            <li><label><input type="checkbox" class="step" /><span><strong>Fix at least 3 failing audits.</strong> Open each failing audit in the report, expand it to see the exact elements, and use the cards in section 2 to find the fix.</span></label></li>
+            <li><label><input type="checkbox" class="step" /><span><strong>Re-run Lighthouse and screenshot the improved score.</strong> Reload the page first so you test the edited file, not a cached copy.</span></label></li>
+            <li><label><input type="checkbox" class="step" /><span><strong>Post both screenshots and a list of your 3 fixes</strong> to the weekly task page. For each fix write the audit name, what was wrong and what you changed.</span></label></li>
+          </ul>
+          <p class="progress" id="progress" role="status" aria-live="polite">0 of 5 steps done</p>
+          <p class="fine">
+            The slides ask for 100 on the initial run. If your page already
+            scores 100 there is nothing failing to fix. To practise, run the
+            same steps on the
+            <a href="exercise_04_lighthouse_and_fix_before.html">sign-up form before the fixes</a>.
+          </p>
+        </section>
+
+        <section class="section" aria-labelledby="fails-title">
+          <h2 id="fails-title">2. The common failing audits</h2>
+          <p>
+            These seven account for most of the red items in an accessibility
+            report. Each card names the Lighthouse audit, shows a failing
+            snippet and the fixed version. Pick any three that your own report
+            flags.
+          </p>
+          <div class="fail-grid">
+              <article class="fail-card" aria-labelledby="fc1">
+                <h3 id="fc1">Missing alt text</h3>
+                <p class="audit-id">Lighthouse audit: <code>image-alt</code></p>
+                <p>Every &lt;img&gt; needs an alt attribute. Describe the purpose; use alt="" when the image is decorative.</p>
+                <div class="pair">
+                  <div>
+                    <p class="tag tag-fail"><span aria-hidden="true">&times;</span> Failing</p>
+                    <pre class="code-block"><code>&lt;img src="team.jpg"&gt;</code></pre>
+                  </div>
+                  <div>
+                    <p class="tag tag-pass"><span aria-hidden="true">&#10003;</span> Fixed</p>
+                    <pre class="code-block"><code>&lt;img src="team.jpg" alt="Team 16 at the project demo"&gt;</code></pre>
+                  </div>
+                </div>
+              </article>
+
+              <article class="fail-card" aria-labelledby="fc2">
+                <h3 id="fc2">Low colour contrast</h3>
+                <p class="audit-id">Lighthouse audit: <code>color-contrast</code></p>
+                <p>Body text needs 4.5:1 against its background (3:1 for large text). Check the pair in the calculator below.</p>
+                <div class="pair">
+                  <div>
+                    <p class="tag tag-fail"><span aria-hidden="true">&times;</span> Failing</p>
+                    <pre class="code-block"><code>.note { color: #999999; background: #ffffff; }  /* 2.84:1 */</code></pre>
+                  </div>
+                  <div>
+                    <p class="tag tag-pass"><span aria-hidden="true">&#10003;</span> Fixed</p>
+                    <pre class="code-block"><code>.note { color: #595959; background: #ffffff; }  /* 7.00:1 */</code></pre>
+                  </div>
+                </div>
+              </article>
+
+              <article class="fail-card" aria-labelledby="fc3">
+                <h3 id="fc3">Form input without a label</h3>
+                <p class="audit-id">Lighthouse audit: <code>label</code></p>
+                <p>A placeholder is not a label. Connect a visible &lt;label&gt; to the input with for and id.</p>
+                <div class="pair">
+                  <div>
+                    <p class="tag tag-fail"><span aria-hidden="true">&times;</span> Failing</p>
+                    <pre class="code-block"><code>&lt;input type="email" placeholder="Email"&gt;</code></pre>
+                  </div>
+                  <div>
+                    <p class="tag tag-pass"><span aria-hidden="true">&#10003;</span> Fixed</p>
+                    <pre class="code-block"><code>&lt;label for="email"&gt;Email&lt;/label&gt;
+&lt;input type="email" id="email" name="email"&gt;</code></pre>
+                  </div>
+                </div>
+              </article>
+
+              <article class="fail-card" aria-labelledby="fc4">
+                <h3 id="fc4">Missing html lang</h3>
+                <p class="audit-id">Lighthouse audit: <code>html-has-lang</code></p>
+                <p>Screen readers pick the pronunciation from the lang attribute on the root element.</p>
+                <div class="pair">
+                  <div>
+                    <p class="tag tag-fail"><span aria-hidden="true">&times;</span> Failing</p>
+                    <pre class="code-block"><code>&lt;html&gt;</code></pre>
+                  </div>
+                  <div>
+                    <p class="tag tag-pass"><span aria-hidden="true">&#10003;</span> Fixed</p>
+                    <pre class="code-block"><code>&lt;html lang="en"&gt;</code></pre>
+                  </div>
+                </div>
+              </article>
+
+              <article class="fail-card" aria-labelledby="fc5">
+                <h3 id="fc5">Link without a name</h3>
+                <p class="audit-id">Lighthouse audit: <code>link-name</code></p>
+                <p>An icon-only link has no text, so a screen reader announces just "link". Give it an accessible name.</p>
+                <div class="pair">
+                  <div>
+                    <p class="tag tag-fail"><span aria-hidden="true">&times;</span> Failing</p>
+                    <pre class="code-block"><code>&lt;a href="https://github.com/zefishy"&gt;&lt;svg&gt;...&lt;/svg&gt;&lt;/a&gt;</code></pre>
+                  </div>
+                  <div>
+                    <p class="tag tag-pass"><span aria-hidden="true">&#10003;</span> Fixed</p>
+                    <pre class="code-block"><code>&lt;a href="https://github.com/zefishy" aria-label="Ryan on GitHub"&gt;&lt;svg aria-hidden="true"&gt;...&lt;/svg&gt;&lt;/a&gt;</code></pre>
+                  </div>
+                </div>
+              </article>
+
+              <article class="fail-card" aria-labelledby="fc6">
+                <h3 id="fc6">Heading order skips a level</h3>
+                <p class="audit-id">Lighthouse audit: <code>heading-order</code></p>
+                <p>Headings go down one level at a time. Pick the level for the outline, then size it with CSS.</p>
+                <div class="pair">
+                  <div>
+                    <p class="tag tag-fail"><span aria-hidden="true">&times;</span> Failing</p>
+                    <pre class="code-block"><code>&lt;h1&gt;Forum&lt;/h1&gt;
+&lt;h4&gt;Latest posts&lt;/h4&gt;</code></pre>
+                  </div>
+                  <div>
+                    <p class="tag tag-pass"><span aria-hidden="true">&#10003;</span> Fixed</p>
+                    <pre class="code-block"><code>&lt;h1&gt;Forum&lt;/h1&gt;
+&lt;h2&gt;Latest posts&lt;/h2&gt;</code></pre>
+                  </div>
+                </div>
+              </article>
+
+              <article class="fail-card" aria-labelledby="fc7">
+                <h3 id="fc7">Label not in the accessible name</h3>
+                <p class="audit-id">Lighthouse audit: <code>label-content-name-mismatch</code></p>
+                <p>Voice-control users say what they see. If aria-label replaces the visible text, it must still contain that text.</p>
+                <div class="pair">
+                  <div>
+                    <p class="tag tag-fail"><span aria-hidden="true">&times;</span> Failing</p>
+                    <pre class="code-block"><code>&lt;button aria-label="Send"&gt;Submit form&lt;/button&gt;</code></pre>
+                  </div>
+                  <div>
+                    <p class="tag tag-pass"><span aria-hidden="true">&#10003;</span> Fixed</p>
+                    <pre class="code-block"><code>&lt;button&gt;Submit form&lt;/button&gt;
+&lt;!-- or aria-label="Submit form" --&gt;</code></pre>
+                  </div>
+                </div>
+              </article>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="calc-title">
+          <h2 id="calc-title">3. Contrast ratio calculator</h2>
+          <p>
+            Pick a text colour and a background colour. The page computes the
+            WCAG contrast ratio from the relative luminance of each colour and
+            checks it against the two Level AA thresholds.
+          </p>
+          <div class="panel">
+            <h3>Try it</h3>
+            <form class="calc" id="calc" novalidate>
+              <div class="calc-inputs">
+                <div class="calc-field">
+                  <label for="fg-hex">Text colour</label>
+                  <div class="row">
+                    <input type="color" id="fg-picker" value="#767676" aria-label="Text colour picker" />
+                    <input type="text" id="fg-hex" value="#767676" maxlength="7" spellcheck="false" autocomplete="off" aria-describedby="hex-help" />
+                  </div>
+                </div>
+                <div class="calc-field">
+                  <label for="bg-hex">Background colour</label>
+                  <div class="row">
+                    <input type="color" id="bg-picker" value="#ffffff" aria-label="Background colour picker" />
+                    <input type="text" id="bg-hex" value="#ffffff" maxlength="7" spellcheck="false" autocomplete="off" aria-describedby="hex-help" />
+                  </div>
+                </div>
+              </div>
+              <p class="calc-note" id="hex-help">Type a hex colour such as <code>#767676</code> or use the picker.</p>
+              <div class="presets">
+                <button type="button" class="btn btn-secondary" data-fg="#777777" data-bg="#ffffff">#777 on white (just fails)</button>
+                <button type="button" class="btn btn-secondary" data-fg="#767676" data-bg="#ffffff">#767676 on white (just passes)</button>
+                <button type="button" class="btn btn-secondary" data-fg="#999999" data-bg="#ffffff">#999 on white</button>
+              </div>
+              <div class="swatch" id="swatch">
+                <p class="big">Large sample text, 24px bold</p>
+                <p class="small">Normal sample text at 16px, the size that needs 4.5:1.</p>
+              </div>
+              <div role="status" aria-live="polite">
+                <p class="ratio" id="ratio">4.54:1</p>
+                <ul class="verdicts">
+                  <li id="v-normal"></li>
+                  <li id="v-large"></li>
+                </ul>
+              </div>
+            </form>
+          </div>
+          <p class="fine">
+            How it works: each sRGB channel is linearised
+            (<code>c/12.92</code> when c is at most 0.04045, else
+            <code>((c+0.055)/1.055)^2.4</code>), then
+            <code>L = 0.2126R + 0.7152G + 0.0722B</code>. The ratio is
+            <code>(L1 + 0.05) / (L2 + 0.05)</code> with the lighter colour as L1.
+            The result is truncated, not rounded, to two decimals, so 4.499
+            never shows as a pass. The 3:1 line applies to large text (from
+            18.66px bold or 24px regular) and to UI components such as input
+            borders and icons.
+          </p>
+        </section>
+
+        <section class="section" aria-labelledby="links-title">
+          <h2 id="links-title">4. Where to go next</h2>
+          <ul class="link-list">
+            <li><a href="hw-lighthouse-accessibility.html">My own audit of the team project</a>: the real Lighthouse runs, before and after.</li>
+            <li><a href="topic_08_color_contrast.html">Topic 8: Color contrast</a>: why 4.5:1 and 3:1.</li>
+            <li><a href="topic_09_lighthouse_audit.html">Topic 9: Lighthouse audit</a>: how to read the report.</li>
+          </ul>
+          <p class="fine">
+            Sources: Accessibility slides &mdash; Summary &amp; Homework
+            (K0126002, Gachon University, 2026 Fall); WCAG 2.2 success criteria
+            1.4.3 and 1.4.11 for the thresholds and the luminance formula.
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <ul>
+          <li><a href="../../index.html">Week 9_1 &mdash; Accessibility</a></li>
+          <li><a href="../../index.html">Back to the library</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var boxes = document.querySelectorAll('.step');
+        var progress = document.getElementById('progress');
+        function count() {
+          var n = 0;
+          boxes.forEach(function (b) { if (b.checked) n++; });
+          progress.textContent = n + ' of ' + boxes.length + ' steps done';
+        }
+        boxes.forEach(function (b) { b.addEventListener('change', count); });
+
+        function lin(c) {
+          c = c / 255;
+          return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+        }
+        function luminance(hex) {
+          var n = parseInt(hex.slice(1), 16);
+          return 0.2126 * lin(Math.floor(n / 65536) % 256) + 0.7152 * lin(Math.floor(n / 256) % 256) + 0.0722 * lin(n % 256);
+        }
+        function ratio(a, b) {
+          var la = luminance(a), lb = luminance(b);
+          var hi = Math.max(la, lb), lo = Math.min(la, lb);
+          return (hi + 0.05) / (lo + 0.05);
+        }
+        function norm(v) {
+          v = v.trim().toLowerCase();
+          if (/^#[0-9a-f]{3}$/.test(v)) v = '#' + v[1] + v[1] + v[2] + v[2] + v[3] + v[3];
+          return /^#[0-9a-f]{6}$/.test(v) ? v : null;
+        }
+        var fgP = document.getElementById('fg-picker'), bgP = document.getElementById('bg-picker');
+        var fgT = document.getElementById('fg-hex'), bgT = document.getElementById('bg-hex');
+        var swatch = document.getElementById('swatch');
+        var out = document.getElementById('ratio');
+        var vN = document.getElementById('v-normal'), vL = document.getElementById('v-large');
+        function verdict(el, label, need, r) {
+          var ok = r >= need;
+          el.className = ok ? 'pass' : 'fail';
+          el.textContent = (ok ? '\u2713 Pass' : '\u00d7 Fail') + ' \u2014 ' + label + ' (' + need + ':1)';
+        }
+        function update() {
+          var f = norm(fgT.value), b = norm(bgT.value);
+          fgT.setAttribute('aria-invalid', f ? 'false' : 'true');
+          bgT.setAttribute('aria-invalid', b ? 'false' : 'true');
+          if (!f || !b) {
+            out.textContent = 'Enter two valid hex colours';
+            vN.textContent = ''; vL.textContent = '';
+            return;
+          }
+          swatch.style.color = f;
+          swatch.style.backgroundColor = b;
+          var r = Math.floor(ratio(f, b) * 100) / 100;
+          out.textContent = r.toFixed(2) + ':1';
+          verdict(vN, 'AA normal text', 4.5, r);
+          verdict(vL, 'AA large text and UI components', 3, r);
+        }
+        function setColour(which, hex) {
+          var v = norm(hex);
+          if (!v) return;
+          if (which === 'fg') { fgP.value = v; fgT.value = v; } else { bgP.value = v; bgT.value = v; }
+        }
+        fgP.addEventListener('input', function () { fgT.value = fgP.value; update(); });
+        bgP.addEventListener('input', function () { bgT.value = bgP.value; update(); });
+        fgT.addEventListener('input', function () { var v = norm(fgT.value); if (v) fgP.value = v; update(); });
+        bgT.addEventListener('input', function () { var v = norm(bgT.value); if (v) bgP.value = v; update(); });
+        document.querySelectorAll('.presets button').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            setColour('fg', btn.dataset.fg);
+            setColour('bg', btn.dataset.bg);
+            update();
+          });
+        });
+        document.getElementById('calc').addEventListener('submit', function (e) { e.preventDefault(); });
+        update();
+      })();
+    </script>
+  </body>
+</html>

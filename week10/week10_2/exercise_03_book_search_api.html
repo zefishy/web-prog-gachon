@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="author" content="Ryan Wong">
+    <meta name="description" content="Week 10 exercise 3 by Ryan Wong: searching for books with an API-powered web app.">
+    <title>Exercise 3: Book search API &mdash; Week 10</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="../../css/shared.css">
+    <link rel="stylesheet" href="../report.css">
+    <script src="../../js/main.js"></script>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html#week-10"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 10_2 &middot; Exercise 3</span>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Book search API</h1>
+          <p class="lead">Searching for books with an API-powered web app. The app on this site uses the Open Library API and is a static page, so it deploys to GitHub Pages as it is.</p>
+        </div>
+      </section>
+
+      <div class="container layout">
+        <div class="report-column">
+          <section class="section" aria-labelledby="task-title">
+            <h2 id="task-title">The task</h2>
+            <p>Build a page that searches for books through a public API and shows the results, then put it on GitHub Pages. The app needs no server, because the browser calls the API directly with <code>fetch()</code>.</p>
+          </section>
+
+          <section class="section" aria-labelledby="app-title">
+            <h2 id="app-title">The app</h2>
+            <p>The Book Search App is in Week 7. It searches the Open Library, shows results as cards with covers, and keeps working when the API is slow or offline, using loading skeletons, a timeout, retries and a saved cache.</p>
+            <ul class="notes">
+              <li><a href="../../week7/week7_2/exercise_01_book_search_api.html">Open the Book Search App</a></li>
+              <li><a href="https://openlibrary.org/dev/docs/api/search" target="_blank" rel="noopener">Open Library search API documentation</a></li>
+            </ul>
+          </section>
+
+          <section class="section" aria-labelledby="deploy-title">
+            <h2 id="deploy-title">Deploying it</h2>
+            <p>GitHub Pages serves static files over HTTPS, so a <code>fetch()</code> call to a public API works from a Pages site. The page needs <code>index.html</code> at the root of the deployed branch and a public repository. The steps are the same as in the <a href="homework2.html">deployment report</a>.</p>
+          </section>
+        </div>
+
+        <aside class="facts" aria-labelledby="facts-title">
+          <h2 id="facts-title">At a glance</h2>
+          <dl>
+            <div>
+              <dt>Task</dt>
+              <dd>Book search app</dd>
+            </div>
+            <div>
+              <dt>API</dt>
+              <dd>Open Library, no key</dd>
+            </div>
+            <div>
+              <dt>App</dt>
+              <dd><a href="../../week7/week7_2/exercise_01_book_search_api.html">Week 7_2</a></dd>
+            </div>
+          </dl>
+          <div class="see-also">
+            <p><a href="../week10_1/exercise_02_week9_self_introduction.html">Previous: Week 9 self-introduction</a></p>
+            <p><a href="homework2.html">Deployment report</a></p>
+            <p><a href="../../index.html#week-10">Week 10 in the library</a></p>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="foot-title">Web Programming Library @ Gachon University</p>
+        <p class="fine">
+          2026 Ryan Wong. Built with semantic HTML, modern CSS, and JavaScript.
+        </p>
+        <ul>
+          <li><a href="../../index.html#week-10">Back to the library</a></li>
+          <li>
+            <a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a>
+          </li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+        <p class="fine">&copy; 2026 Ryan Wong</p>
+      </div>
+    </footer>
+  </body>
+</html>

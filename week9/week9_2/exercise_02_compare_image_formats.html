@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="author" content="Ryan Wong" />
+    <meta name="description" content="Week 9_2 exercise 2: a live picture element with WebP sources and a JPEG fallback using srcset and sizes, a readout of what the browser chose, and how to verify it in the Network tab." />
+    <title>Exercise 2: Compare image formats &mdash; Week 9_2</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="../../css/shared.css" />
+    <link rel="stylesheet" href="../week9.css" />
+    <script src="../../js/main.js"></script>
+    <style>
+      /* Page-level layer: small bits week9.css does not have. Colours come from the shared tokens. */
+      .section > h3 { margin-top: 2rem; }
+      .section ul.plain, .section ol.plain { list-style: revert; padding-left: 1.4rem; margin-top: 1rem; max-width: 62ch; display: grid; gap: .5rem; }
+      .tag { display: inline-block; padding: .1rem .55rem; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); font-size: .8125rem; font-weight: 700; color: var(--ink); }
+      .tag.before { border-color: var(--danger); }
+      .tag.after { border-color: var(--accent); }
+      .cap { margin: 1.25rem 0 -.75rem; display: flex; gap: .6rem; align-items: center; font-weight: 700; }
+      .cap + pre.code-block { margin-top: 1rem; }
+      .metric-line { margin-top: 1rem; padding: .75rem 1rem; max-width: 62ch; background: var(--surface); border: 1px solid var(--rule); border-left: .375rem solid var(--wk); border-radius: 6px; }
+      pre.code-block { overflow-x: auto; }
+      .checklist { margin: 1.25rem 0 0; display: grid; gap: .5rem; max-width: 62ch; }
+      .checklist li { margin: 0; }
+      .checklist label { display: grid; grid-template-columns: 1.5rem 1fr; gap: .75rem; align-items: start; padding: .75rem 1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; cursor: pointer; }
+      .checklist input { width: 1.25rem; height: 1.25rem; margin: .1rem 0 0; accent-color: var(--accent); }
+      .checklist label:has(input:checked) { border-color: var(--accent); }
+      .checklist .hint { display: block; color: var(--muted); font-size: .9375rem; }
+      .counter { margin-top: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .counter-bar { margin: .5rem 0 1.25rem; max-width: 62ch; height: .5rem; border-radius: 999px; background: var(--surface); border: 1px solid var(--rule); overflow: hidden; }
+      .counter-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s var(--ease-out); }
+      @media (prefers-reduced-motion: reduce) { .counter-bar span { transition: none; } }
+    </style>
+    <style>
+      .pic-demo { margin: 1.5rem 0 0; padding: 1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; max-width: 34rem; }
+      .pic-demo img { display: block; width: 100%; height: auto; border-radius: 6px; background: var(--paper); }
+      .readout { margin: 1rem 0 0; display: grid; gap: .35rem; font-size: .9375rem; }
+      .readout div { display: grid; grid-template-columns: 8.5rem 1fr; gap: .75rem; }
+      .readout dt { font-weight: 700; }
+      .readout dd { margin: 0; color: var(--muted); font-family: var(--mono); font-size: .8125rem; overflow-wrap: anywhere; }
+      @media (max-width: 30rem) { .readout div { grid-template-columns: 1fr; gap: 0; } }
+    </style>
+  </head>
+
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="back" href="../../index.html"
+          ><span aria-hidden="true">&larr;</span>
+          <span class="back-full">Web Programming Library</span
+          ><span class="back-short">Library</span></a
+        >
+        <div class="header-end">
+          <span class="here">Week 9_2 &middot; Exercise 2</span>
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Switch to light mode"
+            title="Switch to light mode"
+          >
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="5" />
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="container">
+          <h1 id="page-title">Compare image formats</h1>
+          <p class="lead">
+            A live <code>&lt;picture&gt;</code> with WebP sources and a JPEG fallback. See which file your browser picks, then confirm it in the Network tab.
+          </p>
+        </div>
+      </section>
+
+      <div class="container layout">
+        <div class="report-column">
+
+          <section class="section" aria-labelledby="live-title">
+            <h2 id="live-title">Live demo: WebP with a JPEG fallback</h2>
+            <p>
+              The image below is a <code>&lt;picture&gt;</code> with two
+              WebP sources (400 and 800 pixels wide) and a JPEG
+              <code>&lt;img&gt;</code> with the same two sizes. The browser
+              picks the first <code>&lt;source&gt;</code> whose
+              <code>type</code> it understands, then chooses a width from
+              <code>srcset</code> using <code>sizes</code> and the screen
+              density. The readout shows what it actually chose.
+            </p>
+            <figure class="pic-demo">
+              <picture>
+                <source type="image/webp"
+                        srcset="https://picsum.photos/id/1015/400/200.webp 400w, https://picsum.photos/id/1015/800/400.webp 800w"
+                        sizes="(max-width: 500px) calc(100vw - 80px), 510px" />
+                <img id="demo-img"
+                     src="https://picsum.photos/id/1015/800/400.jpg"
+                     srcset="https://picsum.photos/id/1015/400/200.jpg 400w, https://picsum.photos/id/1015/800/400.jpg 800w"
+                     sizes="(max-width: 500px) calc(100vw - 80px), 510px"
+                     width="800" height="400"
+                     alt="A river winding through a green valley between steep mountains"
+                     fetchpriority="high" />
+              </picture>
+              <figcaption class="fine">Photo from picsum.photos (id 1015). Resize the window to see whether the browser swaps to the other width.</figcaption>
+              <dl class="readout" aria-live="polite">
+                <div><dt>Chosen file</dt><dd id="r-file">loading&#8230;</dd></div>
+                <div><dt>Format</dt><dd id="r-format">&#8230;</dd></div>
+                <div><dt>File width</dt><dd id="r-natural">&#8230;</dd></div>
+                <div><dt>Shown at</dt><dd id="r-shown">&#8230;</dd></div>
+                <div><dt>Pixel density</dt><dd id="r-dpr">&#8230;</dd></div>
+              </dl>
+            </figure>
+            <p class="fine">
+              The format is read from the file extension in the chosen URL.
+              picsum.photos is a placeholder service that converts on the fly,
+              so the byte sizes are not meant as a benchmark.
+            </p>
+
+            <h3>The markup</h3>
+            <pre class="code-block" tabindex="0"><code>&lt;picture&gt;
+  &lt;source type="image/webp"
+          srcset="https://picsum.photos/id/1015/400/200.webp 400w,
+                  https://picsum.photos/id/1015/800/400.webp 800w"
+          sizes="(max-width: 500px) calc(100vw - 80px), 510px"&gt;
+  &lt;img src="https://picsum.photos/id/1015/800/400.jpg"
+       srcset="https://picsum.photos/id/1015/400/200.jpg 400w,
+               https://picsum.photos/id/1015/800/400.jpg 800w"
+       sizes="(max-width: 500px) calc(100vw - 80px), 510px"
+       width="800" height="400"
+       alt="A river winding through a green valley between steep mountains"
+       fetchpriority="high"&gt;
+&lt;/picture&gt;</code></pre>
+            <ul class="plain">
+              <li><code>type="image/webp"</code> lets a browser without WebP skip the source without downloading it.</li>
+              <li><code>srcset</code> with <code>w</code> descriptors gives the browser the real widths; <code>sizes</code> tells it how wide the image will be, so it can choose before layout.</li>
+              <li><code>width</code> and <code>height</code> reserve the 2:1 box, so there is no layout shift.</li>
+              <li><code>fetchpriority="high"</code> is for this image only because it is the first and largest thing on the page.</li>
+            </ul>
+          </section>
+
+          <section class="section" aria-labelledby="skip-title">
+            <h2 id="skip-title">See the fallback work</h2>
+            <p>
+              This second picture lists a source with a format no browser
+              knows. The browser skips it and uses the JPEG in the
+              <code>&lt;img&gt;</code>, which is exactly what an old browser
+              does with <code>image/webp</code>. It also uses
+              <code>loading="lazy"</code> because it is below the fold.
+            </p>
+            <figure class="pic-demo">
+              <picture>
+                <source type="image/x-not-a-real-format" srcset="https://picsum.photos/id/1018/800/400.webp" />
+                <img id="skip-img"
+                     src="https://picsum.photos/id/1018/800/400.jpg"
+                     width="800" height="400" loading="lazy"
+                     alt="Misty mountains above a lake" />
+              </picture>
+              <dl class="readout" aria-live="polite">
+                <div><dt>Chosen file</dt><dd id="s-file">scroll here to load&#8230;</dd></div>
+                <div><dt>Format</dt><dd id="s-format">&#8230;</dd></div>
+              </dl>
+            </figure>
+            <pre class="code-block" tabindex="0"><code>&lt;picture&gt;
+  &lt;source type="image/x-not-a-real-format"
+          srcset="https://picsum.photos/id/1018/800/400.webp"&gt;
+  &lt;img src="https://picsum.photos/id/1018/800/400.jpg"
+       width="800" height="400" loading="lazy"
+       alt="Misty mountains above a lake"&gt;
+&lt;/picture&gt;</code></pre>
+          </section>
+
+          <section class="section" aria-labelledby="net-title">
+            <h2 id="net-title">How to verify it in the Network tab</h2>
+            <p>The readout is the browser reporting on itself. The Network tab is the independent check.</p>
+            <ol class="steps">
+              <li>Open this page in Chrome or Edge, then open DevTools with <kbd>F12</kbd> and choose the <strong>Network</strong> tab.</li>
+              <li>Tick <strong>Disable cache</strong>, click the <strong>Img</strong> filter, and reload with <kbd>Ctrl</kbd>+<kbd>R</kbd>.</li>
+              <li>Find the request for <code>1015/&#8230;</code>. The <strong>Type</strong> column should say <code>webp</code> and the URL should end in <code>.webp</code>. If it says <code>jpeg</code>, your browser skipped the WebP source.</li>
+              <li>Read the <strong>Size</strong> column and compare it with the same request for the <code>.jpg</code> version, which you can open in a new tab. Note the numbers yourself; they change with the picture.</li>
+              <li>Narrow the window below 500 pixels and reload. The request should switch to the <code>400</code>-wide file.</li>
+              <li>Open the throttling menu (default <em>No throttling</em>) and pick a slow preset, then reload. The smaller file is the one that arrives sooner.</li>
+              <li>Scroll to the second picture. Its request should appear only now, because of <code>loading="lazy"</code>.</li>
+            </ol>
+            <p class="fine">
+              Related reading: <a href="ex2-image-formats.html">the explainer</a>
+              compares the formats; this page is the hands-on version. Source:
+              Performance slides, image optimisation and lazy loading.
+            </p>
+          </section>
+
+        </div>
+
+        <aside class="facts" aria-labelledby="facts-title">
+          <h2 id="facts-title">At a glance</h2>
+          <dl>
+            <div><dt>Elements</dt><dd><code>picture</code>, <code>source</code>, <code>img</code></dd></div>
+            <div><dt>Attributes</dt><dd><code>type</code>, <code>srcset</code>, <code>sizes</code>, <code>width</code>, <code>height</code></dd></div>
+            <div><dt>Images</dt><dd>picsum.photos (needs a network connection)</dd></div>
+          </dl>
+          <div class="see-also">
+            <h3>See also</h3>
+            <a href="ex2-image-formats.html">Explainer: image formats</a>
+            <a href="ex3-defer-scripts.html">Explainer: defer scripts</a>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <ul>
+          <li><a href="../../index.html">Week 9_2 &mdash; Performance</a></li>
+          <li><a href="../../index.html">Back to the library</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        function ext(url) { var m = /\.(webp|jpe?g|png|avif)(?:[?#]|$)/i.exec(url || ''); return m ? m[1].toUpperCase().replace('JPG', 'JPEG') : 'unknown'; }
+        function name(url) { return (url || '').replace('https://picsum.photos/', ''); }
+        var img = document.getElementById('demo-img');
+        function readMain() {
+          document.getElementById('r-file').textContent = name(img.currentSrc) || 'not loaded yet';
+          document.getElementById('r-format').textContent = ext(img.currentSrc);
+          var wm = /\/(\d+)\/(\d+)\.\w+$/.exec(img.currentSrc || ''); document.getElementById('r-natural').textContent = wm ? wm[1] + ' \u00d7 ' + wm[2] + ' px' : '\u2026';
+          document.getElementById('r-shown').textContent = Math.round(img.getBoundingClientRect().width) + ' CSS px wide';
+          document.getElementById('r-dpr').textContent = window.devicePixelRatio + 'x';
+        }
+        img.addEventListener('load', readMain);
+        window.addEventListener('resize', function () { setTimeout(readMain, 250); });
+        if (img.complete) readMain();
+        var s = document.getElementById('skip-img');
+        function readSkip() {
+          document.getElementById('s-file').textContent = name(s.currentSrc);
+          document.getElementById('s-format').textContent = ext(s.currentSrc);
+        }
+        s.addEventListener('load', readSkip);
+        if (s.complete) { if (s.currentSrc) readSkip(); }
+      })();
+    </script>
+  </body>
+</html>

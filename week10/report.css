@@ -349,3 +349,8 @@ h3 {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+/* Link lists that follow a paragraph (exercise pages) */
+.section > p + .notes {
+  margin-top: 1rem;
+}
