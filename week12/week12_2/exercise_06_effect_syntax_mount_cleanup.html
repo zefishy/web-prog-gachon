@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 6 by Ryan Wong: a useEffect with an empty dependency array that logs on mount and returns a cleanup that logs on unmount, with a Mount/Unmount button and an on-page log.">
+  <title>Exercise 6: Effect syntax, mount and cleanup &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 6</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Effect syntax: mount and cleanup</h1>
+        <p class="lead">The shape of every effect: a function that runs after render, and an optional function it returns. Mount and unmount the component below and watch what lands in the log.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Press Unmount and Mount and watch the log: the effect runs after the first render, and the cleanup runs when the component is removed.</p>
+          <p>The effect is <code>useEffect(() =&gt; { … return () =&gt; { … }; }, [])</code>. Code comment from the slides: &ldquo;Runs after the first render (empty dependency array)&rdquo;.</p>
+          <cite>Week 12 Friday slides &mdash; useEffect syntax</cite>
+        </blockquote>
+<div id="demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+        <p>The slides print to <code>console.log</code>. Here the same two messages go to the &ldquo;Effect log&rdquo; below the buttons, so they can be seen without opening the console.</p>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">MyComponent.jsx</p>
+<pre class="code"><code>function MyComponent({ onLog }) {
+  const [data] = useState(null);
+
+  useEffect(() =&gt; {
+    // Runs after the first render (empty dependency array)
+    onLog('Component rendered!');
+
+    // Optional: return a cleanup function
+    return () =&gt; {
+      onLog('Cleanup before next run or unmount');
+    };
+  }, []);
+
+  return &lt;p&gt;MyComponent is mounted. data = &lt;code&gt;{JSON.stringify(data)}&lt;/code&gt;&lt;/p&gt;;
+}
+
+function Demo() {
+  const [shown, setShown] = useState(true);
+  const [lines, setLines] = useState([]);
+  const log = text =&gt; setLines(l =&gt; [...l, text]);
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setShown(s =&gt; !s)}&gt;
+        {shown ? 'Unmount MyComponent' : 'Mount MyComponent'}
+      &lt;/button&gt;
+      &lt;button onClick={() =&gt; setLines([])}&gt;Clear log&lt;/button&gt;
+
+      {shown ? &lt;MyComponent onLog={log} /&gt; : &lt;p className="muted"&gt;MyComponent is not on the page.&lt;/p&gt;}
+
+      &lt;h3&gt;Effect log&lt;/h3&gt;
+      &lt;div role="log" aria-label="Effect log"&gt;
+        {lines.length
+          ? &lt;ul&gt;{lines.map((line, i) =&gt; &lt;li key={i}&gt;{line}&lt;/li&gt;)}&lt;/ul&gt;
+          : &lt;p className="muted"&gt;Nothing logged yet.&lt;/p&gt;}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>The effect runs after the first render.</strong> The paragraph is already on screen when &ldquo;Component rendered!&rdquo; is logged, which is why effects are the right place for work that touches the outside world.</li>
+          <li><strong><code>[]</code> means once.</strong> Logging a line or clicking Clear re-renders <code>Demo</code>, and with it <code>MyComponent</code>, but the effect does not run again because it has no dependencies that could change.</li>
+          <li><strong>The returned function is the cleanup.</strong> React calls it when the component is removed, and also before the effect runs again if there were dependencies. With <code>[]</code> that means only on unmount. Press Unmount and the second line appears.</li>
+          <li><strong>Mount again and you get a fresh run.</strong> An unmounted component loses its state; the log shows &ldquo;Component rendered!&rdquo; once more because it is a new mount.</li>
+          <li><strong>Only the log lives in <code>Demo</code>.</strong> The slides&rsquo; <code>MyComponent</code> has no props; I pass <code>onLog</code> in so the messages can be shown on the page instead of the console. <code>onLog</code> is not in the dependency array, which is safe here because it only calls a state setter.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Effect</dt><dd>Log on mount</dd></div>
+          <div><dt>Dependencies</dt><dd>[]</dd></div>
+          <div><dt>Cleanup</dt><dd>Log on unmount</dd></div>
+          <div><dt>Source</dt><dd>Friday slides, useEffect syntax</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_05_live_character_count.html">Previous: Live character count</a></p>
+          <p><a href="exercise_07_dependency_patterns.html">Next: Dependency patterns</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20Effects_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function MyComponent({ onLog }) {
+  const [data] = useState(null);
+
+  useEffect(() => {
+    // Runs after the first render (empty dependency array)
+    onLog('Component rendered!');
+
+    // Optional: return a cleanup function
+    return () => {
+      onLog('Cleanup before next run or unmount');
+    };
+  }, []);
+
+  return <p>MyComponent is mounted. data = <code>{JSON.stringify(data)}</code></p>;
+}
+
+function Demo() {
+  const [shown, setShown] = useState(true);
+  const [lines, setLines] = useState([]);
+  const log = text => setLines(l => [...l, text]);
+
+  return (
+    <div>
+      <button onClick={() => setShown(s => !s)}>
+        {shown ? 'Unmount MyComponent' : 'Mount MyComponent'}
+      </button>
+      <button onClick={() => setLines([])}>Clear log</button>
+
+      {shown ? <MyComponent onLog={log} /> : <p className="muted">MyComponent is not on the page.</p>}
+
+      <h3>Effect log</h3>
+      <div role="log" aria-label="Effect log">
+        {lines.length
+          ? <ul>{lines.map((line, i) => <li key={i}>{line}</li>)}</ul>
+          : <p className="muted">Nothing logged yet.</p>}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('demo')).render(<Demo />);
+  </script>
+</body>
+</html>

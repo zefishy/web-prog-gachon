@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 homework step 4 by Ryan Wong: the geolocation bonus of the Weather Dashboard. An effect with an empty dependency array asks navigator.geolocation for the first coordinates and falls back to Seoul.">
+  <title>Homework 4: Geolocation bonus &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <style>
+    .demo .weather .icon { font-size: 2.5rem; line-height: 1; }
+  </style>
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Homework 4/5</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Weather dashboard, step 4: geolocation (bonus)</h1>
+        <p class="lead">TODO 3. On mount, an effect asks the browser for the user&rsquo;s location and uses it for the first weather request. If the user says no, the page falls back to Seoul.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section wide" aria-labelledby="task-title">
+        <h2 id="task-title">The step</h2>
+        <nav class="steps" aria-label="Homework steps">
+          <a href="homework_01_weather_dashboard_starter.html"><span class="n">1</span>Starter</a>
+          <a href="homework_02_city_search.html"><span class="n">2</span>City search</a>
+          <a href="homework_03_weather_code_descriptions.html"><span class="n">3</span>Weather code descriptions</a>
+          <a href="homework_04_geolocation_bonus.html" aria-current="page"><span class="n">4</span>Geolocation (bonus)</a>
+          <a href="homework_05_weather_dashboard_component.html"><span class="n">5</span>WeatherDashboard component</a>
+        </nav>
+        <blockquote class="brief">
+          <p><strong>TODO 3:</strong> BONUS: use <code>navigator.geolocation</code> for the first coordinates.</p>
+          <p><strong>Bonus:</strong> auto-detect the user location with <code>navigator.geolocation</code>.</p>
+          <cite>Week 12 Friday slides &mdash; Homework: Weather Dashboard</cite>
+        </blockquote>
+<div id="hw4-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The code</h2>
+<div class="code-block">
+<p class="code-label">LocalWeather.jsx</p>
+<pre class="code"><code>const WEATHER_CODES = {
+  0: ['Clear sky', '☀️'], 1: ['Mainly clear', '🌤️'], 2: ['Partly cloudy', '⛅'], 3: ['Overcast', '☁️'],
+  45: ['Fog', '🌫️'], 48: ['Depositing rime fog', '🌫️'],
+  51: ['Light drizzle', '🌦️'], 53: ['Moderate drizzle', '🌦️'], 55: ['Dense drizzle', '🌧️'],
+  56: ['Light freezing drizzle', '🌧️'], 57: ['Dense freezing drizzle', '🌧️'],
+  61: ['Slight rain', '🌦️'], 63: ['Moderate rain', '🌧️'], 65: ['Heavy rain', '🌧️'],
+  66: ['Light freezing rain', '🌧️'], 67: ['Heavy freezing rain', '🌧️'],
+  71: ['Slight snowfall', '🌨️'], 73: ['Moderate snowfall', '🌨️'], 75: ['Heavy snowfall', '❄️'], 77: ['Snow grains', '🌨️'],
+  80: ['Slight rain showers', '🌦️'], 81: ['Moderate rain showers', '🌧️'], 82: ['Violent rain showers', '⛈️'],
+  85: ['Slight snow showers', '🌨️'], 86: ['Heavy snow showers', '❄️'],
+  95: ['Thunderstorm', '⛈️'], 96: ['Thunderstorm with slight hail', '⛈️'], 99: ['Thunderstorm with heavy hail', '⛈️']
+};
+
+const describe = code =&gt; WEATHER_CODES[code] || ['Unknown weather (code ' + code + ')', '❔'];
+
+const SEOUL = { name: 'Seoul (default)', latitude: 37.57, longitude: 126.98 };
+
+function LocalWeather() {
+  const [coords, setCoords]   = useState(null);
+  const [note, setNote]       = useState('Asking for your location…');
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
+
+  // Effect 1 (on mount): the first coordinates come from the browser
+  useEffect(() =&gt; {
+    let cancelled = false;
+
+    if (!('geolocation' in navigator)) {
+      setCoords(SEOUL);
+      setNote('This browser cannot share its location, so Seoul is shown.');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      pos =&gt; {
+        if (cancelled) return;
+        setCoords({ name: 'Your location',
+                    latitude: pos.coords.latitude,
+                    longitude: pos.coords.longitude });
+        setNote('Using your current location.');
+      },
+      err =&gt; {
+        if (cancelled) return;
+        setCoords(SEOUL);
+        setNote('Location unavailable (' + err.message + '), so Seoul is shown.');
+      },
+      { timeout: 10000 }
+    );
+
+    return () =&gt; { cancelled = true; };   // ignore a late answer after unmount
+  }, []);                                 // [] = ask once, on mount
+
+  // Effect 2: coordinates -&gt; weather
+  useEffect(() =&gt; {
+    if (!coords) return;
+    const controller = new AbortController();
+    setLoading(true); setError(null);
+
+    const url = 'https://api.open-meteo.com/v1/forecast'
+      + `?latitude=${coords.latitude}&amp;longitude=${coords.longitude}`
+      + '&amp;current=temperature_2m,wind_speed_10m,weather_code';
+
+    fetch(url, { signal: controller.signal })
+      .then(res =&gt; {
+        if (!res.ok) throw new Error('Could not load weather (HTTP ' + res.status + ')');
+        return res.json();
+      })
+      .then(data =&gt; { setWeather(data.current); setLoading(false); })
+      .catch(err =&gt; {
+        if (err.name === 'AbortError') return;
+        setWeather(null); setError(err.message); setLoading(false);
+      });
+
+    return () =&gt; controller.abort();
+  }, [coords]);
+
+  const [text, icon] = weather ? describe(weather.weather_code) : ['', ''];
+
+  return (
+    &lt;div&gt;
+      &lt;p className="muted" role="status"&gt;{note}&lt;/p&gt;
+
+      {loading &amp;&amp; &lt;p className="loading" role="status"&gt;Loading weather…&lt;/p&gt;}
+      {error &amp;&amp; &lt;p className="error" role="alert"&gt;{error}&lt;/p&gt;}
+      {coords &amp;&amp; weather &amp;&amp; !loading &amp;&amp; (
+        &lt;div className="weather" aria-live="polite"&gt;
+          &lt;p className="icon" aria-hidden="true"&gt;{icon}&lt;/p&gt;
+          &lt;p className="place"&gt;{coords.name}&lt;/p&gt;
+          &lt;p className="temp"&gt;{weather.temperature_2m} °C&lt;/p&gt;
+          &lt;p&gt;{text}&lt;/p&gt;
+          &lt;p className="muted"&gt;wind {weather.wind_speed_10m} km/h · ({coords.latitude.toFixed(2)}, {coords.longitude.toFixed(2)})&lt;/p&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">Notes</h2>
+        <ul class="notes">
+          <li><strong>The browser asks first.</strong> Reload the page and a permission prompt appears. Allow it and the card shows &ldquo;Your location&rdquo;; block it, or let it time out, and the note says why Seoul is shown instead. Geolocation only works on HTTPS pages (GitHub Pages is HTTPS) or on <code>localhost</code>.</li>
+          <li><strong><code>[]</code> means once, on mount.</strong> Asking for the position is a one-time setup step, so the dependency array is empty.</li>
+          <li><strong>The cleanup sets a flag.</strong> <code>getCurrentPosition</code> cannot be aborted, so <code>cancelled = true</code> makes a late answer do nothing if the component has already unmounted.</li>
+          <li><strong>Every failure path still sets coordinates.</strong> No <code>geolocation</code> in <code>navigator</code>, permission denied, position unavailable and a timeout all end in <code>setCoords(SEOUL)</code>. The weather effect never waits for coordinates that will not come.</li>
+          <li><strong>A second effect chains off the first.</strong> The weather effect depends on <code>[coords]</code>. It returns early while <code>coords</code> is <code>null</code>, and runs once the first effect has set it.</li>
+          <li><strong>Say what happened.</strong> The <code>note</code> state tells the user whether the numbers are for their position or for the fallback, so a refusal never looks like a bug.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Homework</dt><dd>Weather Dashboard</dd></div>
+          <div><dt>Step</dt><dd>4 of 5</dd></div>
+          <div><dt>TODO</dt><dd>3, geolocation (bonus)</dd></div>
+          <div><dt>Browser API</dt><dd>navigator.geolocation</dd></div>
+          <div><dt>Fallback</dt><dd>Seoul</dd></div>
+          <div><dt>Effects</dt><dd>[], [coords]</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="homework_03_weather_code_descriptions.html">Previous: step 3, Weather code descriptions</a></p>
+          <p><a href="homework_05_weather_dashboard_component.html">Next: step 5, WeatherDashboard component</a></p>
+          <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition" rel="noopener">MDN: getCurrentPosition</a></p>
+          <p><a href="homework_weather_dashboard.html">The single-page version of this homework</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 homework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+
+const WEATHER_CODES = {
+  0: ['Clear sky', '☀️'], 1: ['Mainly clear', '🌤️'], 2: ['Partly cloudy', '⛅'], 3: ['Overcast', '☁️'],
+  45: ['Fog', '🌫️'], 48: ['Depositing rime fog', '🌫️'],
+  51: ['Light drizzle', '🌦️'], 53: ['Moderate drizzle', '🌦️'], 55: ['Dense drizzle', '🌧️'],
+  56: ['Light freezing drizzle', '🌧️'], 57: ['Dense freezing drizzle', '🌧️'],
+  61: ['Slight rain', '🌦️'], 63: ['Moderate rain', '🌧️'], 65: ['Heavy rain', '🌧️'],
+  66: ['Light freezing rain', '🌧️'], 67: ['Heavy freezing rain', '🌧️'],
+  71: ['Slight snowfall', '🌨️'], 73: ['Moderate snowfall', '🌨️'], 75: ['Heavy snowfall', '❄️'], 77: ['Snow grains', '🌨️'],
+  80: ['Slight rain showers', '🌦️'], 81: ['Moderate rain showers', '🌧️'], 82: ['Violent rain showers', '⛈️'],
+  85: ['Slight snow showers', '🌨️'], 86: ['Heavy snow showers', '❄️'],
+  95: ['Thunderstorm', '⛈️'], 96: ['Thunderstorm with slight hail', '⛈️'], 99: ['Thunderstorm with heavy hail', '⛈️']
+};
+
+const describe = code => WEATHER_CODES[code] || ['Unknown weather (code ' + code + ')', '❔'];
+
+const SEOUL = { name: 'Seoul (default)', latitude: 37.57, longitude: 126.98 };
+
+function LocalWeather() {
+  const [coords, setCoords]   = useState(null);
+  const [note, setNote]       = useState('Asking for your location…');
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
+
+  // Effect 1 (on mount): the first coordinates come from the browser
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!('geolocation' in navigator)) {
+      setCoords(SEOUL);
+      setNote('This browser cannot share its location, so Seoul is shown.');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        if (cancelled) return;
+        setCoords({ name: 'Your location',
+                    latitude: pos.coords.latitude,
+                    longitude: pos.coords.longitude });
+        setNote('Using your current location.');
+      },
+      err => {
+        if (cancelled) return;
+        setCoords(SEOUL);
+        setNote('Location unavailable (' + err.message + '), so Seoul is shown.');
+      },
+      { timeout: 10000 }
+    );
+
+    return () => { cancelled = true; };   // ignore a late answer after unmount
+  }, []);                                 // [] = ask once, on mount
+
+  // Effect 2: coordinates -> weather
+  useEffect(() => {
+    if (!coords) return;
+    const controller = new AbortController();
+    setLoading(true); setError(null);
+
+    const url = 'https://api.open-meteo.com/v1/forecast'
+      + `?latitude=${coords.latitude}&longitude=${coords.longitude}`
+      + '&current=temperature_2m,wind_speed_10m,weather_code';
+
+    fetch(url, { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) throw new Error('Could not load weather (HTTP ' + res.status + ')');
+        return res.json();
+      })
+      .then(data => { setWeather(data.current); setLoading(false); })
+      .catch(err => {
+        if (err.name === 'AbortError') return;
+        setWeather(null); setError(err.message); setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [coords]);
+
+  const [text, icon] = weather ? describe(weather.weather_code) : ['', ''];
+
+  return (
+    <div>
+      <p className="muted" role="status">{note}</p>
+
+      {loading && <p className="loading" role="status">Loading weather…</p>}
+      {error && <p className="error" role="alert">{error}</p>}
+      {coords && weather && !loading && (
+        <div className="weather" aria-live="polite">
+          <p className="icon" aria-hidden="true">{icon}</p>
+          <p className="place">{coords.name}</p>
+          <p className="temp">{weather.temperature_2m} °C</p>
+          <p>{text}</p>
+          <p className="muted">wind {weather.wind_speed_10m} km/h · ({coords.latitude.toFixed(2)}, {coords.longitude.toFixed(2)})</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('hw4-demo')).render(<LocalWeather />);
+  </script>
+</body>
+</html>

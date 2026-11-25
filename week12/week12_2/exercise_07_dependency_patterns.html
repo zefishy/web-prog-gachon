@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 7 by Ryan Wong: three useEffect calls side by side, with no array, an empty array and [val], and a log showing which of them run when val changes and when the parent only re-renders.">
+  <title>Exercise 7: The three dependency patterns &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 7</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">The three dependency patterns</h1>
+        <p class="lead">Three effects in three child components, one parent. Change <code>val</code>, or only re-render, and compare which effects log.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Compare which effects log when you change <code>val</code> and when you only re-render.</p>
+          <p><code>useEffect(fn)</code> &mdash; after <strong>every</strong> render (avoid, usually wrong). <code>useEffect(fn, [])</code> &mdash; <strong>once</strong>, after the first render. <code>useEffect(fn, [a, b])</code> &mdash; after the first render, and whenever <code>a</code> or <code>b</code> changes.</p>
+          <cite>Week 12 Friday slides &mdash; useEffect syntax and the dependency array</cite>
+        </blockquote>
+<div id="demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+        <p>Three lines appear on load. Then try each button once and read only the new lines.</p>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">DependencyPatterns.jsx</p>
+<pre class="code"><code>// The log lives outside React state on purpose: see the notes.
+let lines = [];
+const listeners = new Set();
+function log(...args) {
+  lines = [...lines, args.join(' ')];
+  listeners.forEach(fn =&gt; fn(lines));
+}
+function clearLog() {
+  lines = [];
+  listeners.forEach(fn =&gt; fn(lines));
+}
+
+function LogPanel() {
+  const [shown, setShown] = useState(lines);
+  useEffect(() =&gt; {
+    listeners.add(setShown);
+    setShown(lines);
+    return () =&gt; { listeners.delete(setShown); };
+  }, []);
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;Effect log&lt;/h3&gt;
+      &lt;div role="log" aria-label="Effect log"&gt;
+        {shown.length
+          ? &lt;ul&gt;{shown.map((line, i) =&gt; &lt;li key={i}&gt;{line}&lt;/li&gt;)}&lt;/ul&gt;
+          : &lt;p className="muted"&gt;Nothing logged yet.&lt;/p&gt;}
+      &lt;/div&gt;
+      &lt;button onClick={clearLog}&gt;Clear log&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+function RunsOnce() {
+  useEffect(() =&gt; { log('[]     -&gt; ran once after mount'); }, []);
+  return &lt;p&gt;&lt;code&gt;[]&lt;/code&gt; : once after mount&lt;/p&gt;;
+}
+
+function RunsOnChange({ val }) {
+  useEffect(() =&gt; { log('[val]  -&gt; ran, val =', val); }, [val]);
+  return &lt;p&gt;&lt;code&gt;[val]&lt;/code&gt; : when val changes&lt;/p&gt;;
+}
+
+function RunsEveryRender() {
+  // No dependency array: usually a bug
+  useEffect(() =&gt; { log('(none) -&gt; ran after EVERY render'); });
+  return &lt;p&gt;&lt;code&gt;(none)&lt;/code&gt; : after every render&lt;/p&gt;;
+}
+
+function DependencyPatterns() {
+  const [val, setVal]   = useState(0);
+  const [tick, setTick] = useState(0);
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setVal(v =&gt; v + 1)}&gt;val++ (changes val)&lt;/button&gt;
+      &lt;button onClick={() =&gt; setTick(t =&gt; t + 1)}&gt;re-render (val unchanged)&lt;/button&gt;
+      &lt;p&gt;val = {val}, extra renders = {tick}&lt;/p&gt;
+      &lt;RunsOnce /&gt;
+      &lt;RunsOnChange val={val} /&gt;
+      &lt;RunsEveryRender /&gt;
+      &lt;LogPanel /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong><code>val++</code> logs two lines:</strong> <code>[val]</code> because its dependency changed, and <code>(none)</code> because the parent re-rendered. <code>[]</code> stays silent.</li>
+          <li><strong>&ldquo;re-render&rdquo; logs one line.</strong> <code>tick</code> changes the parent&rsquo;s state, every child renders again, but <code>val</code> is the same number, so <code>[val]</code> is skipped. Only the effect with no array runs.</li>
+          <li><strong>The array compares values with <code>Object.is</code>,</strong> one entry at a time. That is why a number or string works as a dependency and a new <code>{}</code> or <code>[]</code> created during render would trigger the effect every time.</li>
+          <li><strong>The log is not React state in the parent.</strong> If it were, logging from the no-array effect would change the parent&rsquo;s state, re-render all three children, and log again, forever. Here <code>LogPanel</code> subscribes to a small list outside React, in an effect with its own cleanup, so only the panel re-renders. This is the infinite-loop trap from a later exercise, avoided by design.</li>
+          <li><strong>No array is almost never what you want.</strong> It is in the demo to show what the other two save you from.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Patterns</dt><dd>none, [], [val]</dd></div>
+          <div><dt>Triggers</dt><dd>val++, re-render</dd></div>
+          <div><dt>Compared with</dt><dd>Object.is</dd></div>
+          <div><dt>Source</dt><dd>Friday slides, dependency array</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_06_effect_syntax_mount_cleanup.html">Previous: Effect syntax, mount and cleanup</a></p>
+          <p><a href="exercise_08_async_await_inside_an_effect.html">Next: async/await inside an effect</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20Effects_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+// The log lives outside React state on purpose: see the notes.
+let lines = [];
+const listeners = new Set();
+function log(...args) {
+  lines = [...lines, args.join(' ')];
+  listeners.forEach(fn => fn(lines));
+}
+function clearLog() {
+  lines = [];
+  listeners.forEach(fn => fn(lines));
+}
+
+function LogPanel() {
+  const [shown, setShown] = useState(lines);
+  useEffect(() => {
+    listeners.add(setShown);
+    setShown(lines);
+    return () => { listeners.delete(setShown); };
+  }, []);
+
+  return (
+    <div>
+      <h3>Effect log</h3>
+      <div role="log" aria-label="Effect log">
+        {shown.length
+          ? <ul>{shown.map((line, i) => <li key={i}>{line}</li>)}</ul>
+          : <p className="muted">Nothing logged yet.</p>}
+      </div>
+      <button onClick={clearLog}>Clear log</button>
+    </div>
+  );
+}
+
+function RunsOnce() {
+  useEffect(() => { log('[]     -> ran once after mount'); }, []);
+  return <p><code>[]</code> : once after mount</p>;
+}
+
+function RunsOnChange({ val }) {
+  useEffect(() => { log('[val]  -> ran, val =', val); }, [val]);
+  return <p><code>[val]</code> : when val changes</p>;
+}
+
+function RunsEveryRender() {
+  // No dependency array: usually a bug
+  useEffect(() => { log('(none) -> ran after EVERY render'); });
+  return <p><code>(none)</code> : after every render</p>;
+}
+
+function DependencyPatterns() {
+  const [val, setVal]   = useState(0);
+  const [tick, setTick] = useState(0);
+  return (
+    <div>
+      <button onClick={() => setVal(v => v + 1)}>val++ (changes val)</button>
+      <button onClick={() => setTick(t => t + 1)}>re-render (val unchanged)</button>
+      <p>val = {val}, extra renders = {tick}</p>
+      <RunsOnce />
+      <RunsOnChange val={val} />
+      <RunsEveryRender />
+      <LogPanel />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('demo')).render(<DependencyPatterns />);
+  </script>
+</body>
+</html>

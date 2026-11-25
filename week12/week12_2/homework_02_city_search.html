@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 homework step 2 by Ryan Wong: TODO 1 of the Weather Dashboard. A typed city name goes through the Open-Meteo geocoding API to coordinates, and a second useEffect loads the weather for the chosen place.">
+  <title>Homework 2: City search &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <style>
+    .demo .weather .icon { font-size: 2.5rem; line-height: 1; }
+  </style>
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Homework 2/5</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Weather dashboard, step 2: city search</h1>
+        <p class="lead">TODO 1. The user types a city name, the Open-Meteo geocoding API turns it into coordinates, and a second effect loads the weather for the chosen place.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section wide" aria-labelledby="task-title">
+        <h2 id="task-title">The step</h2>
+        <nav class="steps" aria-label="Homework steps">
+          <a href="homework_01_weather_dashboard_starter.html"><span class="n">1</span>Starter</a>
+          <a href="homework_02_city_search.html" aria-current="page"><span class="n">2</span>City search</a>
+          <a href="homework_03_weather_code_descriptions.html"><span class="n">3</span>Weather code descriptions</a>
+          <a href="homework_04_geolocation_bonus.html"><span class="n">4</span>Geolocation (bonus)</a>
+          <a href="homework_05_weather_dashboard_component.html"><span class="n">5</span>WeatherDashboard component</a>
+        </nav>
+        <blockquote class="brief">
+          <p><strong>TODO 1:</strong> let the user type a CITY name and look up coordinates (<code>https://geocoding-api.open-meteo.com/v1/search?name=Seoul</code>).</p>
+          <cite>Week 12 Friday slides &mdash; Homework: Weather Dashboard (starter code)</cite>
+        </blockquote>
+<div id="hw2-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The code</h2>
+<div class="code-block">
+<p class="code-label">CityWeather.jsx</p>
+<pre class="code"><code>function CityWeather() {
+  const [input, setInput]     = useState('Seoul');   // what is typed
+  const [city, setCity]       = useState('Seoul');   // set when Search is pressed
+  const [places, setPlaces]   = useState([]);
+  const [place, setPlace]     = useState(null);      // { name, country, latitude, longitude, ... }
+  const [weather, setWeather] = useState(null);
+  const [searching, setSearching] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState(null);
+
+  // Effect 1: city name -&gt; list of matching places
+  useEffect(() =&gt; {
+    if (!city) return;
+    const controller = new AbortController();
+    setSearching(true); setError(null); setPlaces([]);
+
+    const url = 'https://geocoding-api.open-meteo.com/v1/search?count=5&amp;language=en&amp;format=json'
+      + '&amp;name=' + encodeURIComponent(city);
+
+    fetch(url, { signal: controller.signal })
+      .then(res =&gt; {
+        if (!res.ok) throw new Error('City search failed (HTTP ' + res.status + ')');
+        return res.json();
+      })
+      .then(data =&gt; {
+        const found = data.results || [];   // no "results" key when nothing matches
+        setSearching(false);
+        if (found.length === 0) {
+          setError('No city called “' + city + '” was found.');
+          return;
+        }
+        setPlaces(found);
+        setPlace(found[0]);                 // best match first
+      })
+      .catch(err =&gt; {
+        if (err.name === 'AbortError') return;
+        setError(err.message); setSearching(false);
+      });
+
+    return () =&gt; controller.abort();
+  }, [city]);
+
+  // Effect 2: chosen place -&gt; current weather
+  useEffect(() =&gt; {
+    if (!place) return;
+    const controller = new AbortController();
+    setLoading(true); setError(null);
+
+    const url = 'https://api.open-meteo.com/v1/forecast'
+      + `?latitude=${place.latitude}&amp;longitude=${place.longitude}`
+      + '&amp;current=temperature_2m,wind_speed_10m,weather_code';
+
+    fetch(url, { signal: controller.signal })
+      .then(res =&gt; {
+        if (!res.ok) throw new Error('Could not load weather (HTTP ' + res.status + ')');
+        return res.json();
+      })
+      .then(data =&gt; { setWeather(data.current); setLoading(false); })
+      .catch(err =&gt; {
+        if (err.name === 'AbortError') return;
+        setWeather(null); setError(err.message); setLoading(false);
+      });
+
+    return () =&gt; controller.abort();
+  }, [place]);
+
+  function search(e) {
+    e.preventDefault();
+    if (input.trim()) setCity(input.trim());
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;form onSubmit={search}&gt;
+        &lt;label htmlFor="hw2-city"&gt;City&lt;/label&gt;{' '}
+        &lt;input id="hw2-city" value={input} onChange={e =&gt; setInput(e.target.value)}
+               placeholder="e.g. Busan" autoComplete="off" /&gt;
+        &lt;button&gt;Search&lt;/button&gt;
+      &lt;/form&gt;
+
+      {places.length &gt; 1 &amp;&amp; (
+        &lt;ul aria-label="Matching places"&gt;
+          {places.map(p =&gt; (
+            &lt;li key={p.id}&gt;
+              &lt;span&gt;{p.name}, {p.admin1 ? p.admin1 + ', ' : ''}{p.country_code}&lt;/span&gt;
+              &lt;button onClick={() =&gt; setPlace(p)} disabled={p.id === place.id}&gt;
+                {p.id === place.id ? 'Showing' : 'Show'}
+              &lt;/button&gt;
+            &lt;/li&gt;
+          ))}
+        &lt;/ul&gt;
+      )}
+
+      {searching &amp;&amp; &lt;p className="loading" role="status"&gt;Searching for “{city}”…&lt;/p&gt;}
+      {error &amp;&amp; &lt;p className="error" role="alert"&gt;{error}&lt;/p&gt;}
+      {place &amp;&amp; loading &amp;&amp; &lt;p className="loading" role="status"&gt;Loading weather for {place.name}…&lt;/p&gt;}
+
+      {place &amp;&amp; weather &amp;&amp; !loading &amp;&amp; (
+        &lt;div className="weather" aria-live="polite"&gt;
+          &lt;p className="place"&gt;{place.name}, {place.country}&lt;/p&gt;
+          &lt;p className="temp"&gt;{weather.temperature_2m} °C&lt;/p&gt;
+          &lt;p&gt;wind {weather.wind_speed_10m} km/h · code {weather.weather_code}&lt;/p&gt;
+          &lt;p className="muted"&gt;({place.latitude.toFixed(2)}, {place.longitude.toFixed(2)})&lt;/p&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">Notes</h2>
+        <ul class="notes">
+          <li><strong>Two effects, one job each.</strong> The first runs when the <strong>search term</strong> changes and finds places. The second runs when the <strong>chosen place</strong> changes and loads its weather. Both abort their request in the cleanup.</li>
+          <li><strong>Typing is not searching.</strong> <code>input</code> follows the text box; <code>city</code> only changes on submit. If the effect depended on <code>input</code>, every keystroke would call the geocoding API.</li>
+          <li><strong>No match means no <code>results</code> key.</strong> The API returns an object without <code>results</code> for an unknown name, so the code reads <code>data.results || []</code> and shows &ldquo;No city called ... was found.&rdquo; Try <code>asdfgh</code>.</li>
+          <li><strong>Several places share a name.</strong> The request asks for <code>count=5</code>, the best match is shown first, and the list lets you pick another one, such as a different Busan.</li>
+          <li><strong>Search state is separate from weather state.</strong> <code>searching</code> and <code>loading</code> are two flags because the two requests can be in flight at different times.</li>
+          <li><strong>The place keeps its coordinates.</strong> The weather request uses <code>place.latitude</code> and <code>place.longitude</code> straight from the geocoding result; the user never types them in this step.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Homework</dt><dd>Weather Dashboard</dd></div>
+          <div><dt>Step</dt><dd>2 of 5</dd></div>
+          <div><dt>TODO</dt><dd>1, city name to coordinates</dd></div>
+          <div><dt>Endpoint</dt><dd>geocoding-api.open-meteo.com</dd></div>
+          <div><dt>Effects</dt><dd>[city], [place]</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="homework_01_weather_dashboard_starter.html">Previous: step 1, Starter</a></p>
+          <p><a href="homework_03_weather_code_descriptions.html">Next: step 3, Weather code descriptions</a></p>
+          <p><a href="https://open-meteo.com/en/docs/geocoding-api" rel="noopener">Open-Meteo geocoding docs</a></p>
+          <p><a href="homework_weather_dashboard.html">The single-page version of this homework</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 homework by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+
+function CityWeather() {
+  const [input, setInput]     = useState('Seoul');   // what is typed
+  const [city, setCity]       = useState('Seoul');   // set when Search is pressed
+  const [places, setPlaces]   = useState([]);
+  const [place, setPlace]     = useState(null);      // { name, country, latitude, longitude, ... }
+  const [weather, setWeather] = useState(null);
+  const [searching, setSearching] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState(null);
+
+  // Effect 1: city name -> list of matching places
+  useEffect(() => {
+    if (!city) return;
+    const controller = new AbortController();
+    setSearching(true); setError(null); setPlaces([]);
+
+    const url = 'https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&format=json'
+      + '&name=' + encodeURIComponent(city);
+
+    fetch(url, { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) throw new Error('City search failed (HTTP ' + res.status + ')');
+        return res.json();
+      })
+      .then(data => {
+        const found = data.results || [];   // no "results" key when nothing matches
+        setSearching(false);
+        if (found.length === 0) {
+          setError('No city called “' + city + '” was found.');
+          return;
+        }
+        setPlaces(found);
+        setPlace(found[0]);                 // best match first
+      })
+      .catch(err => {
+        if (err.name === 'AbortError') return;
+        setError(err.message); setSearching(false);
+      });
+
+    return () => controller.abort();
+  }, [city]);
+
+  // Effect 2: chosen place -> current weather
+  useEffect(() => {
+    if (!place) return;
+    const controller = new AbortController();
+    setLoading(true); setError(null);
+
+    const url = 'https://api.open-meteo.com/v1/forecast'
+      + `?latitude=${place.latitude}&longitude=${place.longitude}`
+      + '&current=temperature_2m,wind_speed_10m,weather_code';
+
+    fetch(url, { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) throw new Error('Could not load weather (HTTP ' + res.status + ')');
+        return res.json();
+      })
+      .then(data => { setWeather(data.current); setLoading(false); })
+      .catch(err => {
+        if (err.name === 'AbortError') return;
+        setWeather(null); setError(err.message); setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [place]);
+
+  function search(e) {
+    e.preventDefault();
+    if (input.trim()) setCity(input.trim());
+  }
+
+  return (
+    <div>
+      <form onSubmit={search}>
+        <label htmlFor="hw2-city">City</label>{' '}
+        <input id="hw2-city" value={input} onChange={e => setInput(e.target.value)}
+               placeholder="e.g. Busan" autoComplete="off" />
+        <button>Search</button>
+      </form>
+
+      {places.length > 1 && (
+        <ul aria-label="Matching places">
+          {places.map(p => (
+            <li key={p.id}>
+              <span>{p.name}, {p.admin1 ? p.admin1 + ', ' : ''}{p.country_code}</span>
+              <button onClick={() => setPlace(p)} disabled={p.id === place.id}>
+                {p.id === place.id ? 'Showing' : 'Show'}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {searching && <p className="loading" role="status">Searching for “{city}”…</p>}
+      {error && <p className="error" role="alert">{error}</p>}
+      {place && loading && <p className="loading" role="status">Loading weather for {place.name}…</p>}
+
+      {place && weather && !loading && (
+        <div className="weather" aria-live="polite">
+          <p className="place">{place.name}, {place.country}</p>
+          <p className="temp">{weather.temperature_2m} °C</p>
+          <p>wind {weather.wind_speed_10m} km/h · code {weather.weather_code}</p>
+          <p className="muted">({place.latitude.toFixed(2)}, {place.longitude.toFixed(2)})</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('hw2-demo')).render(<CityWeather />);
+  </script>
+</body>
+</html>

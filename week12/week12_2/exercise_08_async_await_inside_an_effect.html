@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 8 by Ryan Wong: fetching a GitHub profile with async/await inside useEffect, defining the async function inside the effect because the effect callback itself must not be async.">
+  <title>Exercise 8: async/await inside an effect &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 8</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">async/await inside an effect</h1>
+        <p class="lead">The async function is defined inside the effect and called straight away, because the effect callback itself must not be async.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>You cannot make the <code>useEffect</code> callback itself <code>async</code>: it would return a Promise, but React expects nothing or a cleanup function. Define an async function inside the effect and call it.</p>
+          <p>Fetch <code>https://api.github.com/users/muxiddin19</code> with <code>await</code>, show Loading while it runs, and show either the user or the error.</p>
+          <cite>Week 12 Friday slides &mdash; async/await inside useEffect</cite>
+        </blockquote>
+<div id="demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+        <p>This calls the real GitHub API once on load, and once more for each press of &ldquo;Fetch again&rdquo;. GitHub allows 60 unauthenticated requests an hour per IP, so if it answers 403 the page shows that as an error.</p>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">AsyncEffect.jsx</p>
+<pre class="code"><code>function AsyncEffect() {
+  const [user, setUser]       = useState(null);
+  const [error, setError]     = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // CORRECT: define the async function inside and call it
+  useEffect(() =&gt; {
+    async function fetchData() {
+      try {
+        const res = await fetch('https://api.github.com/users/muxiddin19');
+        if (!res.ok) throw new Error('GitHub responded ' + res.status);
+        const data = await res.json();
+        setUser(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+    // No return needed here unless we have cleanup
+  }, []);
+
+  if (loading) return &lt;p className="loading" role="status"&gt;Loading...&lt;/p&gt;;
+  if (error)   return &lt;p className="error" role="alert"&gt;Error: {error}&lt;/p&gt;;
+  return &lt;p&gt;&lt;strong&gt;{user.login}&lt;/strong&gt;: {user.name || '(no name set)'}&lt;/p&gt;;
+}
+
+function Demo() {
+  const [run, setRun] = useState(1);
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setRun(r =&gt; r + 1)}&gt;Fetch again&lt;/button&gt;
+      &lt;AsyncEffect key={run} /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+<div class="code-block">
+<p class="code-label">The wrong version (not run on this page)</p>
+<pre class="code"><code>// WRONG: an async callback returns a Promise, but useEffect
+// expects undefined or a cleanup function
+useEffect(async () =&gt; {
+  const res  = await fetch('https://api.github.com/users/muxiddin19');
+  const data = await res.json();
+  setUser(data);
+}, []);</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>Why not <code>useEffect(async () =&gt; ...)</code>?</strong> An <code>async</code> function always returns a Promise. React treats whatever the effect returns as the cleanup function, so it would try to call a Promise on unmount. React 18 also logs a warning about it in development builds.</li>
+          <li><strong>The fix is a named async function inside the effect,</strong> called on the next line. The effect callback stays ordinary and returns nothing, so it could still return a cleanup.</li>
+          <li><strong><code>try</code> / <code>catch</code> / <code>finally</code></strong> carries the three states: <code>setUser</code> on success, <code>setError</code> on failure, and <code>setLoading(false)</code> either way. <code>fetch</code> only rejects on network failure, so the <code>res.ok</code> check turns a 403 or 404 into an error as well.</li>
+          <li><strong>Fetch again remounts the component</strong> by changing its <code>key</code>. The new instance starts with <code>loading</code> true and runs its <code>[]</code> effect again. <code>Demo</code> and the button are mine; <code>AsyncEffect</code> follows the slides.</li>
+          <li><strong>No cleanup yet.</strong> If the component unmounts before the response arrives, the request still finishes. Exercise 9 adds an <code>AbortController</code>.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>API</dt><dd>api.github.com/users/muxiddin19</dd></div>
+          <div><dt>Pattern</dt><dd>async function inside the effect</dd></div>
+          <div><dt>Errors</dt><dd>try/catch plus res.ok</dd></div>
+          <div><dt>Source</dt><dd>Friday slides, async/await</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_07_dependency_patterns.html">Previous: Dependency patterns</a></p>
+          <p><a href="exercise_09_cleanup_abort_controller.html">Next: Cleanup with AbortController</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20Effects_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function AsyncEffect() {
+  const [user, setUser]       = useState(null);
+  const [error, setError]     = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // CORRECT: define the async function inside and call it
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch('https://api.github.com/users/muxiddin19');
+        if (!res.ok) throw new Error('GitHub responded ' + res.status);
+        const data = await res.json();
+        setUser(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+    // No return needed here unless we have cleanup
+  }, []);
+
+  if (loading) return <p className="loading" role="status">Loading...</p>;
+  if (error)   return <p className="error" role="alert">Error: {error}</p>;
+  return <p><strong>{user.login}</strong>: {user.name || '(no name set)'}</p>;
+}
+
+function Demo() {
+  const [run, setRun] = useState(1);
+  return (
+    <div>
+      <button onClick={() => setRun(r => r + 1)}>Fetch again</button>
+      <AsyncEffect key={run} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('demo')).render(<Demo />);
+  </script>
+</body>
+</html>

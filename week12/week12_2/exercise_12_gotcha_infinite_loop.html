@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 12 by Ryan Wong: why an effect that sets its own dependency loops forever, shown with a capped BadLoop and the fixed version that uses a functional update and an empty dependency array.">
+  <title>Exercise 12: Gotcha: infinite loop &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 12</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Gotcha: infinite loop</h1>
+        <p class="lead">An effect that updates the state it depends on never settles. This page runs the buggy effect with a run cap so the browser stays responsive, then runs the fixed version beside it.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>If your effect updates state, and that state is in the dependency array, you get an infinite loop. Always think: &ldquo;does updating this state cause my effect to run again?&rdquo;</p>
+          <p>Run <code>BadLoop</code> (capped after 8 runs) and <code>FixedOnce</code>, and compare how many times each effect fires.</p>
+          <cite>Lecturer&rsquo;s Friday study guide &mdash; Gotchas; Friday slides, Quiz 7</cite>
+        </blockquote>
+<div id="loop-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The components</h2>
+<div class="code-block">
+<p class="code-label">BadLoop.jsx &mdash; the bug (not run on this page)</p>
+<pre class="code"><code>function BadLoop() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() =&gt; {
+    setCount(count + 1);   // changes count ...
+  }, [count]);             // ... and count is a dependency, so the effect runs again
+
+  return &lt;p&gt;count = {count}&lt;/p&gt;;
+}</code></pre>
+</div>
+<div class="code-block">
+<p class="code-label">BadLoop.jsx &mdash; the same bug with a run cap (what the demo runs)</p>
+<pre class="code"><code>function BadLoop() {
+  const [count, setCount] = useState(0);
+  const [stopped, setStopped] = useState(false);
+  const runs = useRef(0);
+
+  useEffect(() =&gt; {
+    runs.current += 1;
+    // Safety guard so this demo cannot freeze the page
+    if (runs.current &gt; 8) { setStopped(true); return; }
+    setCount(count + 1);   // changes count, so the effect runs again
+  }, [count]);
+
+  return (
+    &lt;div&gt;
+      &lt;p className="figure"&gt;count = {count}&lt;/p&gt;
+      &lt;p&gt;Effect runs: {runs.current}&lt;/p&gt;
+      &lt;p className={stopped ? 'error' : 'loading'} role="status"&gt;
+        {stopped ? 'Guard stopped it: this loop would never end.' : 'Looping…'}
+      &lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+<div class="code-block">
+<p class="code-label">FixedOnce.jsx &mdash; the fix (runs in the demo)</p>
+<pre class="code"><code>function FixedOnce() {
+  const [count, setCount] = useState(0);
+  const runs = useRef(0);
+
+  useEffect(() =&gt; {
+    runs.current += 1;
+    setCount(c =&gt; c + 1);   // functional update: no need to read count
+  }, []);                   // empty array: runs once, after the first render
+
+  return (
+    &lt;div&gt;
+      &lt;p className="figure"&gt;count = {count}&lt;/p&gt;
+      &lt;p&gt;Effect runs: {runs.current}&lt;/p&gt;
+      &lt;p role="status"&gt;Settled. The effect ran once.&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>Why it loops.</strong> The effect calls <code>setCount(count + 1)</code>, which changes <code>count</code>. <code>count</code> is in the dependency array, so React runs the effect again, which changes <code>count</code> again, and so on. Quiz 7 on the slides asks exactly this and the answer is the <code>[count]</code> version.</li>
+          <li><strong>Why the demo has a cap.</strong> The first block above is the real bug, and it is not run here because it never settles. The second block is the same effect plus a <code>runs</code> ref: after 8 updates (on the 9th run) it sets <code>stopped</code> and returns without touching <code>count</code>, which ends the cycle. The counter shows how many times the effect fired.</li>
+          <li><strong>The fix is a functional update with <code>[]</code>.</strong> <code>setCount(c =&gt; c + 1)</code> does not read <code>count</code> from the closure, so the effect no longer depends on it. With an empty array it runs once after the first render.</li>
+          <li><strong>Not every state update in an effect loops.</strong> <code>useEffect(() =&gt; { setCount(0); }, [count])</code> converges: once <code>count</code> is 0, React sees the same value (<code>Object.is</code>) and skips the re-render. Slide quiz 7, option D.</li>
+          <li>Other fixes: remove <code>count</code> from the array only when the effect truly does not need it, or do not use an effect at all if the value can be worked out while rendering (see the next exercise).</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Gotcha</dt><dd>setState + same state in deps</dd></div>
+          <div><dt>Demo cap</dt><dd>stops on the 9th run</dd></div>
+          <div><dt>Fix</dt><dd>c =&gt; c + 1 with []</dd></div>
+          <div><dt>Source</dt><dd>Study guide + slides, Quiz 7</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_11_localstorage_persistence.html">Previous: localStorage persistence</a></p>
+          <p><a href="exercise_13_you_might_not_need_an_effect.html">Next: You might not need an effect</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Fri_StudyGuide.html" rel="noopener">Lecturer&rsquo;s Friday study guide</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function BadLoop() {
+  const [count, setCount] = useState(0);
+  const [stopped, setStopped] = useState(false);
+  const runs = useRef(0);
+
+  useEffect(() => {
+    runs.current += 1;
+    // Safety guard so this demo cannot freeze the page
+    if (runs.current > 8) { setStopped(true); return; }
+    setCount(count + 1);   // changes count, so the effect runs again
+  }, [count]);
+
+  return (
+    <div>
+      <p className="figure">count = {count}</p>
+      <p>Effect runs: {runs.current}</p>
+      <p className={stopped ? 'error' : 'loading'} role="status">
+        {stopped ? 'Guard stopped it: this loop would never end.' : 'Looping…'}
+      </p>
+    </div>
+  );
+}
+
+function FixedOnce() {
+  const [count, setCount] = useState(0);
+  const runs = useRef(0);
+
+  useEffect(() => {
+    runs.current += 1;
+    setCount(c => c + 1);   // functional update: no need to read count
+  }, []);                   // empty array: runs once, after the first render
+
+  return (
+    <div>
+      <p className="figure">count = {count}</p>
+      <p>Effect runs: {runs.current}</p>
+      <p role="status">Settled. The effect ran once.</p>
+    </div>
+  );
+}
+
+function LoopDemo() {
+  const [which, setWhich] = useState('none');
+  const [run, setRun] = useState(0);
+
+  function start(name) {
+    setWhich(name);
+    setRun(r => r + 1);   // new key: remount, so the effect starts fresh
+  }
+
+  return (
+    <div>
+      <div>
+        <button onClick={() => start('bad')}>Run BadLoop</button>
+        <button onClick={() => start('fixed')}>Run FixedOnce</button>
+        <button onClick={() => setWhich('none')} disabled={which === 'none'}>Unmount</button>
+      </div>
+      {which === 'bad' && <BadLoop key={run} />}
+      {which === 'fixed' && <FixedOnce key={run} />}
+      {which === 'none' && <p className="muted">Nothing mounted. Pick a component to run.</p>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('loop-demo')).render(<LoopDemo />);
+  </script>
+</body>
+</html>

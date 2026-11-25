@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 14 by Ryan Wong: a GitHubProfile component that fetches a GitHub user as you type, debounced by 500 ms with setTimeout and aborted with AbortController, with keystroke and request counters.">
+  <title>Exercise 14: Practice challenge: GitHub profile &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 14</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Practice challenge: GitHub profile</h1>
+        <p class="lead">The code challenge again, with the debounce bonus. A GitHubProfile component fetches a user as you type, waits 500 ms after the last keystroke, and cancels anything stale.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Build a component that:</p>
+          <p>1. Has an <code>&lt;input&gt;</code> for a GitHub username. 2. On Search button click (or debounce 500ms), fetch from <code>https://api.github.com/users/{username}</code>. 3. Display: avatar, name, bio, followers, public_repos. 4. Show a loading indicator while fetching. 5. Show an error message when user is not found (404). 6. BONUS: abort the previous request when username changes.</p>
+          <p>This version uses the debounce option instead of a Search button.</p>
+          <cite>Week 12 Friday slides &mdash; Code Challenge: GitHub User Lookup</cite>
+        </blockquote>
+<div id="profile-demo" class="demo"></div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">GitHubProfile.jsx</p>
+<pre class="code"><code>function GitHubProfile() {
+  const [username, setUsername] = useState('muxiddin19');
+  const [user, setUser]         = useState(null);
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState(null);
+  const [keystrokes, setKeystrokes] = useState(0);
+  const [requests, setRequests]     = useState(0);
+
+  useEffect(() =&gt; {
+    const name = username.trim();
+    if (!name) { setUser(null); setError(null); setLoading(false); return; }
+
+    const controller = new AbortController();
+    setLoading(true);
+    setError(null);
+
+    // Debounce: only fetch once typing has stopped for 500 ms
+    const timerId = setTimeout(async () =&gt; {
+      setRequests(n =&gt; n + 1);
+      try {
+        const res = await fetch(`https://api.github.com/users/${encodeURIComponent(name)}`,
+                                { signal: controller.signal });
+        if (res.status === 404) throw new Error(`User "${name}" not found (404)`);
+        if (res.status === 403) throw new Error('GitHub rate limit reached (60 requests an hour). Wait a little and try again.');
+        if (!res.ok) throw new Error('Request failed: ' + res.status);
+        setUser(await res.json());
+      } catch (err) {
+        if (err.name === 'AbortError') return;   // a newer request replaced this one
+        setUser(null);
+        setError(err.message);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }, 500);
+
+    // Cleanup: cancel the pending timer AND any request still in flight
+    return () =&gt; {
+      clearTimeout(timerId);
+      controller.abort();
+    };
+  }, [username]);
+
+  return (
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;label htmlFor="gh-user"&gt;GitHub username&lt;/label&gt;{' '}
+        &lt;input id="gh-user" value={username} placeholder="e.g. torvalds"
+               autoComplete="off" spellCheck="false"
+               onChange={e =&gt; { setKeystrokes(k =&gt; k + 1); setUsername(e.target.value); }} /&gt;
+      &lt;/div&gt;
+      &lt;p className="muted"&gt;Keystrokes: {keystrokes} · requests sent: {requests}&lt;/p&gt;
+
+      {loading &amp;&amp; &lt;p className="loading" role="status"&gt;Loading…&lt;/p&gt;}
+      {error &amp;&amp; &lt;p className="error" role="alert"&gt;{error}&lt;/p&gt;}
+      {user &amp;&amp; !loading &amp;&amp; (
+        &lt;div className="profile"&gt;
+          &lt;img src={user.avatar_url} alt="" width="96" height="96" /&gt;
+          &lt;h3&gt;{user.name || user.login}&lt;/h3&gt;
+          &lt;p&gt;@{user.login} · {user.public_repos} public repos&lt;/p&gt;
+          &lt;p&gt;{user.bio || &lt;span className="muted"&gt;No bio yet.&lt;/span&gt;}&lt;/p&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">Requirements, one by one</h2>
+        <ol class="checklist">
+          <li><strong>1. An input for the username.</strong> It is controlled by <code>username</code> and starts as <code>muxiddin19</code>, the instructor&rsquo;s profile from the slides.</li>
+          <li><strong>2. Fetch when the username changes.</strong> The effect has <code>[username]</code> as its dependency array and calls <code>https://api.github.com/users/{username}</code>. This page uses the real API.</li>
+          <li><strong>3. Loading indicator.</strong> <code>loading</code> is set as soon as the effect starts, so it also covers the 500 ms debounce wait.</li>
+          <li><strong>4. Avatar, name, public repos and bio.</strong> Shown together in one card once the data has arrived; the name falls back to the login and the bio to &ldquo;No bio yet.&rdquo;</li>
+          <li><strong>5. 404 message.</strong> A 404 is checked by status and turned into a &ldquo;not found&rdquo; message. A 403 gets its own message, because GitHub allows 60 unauthenticated requests an hour per IP.</li>
+          <li><strong>6. Bonus, debounce by 500 ms.</strong> The fetch lives inside a <code>setTimeout</code>. Each keystroke re-runs the effect, and the cleanup calls <code>clearTimeout</code>, so only the last pause produces a request. Watch the counters: many keystrokes, one request.</li>
+          <li><strong>Bonus, abort.</strong> The same cleanup also calls <code>controller.abort()</code>, which cancels a request that is already in flight. The cancelled fetch throws an <code>AbortError</code>, which the <code>catch</code> ignores, and the <code>finally</code> skips <code>setLoading(false)</code> when the signal was aborted so the newer request keeps the loading state.</li>
+        </ol>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>API</dt><dd>api.github.com/users</dd></div>
+          <div><dt>Fetch on</dt><dd>[username], after 500 ms</dd></div>
+          <div><dt>Errors</dt><dd>404, 403 rate limit, other</dd></div>
+          <div><dt>Bonus</dt><dd>debounce + AbortController</dd></div>
+          <div><dt>Source</dt><dd>Friday slides, code challenge</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_13_you_might_not_need_an_effect.html">Previous: You might not need an effect</a></p>
+          <p><a href="homework_01_weather_dashboard_starter.html">Next: Homework, weather dashboard</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/WebPro_Week12_Fri_StudyGuide.html" rel="noopener">Lecturer&rsquo;s Friday study guide</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function GitHubProfile() {
+  const [username, setUsername] = useState('muxiddin19');
+  const [user, setUser]         = useState(null);
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState(null);
+  const [keystrokes, setKeystrokes] = useState(0);
+  const [requests, setRequests]     = useState(0);
+
+  useEffect(() => {
+    const name = username.trim();
+    if (!name) { setUser(null); setError(null); setLoading(false); return; }
+
+    const controller = new AbortController();
+    setLoading(true);
+    setError(null);
+
+    // Debounce: only fetch once typing has stopped for 500 ms
+    const timerId = setTimeout(async () => {
+      setRequests(n => n + 1);
+      try {
+        const res = await fetch(`https://api.github.com/users/${encodeURIComponent(name)}`,
+                                { signal: controller.signal });
+        if (res.status === 404) throw new Error(`User "${name}" not found (404)`);
+        if (res.status === 403) throw new Error('GitHub rate limit reached (60 requests an hour). Wait a little and try again.');
+        if (!res.ok) throw new Error('Request failed: ' + res.status);
+        setUser(await res.json());
+      } catch (err) {
+        if (err.name === 'AbortError') return;   // a newer request replaced this one
+        setUser(null);
+        setError(err.message);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }, 500);
+
+    // Cleanup: cancel the pending timer AND any request still in flight
+    return () => {
+      clearTimeout(timerId);
+      controller.abort();
+    };
+  }, [username]);
+
+  return (
+    <div>
+      <div>
+        <label htmlFor="gh-user">GitHub username</label>{' '}
+        <input id="gh-user" value={username} placeholder="e.g. torvalds"
+               autoComplete="off" spellCheck="false"
+               onChange={e => { setKeystrokes(k => k + 1); setUsername(e.target.value); }} />
+      </div>
+      <p className="muted">Keystrokes: {keystrokes} · requests sent: {requests}</p>
+
+      {loading && <p className="loading" role="status">Loading…</p>}
+      {error && <p className="error" role="alert">{error}</p>}
+      {user && !loading && (
+        <div className="profile">
+          <img src={user.avatar_url} alt="" width="96" height="96" />
+          <h3>{user.name || user.login}</h3>
+          <p>@{user.login} · {user.public_repos} public repos</p>
+          <p>{user.bio || <span className="muted">No bio yet.</span>}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('profile-demo')).render(<GitHubProfile />);
+  </script>
+</body>
+</html>

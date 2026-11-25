@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 9 by Ryan Wong: a user card whose effect creates an AbortController, passes its signal to the request and aborts it in the cleanup, so only the latest request finishes. The request is simulated.">
+  <title>Exercise 9: Cleanup with AbortController &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 9</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Cleanup with AbortController</h1>
+        <p class="lead">Cleanup for a request. The effect hands an <code>AbortController</code>&rsquo;s signal to the request and aborts it in the cleanup, so changing the username cancels the request that is still in flight.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Cancel the in-flight request if <code>username</code> changes. Ignore the <code>AbortError</code> that a cancelled request throws.</p>
+          <cite>Week 12 Friday slides &mdash; Cleanup: AbortController for Fetch</cite>
+        </blockquote>
+<div class="demo">
+  <div id="usercard-demo"></div>
+  <div>
+    <h3 id="log-title">Request log (newest first)</h3>
+    <ul id="request-log" aria-labelledby="log-title" aria-live="polite"></ul>
+  </div>
+  <p class="muted">The API is simulated: every request takes 700 ms, so you can type faster than it answers. Names that start with &ldquo;nobody&rdquo;, and an empty box, return 404. The component is the one printed below.</p>
+</div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">UserCard.jsx</p>
+<pre class="code"><code>function UserCard({ username }) {
+  const [user, setUser]   = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() =&gt; {
+    const controller = new AbortController();
+    setError(null);
+
+    async function fetchUser() {
+      try {
+        const res = await fakeFetch(
+          `https://api.github.com/users/${encodeURIComponent(username)}`,
+          { signal: controller.signal }   // link to controller
+        );
+        if (!res.ok) throw new Error('User not found');
+        const data = await res.json();
+        setUser(data);
+      } catch (err) {
+        if (err.name === 'AbortError') return;   // ignore cancelled requests
+        setError(err.message);
+      }
+    }
+    fetchUser();
+
+    // Cancel the in-flight request if username changes
+    return () =&gt; controller.abort();
+  }, [username]);
+
+  if (error) return &lt;p className="error" role="alert"&gt;Error: {error}&lt;/p&gt;;
+  return (
+    &lt;p role="status"&gt;{user ? user.login + ' / ' + user.name : 'Loading...'}&lt;/p&gt;
+  );
+}</code></pre>
+</div>
+<div class="code-block">
+<p class="code-label">Demo.jsx</p>
+<pre class="code"><code>function Demo() {
+  const [name, setName] = useState('react-learner');
+
+  return (
+    &lt;div&gt;
+      &lt;label htmlFor="username"&gt;GitHub username&lt;/label&gt;
+      &lt;input id="username" value={name} autoComplete="off"
+             onChange={e =&gt; setName(e.target.value)} /&gt;
+      &lt;UserCard username={name} /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+<div class="code-block">
+<p class="code-label">fakeFetch.js</p>
+<pre class="code"><code>// Demo only: stands in for the real GitHub call so that fast typing
+// does not use up GitHub's 60 requests an hour. It answers after 700 ms.
+function fakeFetch(url, { signal }) {
+  const username = decodeURIComponent(url.split('/').pop());
+  addLog('started: ' + username);
+
+  return new Promise((resolve, reject) =&gt; {
+    const timer = setTimeout(() =&gt; {
+      addLog('finished: ' + username);
+      if (!username || username.startsWith('nobody')) {
+        resolve({ ok: false, status: 404, json: async () =&gt; ({}) });
+      } else {
+        resolve({ ok: true, status: 200,
+                  json: async () =&gt; ({ login: username, name: 'Simulated user' }) });
+      }
+    }, 700);
+
+    signal.addEventListener('abort', () =&gt; {
+      clearTimeout(timer);
+      addLog('aborted: ' + username);
+      reject(new DOMException('The request was aborted', 'AbortError'));
+    });
+  });
+}
+
+function addLog(text) {
+  const list = document.getElementById('request-log');
+  const item = document.createElement('li');
+  item.textContent = text;
+  list.prepend(item);
+  while (list.children.length &gt; 8) list.lastChild.remove();
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>The signal links the request to the controller.</strong> <code>fetch(url, { signal })</code> listens to it. Calling <code>controller.abort()</code> makes the pending request reject with an <code>AbortError</code>.</li>
+          <li><strong>The cleanup does the aborting.</strong> When <code>username</code> changes, React runs the previous effect&rsquo;s cleanup before the next effect starts, so the old request is cancelled just before the new one begins. Type a few letters and read the log: each earlier request ends with &ldquo;aborted&rdquo;, and only the last one reaches &ldquo;finished&rdquo;.</li>
+          <li><strong>An aborted request is not an error.</strong> The <code>catch</code> block returns early when <code>err.name === 'AbortError'</code>, so a cancelled request never calls <code>setError</code> or <code>setUser</code>.</li>
+          <li><strong>The controller is created inside the effect.</strong> Each run gets its own, so the cleanup aborts exactly the request that run started.</li>
+          <li><strong>The old card stays until the new answer lands.</strong> <code>user</code> is only replaced when a response arrives, which is why the text keeps showing the previous name while the log shows a new request in flight.</li>
+          <li><strong>The fetch is simulated.</strong> <code>fakeFetch</code> follows the same contract as <code>fetch</code> (a signal in, an <code>AbortError</code> out, a response with <code>ok</code> and <code>json()</code>), so swapping in the real call changes one word. The real GitHub API allows only 60 unauthenticated requests an hour, which fast typing would use up.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Cancels</dt><dd>The in-flight request</dd></div>
+          <div><dt>Dependencies</dt><dd>[username]</dd></div>
+          <div><dt>Cleanup</dt><dd>controller.abort()</dd></div>
+          <div><dt>Ignored</dt><dd>AbortError</dd></div>
+          <div><dt>Source</dt><dd>Friday slides, AbortController</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_10_race_condition_and_the_fix.html">Next: Race condition and the fix</a></p>
+          <p><a href="exercise_08_async_await_inside_an_effect.html">Previous: Async/await inside an effect</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20Effects_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+
+// Demo only: stands in for the real GitHub call so that fast typing
+// does not use up GitHub's 60 requests an hour. It answers after 700 ms.
+function fakeFetch(url, { signal }) {
+  const username = decodeURIComponent(url.split('/').pop());
+  addLog('started: ' + username);
+
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      addLog('finished: ' + username);
+      if (!username || username.startsWith('nobody')) {
+        resolve({ ok: false, status: 404, json: async () => ({}) });
+      } else {
+        resolve({ ok: true, status: 200,
+                  json: async () => ({ login: username, name: 'Simulated user' }) });
+      }
+    }, 700);
+
+    signal.addEventListener('abort', () => {
+      clearTimeout(timer);
+      addLog('aborted: ' + username);
+      reject(new DOMException('The request was aborted', 'AbortError'));
+    });
+  });
+}
+
+function addLog(text) {
+  const list = document.getElementById('request-log');
+  const item = document.createElement('li');
+  item.textContent = text;
+  list.prepend(item);
+  while (list.children.length > 8) list.lastChild.remove();
+}
+
+function UserCard({ username }) {
+  const [user, setUser]   = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setError(null);
+
+    async function fetchUser() {
+      try {
+        const res = await fakeFetch(
+          `https://api.github.com/users/${encodeURIComponent(username)}`,
+          { signal: controller.signal }   // link to controller
+        );
+        if (!res.ok) throw new Error('User not found');
+        const data = await res.json();
+        setUser(data);
+      } catch (err) {
+        if (err.name === 'AbortError') return;   // ignore cancelled requests
+        setError(err.message);
+      }
+    }
+    fetchUser();
+
+    // Cancel the in-flight request if username changes
+    return () => controller.abort();
+  }, [username]);
+
+  if (error) return <p className="error" role="alert">Error: {error}</p>;
+  return (
+    <p role="status">{user ? user.login + ' / ' + user.name : 'Loading...'}</p>
+  );
+}
+
+function Demo() {
+  const [name, setName] = useState('react-learner');
+
+  return (
+    <div>
+      <label htmlFor="username">GitHub username</label>
+      <input id="username" value={name} autoComplete="off"
+             onChange={e => setName(e.target.value)} />
+      <UserCard username={name} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('usercard-demo')).render(<Demo />);
+  </script>
+</body>
+</html>

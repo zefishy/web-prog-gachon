@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 11 by Ryan Wong: a theme toggle that reads its starting value from localStorage with a lazy useState initializer and writes it back in a useEffect, so the choice survives a reload.">
+  <title>Exercise 11: localStorage persistence &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <style>
+    /* Page-level: the card the demo themes (week12.css has no preview card) */
+    .demo .preview { padding: 1rem; border: 2px solid var(--rule); border-radius: 8px; }
+    .demo .preview.light { background: #F2F7F3; color: #092328; }
+    .demo .preview.dark { background: #092328; color: #E6F0EA; }
+  </style>
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 11</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">localStorage persistence</h1>
+        <p class="lead">State that survives a refresh. Read the saved value once when the component mounts, and write it back in an effect whenever it changes. Toggle the theme, then reload the page.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>Read from localStorage on mount, write when the value changes, and after a refresh the value is restored: &ldquo;memory&rdquo; across page refreshes, no backend.</p>
+          <p>Lazy initializer: the function form of <code>useState</code> runs only once, at mount, not on every render.</p>
+          <cite>Week 12 Friday slides &mdash; Pattern: localStorage Sync</cite>
+        </blockquote>
+<div class="demo">
+  <div id="theme-demo"></div>
+  <p><button type="button" onclick="location.reload()">Reload the page</button></p>
+  <p class="muted">The saved value is stored under the key <code>week12-theme</code>. Open the browser&rsquo;s developer tools, Application tab, Local Storage, to watch it change.</p>
+</div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">ThemeToggle.jsx</p>
+<pre class="code"><code>const STORAGE_KEY = 'week12-theme';
+
+// localStorage can throw (blocked storage, private mode), so guard both calls
+function readTheme() {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === 'dark' ? 'dark' : 'light';
+  } catch (err) {
+    return 'light';
+  }
+}
+
+function ThemeToggle() {
+  // Read once at mount (lazy initializer form)
+  const [theme, setTheme] = useState(() =&gt; readTheme());
+
+  // Write whenever theme changes
+  useEffect(() =&gt; {
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch (err) {
+      /* storage is blocked: the choice just will not survive a reload */
+    }
+  }, [theme]);
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setTheme(t =&gt; t === 'light' ? 'dark' : 'light')}&gt;
+        Current: {theme}. Click to toggle
+      &lt;/button&gt;
+      &lt;div className={'preview ' + theme}&gt;
+        &lt;p&gt;This card follows the saved theme.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>Two steps, two places.</strong> Reading happens in the state initializer, writing happens in an effect. Reading is part of working out the first render, so it belongs there. Writing reaches outside React into the browser&rsquo;s storage, so it is a side effect and goes in <code>useEffect</code>.</li>
+          <li><strong>The lazy initializer runs once.</strong> <code>useState(() =&gt; readTheme())</code> passes a function, which React calls only to compute the starting state on the first render. <code>useState(readTheme())</code> would read localStorage on every render and throw the result away.</li>
+          <li><strong>The effect depends on <code>[theme]</code>.</strong> It runs after the first paint and after each toggle. On mount it writes back the value it just read, which is harmless.</li>
+          <li><strong>Reload to see it work.</strong> The state is thrown away on reload, but the initializer reads the saved string and the card comes back in the same theme.</li>
+          <li><strong>Guarded calls.</strong> <code>localStorage</code> can throw when storage is blocked, so both calls sit in <code>try</code>/<code>catch</code>. The value read is checked too, so a stray string in storage falls back to <code>light</code>.</li>
+          <li><strong>Different from the slide.</strong> The slide stores the key <code>theme</code> and sets <code>data-theme</code> on the whole page. This site&rsquo;s header toggle already does that in <code>js/main.js</code> under the key <code>theme</code>, so this demo uses its own key and themes only the card, to avoid fighting the header button.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Storage</dt><dd>localStorage</dd></div>
+          <div><dt>Read</dt><dd>Lazy useState initializer</dd></div>
+          <div><dt>Write</dt><dd>useEffect, [theme]</dd></div>
+          <div><dt>Key</dt><dd>week12-theme</dd></div>
+          <div><dt>Source</dt><dd>Friday slides, localStorage Sync</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_12_gotcha_infinite_loop.html">Next: Gotcha, the infinite loop</a></p>
+          <p><a href="exercise_10_race_condition_and_the_fix.html">Previous: Race condition and the fix</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20Effects_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+
+const STORAGE_KEY = 'week12-theme';
+
+// localStorage can throw (blocked storage, private mode), so guard both calls
+function readTheme() {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === 'dark' ? 'dark' : 'light';
+  } catch (err) {
+    return 'light';
+  }
+}
+
+function ThemeToggle() {
+  // Read once at mount (lazy initializer form)
+  const [theme, setTheme] = useState(() => readTheme());
+
+  // Write whenever theme changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch (err) {
+      /* storage is blocked: the choice just will not survive a reload */
+    }
+  }, [theme]);
+
+  return (
+    <div>
+      <button onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}>
+        Current: {theme}. Click to toggle
+      </button>
+      <div className={'preview ' + theme}>
+        <p>This card follows the saved theme.</p>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('theme-demo')).render(<ThemeToggle />);
+  </script>
+</body>
+</html>

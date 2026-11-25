@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="author" content="Ryan Wong">
+  <meta name="description" content="Week 12 exercise 10 by Ryan Wong: a type-ahead search with a simulated slow API shows an old response overwriting a newer one, then fixes it by aborting the previous request in the effect cleanup.">
+  <title>Exercise 10: Race condition and the fix &mdash; Week 12</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../css/shared.css">
+  <link rel="stylesheet" href="../week12.css">
+  <script src="../../js/main.js"></script>
+</head>
+
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="back" href="../../index.html#week-12"><span aria-hidden="true">&larr;</span> <span class="back-full">Web Programming Library</span><span class="back-short">Library</span></a>
+      <div class="header-end">
+        <span class="here">Week 12_2 &middot; Exercise 10</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <h1 id="page-title">Race condition and the fix</h1>
+        <p class="lead">Without a cleanup, responses can arrive out of order and an old one overwrites the new one. Type &ldquo;abcdef&rdquo; fast with the box unticked, then ticked, and compare the result.</p>
+      </div>
+    </section>
+
+    <div class="container layout">
+      <section class="section" aria-labelledby="task-title">
+        <h2 id="task-title">The task</h2>
+        <blockquote class="brief">
+          <p>WITHOUT abort: responses arrive out of order. WITH abort in the cleanup: only the latest request can finish.</p>
+          <p>The cleanup of the previous run executes before the next effect starts.</p>
+          <cite>Week 12 Friday slides &mdash; Race Condition: Why Abort?</cite>
+        </blockquote>
+<div class="demo">
+  <div id="race-demo"></div>
+  <div>
+    <h3 id="log-title">Request log (newest first)</h3>
+    <ul id="request-log" aria-labelledby="log-title" aria-live="polite"></ul>
+    <p><button type="button" onclick="document.getElementById('request-log').replaceChildren()">Clear log</button></p>
+  </div>
+  <p class="muted">The API is simulated: requests for <strong>shorter</strong> names are <strong>slower</strong>, so a fast typist gets the answers back in the wrong order. Switching the checkbox clears the box so each run starts fresh; wait for the log to settle before you compare.</p>
+</div>
+<noscript><p class="no-js">This demo is a React component, so it needs JavaScript. Its source is printed below.</p></noscript>
+      </section>
+
+      <section class="section" aria-labelledby="source-title">
+        <h2 id="source-title">The component</h2>
+<div class="code-block">
+<p class="code-label">RaceCondition.jsx</p>
+<pre class="code"><code>function RaceCondition() {
+  const [query, setQuery]   = useState('');
+  const [result, setResult] = useState('');
+  const [safe, setSafe]     = useState(false);
+
+  useEffect(() =&gt; {
+    if (!query) return;
+    const controller = new AbortController();
+
+    fakeFetch(query, { signal: safe ? controller.signal : undefined })
+      .then(res =&gt; res.json())
+      .then(data =&gt; setResult(data.login))
+      .catch(err =&gt; { if (err.name !== 'AbortError') console.log(err.message); });
+
+    // SAFE mode: cancel the previous request when query changes
+    return safe ? () =&gt; controller.abort() : undefined;
+  }, [query, safe]);
+
+  function toggleSafe(e) {
+    setSafe(e.target.checked);
+    setQuery('');
+    setResult('');
+  }
+
+  function typeFast() {
+    setQuery('');
+    setResult('');
+    [...'abcdef'].forEach((_, i) =&gt; {
+      setTimeout(() =&gt; setQuery('abcdef'.slice(0, i + 1)), i * 100);
+    });
+  }
+
+  const stale = query !== '' &amp;&amp; result !== '' &amp;&amp; result !== query;
+
+  return (
+    &lt;div&gt;
+      &lt;label&gt;
+        &lt;input type="checkbox" checked={safe} onChange={toggleSafe} /&gt;
+        {' '}Abort previous request (the fix)
+      &lt;/label&gt;
+      &lt;div&gt;
+        &lt;label htmlFor="query"&gt;Query&lt;/label&gt;
+        &lt;input id="query" value={query} autoComplete="off"
+               placeholder="type quickly: abcdef"
+               onChange={e =&gt; setQuery(e.target.value)} /&gt;
+      &lt;/div&gt;
+      &lt;button onClick={typeFast}&gt;Type &amp;ldquo;abcdef&amp;rdquo; quickly&lt;/button&gt;
+      &lt;p&gt;You typed: &lt;b&gt;{query || '-'}&lt;/b&gt;&lt;/p&gt;
+      &lt;p aria-live="polite"&gt;
+        Result shown for: &lt;b&gt;{result || '-'}&lt;/b&gt;
+        {stale &amp;&amp; &lt;span className="error"&gt; (stale!)&lt;/span&gt;}
+      &lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+<div class="code-block">
+<p class="code-label">fakeFetch.js</p>
+<pre class="code"><code>// Demo only: a simulated API where SHORTER names are SLOWER
+// (1350 ms for one letter down to 200 ms for six), so responses
+// arrive out of order when you type quickly.
+function fakeFetch(query, { signal } = {}) {
+  const delay = Math.max(200, 1600 - query.length * 250);
+  addLog('sent "' + query + '"');
+
+  return new Promise((resolve, reject) =&gt; {
+    const timer = setTimeout(() =&gt; {
+      addLog('response for "' + query + '" arrived after ' + delay + ' ms');
+      resolve({ json: async () =&gt; ({ login: query }) });
+    }, delay);
+
+    signal?.addEventListener('abort', () =&gt; {
+      clearTimeout(timer);
+      addLog('aborted "' + query + '"');
+      reject(new DOMException('The request was aborted', 'AbortError'));
+    });
+  });
+}
+
+function addLog(text) {
+  const list = document.getElementById('request-log');
+  const item = document.createElement('li');
+  item.textContent = text;
+  list.prepend(item);
+  while (list.children.length &gt; 8) list.lastChild.remove();
+}</code></pre>
+</div>
+      </section>
+
+      <section class="section" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <ul class="notes">
+          <li><strong>The race.</strong> Each keystroke starts a request, but the network does not answer in the order the requests were sent. Here a one-letter query takes 1350 ms and a six-letter query 200 ms, so &ldquo;a&rdquo; comes back last and its answer replaces the one for &ldquo;abcdef&rdquo;. The box says <em>abcdef</em> and the result says <em>a</em>, marked stale.</li>
+          <li><strong>The fix is the cleanup from the previous exercise.</strong> In safe mode the effect passes <code>controller.signal</code> to the request and returns <code>() =&gt; controller.abort()</code>. Before the effect runs for &ldquo;abcdef&rdquo;, the cleanup for &ldquo;abcde&rdquo; has already cancelled that request, and so on back to &ldquo;a&rdquo;. Only the latest request can reach <code>setResult</code>.</li>
+          <li><strong>Why <code>safe</code> is in the dependency array.</strong> The effect reads it, so the lint rule wants it listed. Ticking the box re-runs the effect with the other behaviour.</li>
+          <li><strong>The unsafe branch returns <code>undefined</code>.</strong> With no signal and no cleanup the old requests keep running and still call <code>setResult</code>, which is the bug being shown.</li>
+          <li><strong>Even the fixed version lags.</strong> Type and delete a character and the result still shows the old text for a moment, flagged stale, until the newest answer arrives. The fix guarantees the result cannot end up on an old query, not that it is always current.</li>
+          <li><strong>The &ldquo;Type abcdef quickly&rdquo; button is an addition</strong> so the race can be reproduced exactly: it types one letter every 100 ms.</li>
+          <li>The other way to ignore an old response is a flag set in the cleanup (<code>let ignore = false; return () =&gt; { ignore = true; }</code>), which also works for APIs that cannot be aborted. The slide&rsquo;s quiz answer says &ldquo;aborts (or ignores)&rdquo;.</li>
+        </ul>
+      </section>
+
+      <aside class="section" aria-labelledby="facts-title">
+        <h2 id="facts-title">At a glance</h2>
+        <dl class="facts">
+          <div><dt>Problem</dt><dd>Out-of-order responses</dd></div>
+          <div><dt>Dependencies</dt><dd>[query, safe]</dd></div>
+          <div><dt>Fix</dt><dd>Abort in the cleanup</dd></div>
+          <div><dt>Simulated</dt><dd>Short names are slower</dd></div>
+          <div><dt>Source</dt><dd>Friday slides, Race Condition</dd></div>
+        </dl>
+        <div class="see-also">
+          <p><a href="exercise_11_localstorage_persistence.html">Next: localStorage persistence</a></p>
+          <p><a href="exercise_09_cleanup_abort_controller.html">Previous: Cleanup with AbortController</a></p>
+          <p><a href="https://muxiddin19.github.io/WebPro/week11/React%20Effects_%20live%20demos%20and%20source%20code.html" rel="noopener">Lecturer&rsquo;s live demos and source</a></p>
+          <p><a href="../../index.html#week-12">Week 12 in the library</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="foot-title">Web Programming Library @ Gachon University</p>
+      <p class="fine">Week 12 exercise by Ryan Wong, exchange student at Gachon University. Built with semantic HTML, modern CSS, and React.</p>
+      <ul>
+        <li><a href="../../index.html#week-12">Back to the library</a></li>
+        <li><a href="https://github.com/zefishy/web-prog-gachon">Source on GitHub</a></li>
+        <li><a href="#top">Back to top</a></li>
+      </ul>
+      <p class="fine">&copy; 2026 Ryan Wong</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+
+// Demo only: a simulated API where SHORTER names are SLOWER
+// (1350 ms for one letter down to 200 ms for six), so responses
+// arrive out of order when you type quickly.
+function fakeFetch(query, { signal } = {}) {
+  const delay = Math.max(200, 1600 - query.length * 250);
+  addLog('sent "' + query + '"');
+
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      addLog('response for "' + query + '" arrived after ' + delay + ' ms');
+      resolve({ json: async () => ({ login: query }) });
+    }, delay);
+
+    signal?.addEventListener('abort', () => {
+      clearTimeout(timer);
+      addLog('aborted "' + query + '"');
+      reject(new DOMException('The request was aborted', 'AbortError'));
+    });
+  });
+}
+
+function addLog(text) {
+  const list = document.getElementById('request-log');
+  const item = document.createElement('li');
+  item.textContent = text;
+  list.prepend(item);
+  while (list.children.length > 8) list.lastChild.remove();
+}
+
+function RaceCondition() {
+  const [query, setQuery]   = useState('');
+  const [result, setResult] = useState('');
+  const [safe, setSafe]     = useState(false);
+
+  useEffect(() => {
+    if (!query) return;
+    const controller = new AbortController();
+
+    fakeFetch(query, { signal: safe ? controller.signal : undefined })
+      .then(res => res.json())
+      .then(data => setResult(data.login))
+      .catch(err => { if (err.name !== 'AbortError') console.log(err.message); });
+
+    // SAFE mode: cancel the previous request when query changes
+    return safe ? () => controller.abort() : undefined;
+  }, [query, safe]);
+
+  function toggleSafe(e) {
+    setSafe(e.target.checked);
+    setQuery('');
+    setResult('');
+  }
+
+  function typeFast() {
+    setQuery('');
+    setResult('');
+    [...'abcdef'].forEach((_, i) => {
+      setTimeout(() => setQuery('abcdef'.slice(0, i + 1)), i * 100);
+    });
+  }
+
+  const stale = query !== '' && result !== '' && result !== query;
+
+  return (
+    <div>
+      <label>
+        <input type="checkbox" checked={safe} onChange={toggleSafe} />
+        {' '}Abort previous request (the fix)
+      </label>
+      <div>
+        <label htmlFor="query">Query</label>
+        <input id="query" value={query} autoComplete="off"
+               placeholder="type quickly: abcdef"
+               onChange={e => setQuery(e.target.value)} />
+      </div>
+      <button onClick={typeFast}>Type &ldquo;abcdef&rdquo; quickly</button>
+      <p>You typed: <b>{query || '-'}</b></p>
+      <p aria-live="polite">
+        Result shown for: <b>{result || '-'}</b>
+        {stale && <span className="error"> (stale!)</span>}
+      </p>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('race-demo')).render(<RaceCondition />);
+  </script>
+</body>
+</html>
